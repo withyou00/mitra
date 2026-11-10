@@ -243,6 +243,8 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
 .qr{width:150px;height:150px;background:#fff;border-radius:8px;padding:4px;flex:none}
 .qr svg{width:100%;height:100%;display:block}
 .h3{font-size:15px;font-weight:700;margin:0 0 8px}
+.prices-ed{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.prices-ed input,#stDocs input{width:100%}
 .addp .opts{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
 .addp .field select{min-width:110px}
 .ord small{display:block}
@@ -411,6 +413,20 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <div class="pad sec-h"><h2>ಇತ್ತೀಚಿನ ಮಾರಾಟ</h2></div>
           <div class="tw"><table class="list" id="adDone"></table></div>
         </div>
+        <div class="card">
+          <div class="pad sec-h"><h2>ದರಪಟ್ಟಿ ಮತ್ತು ದಾಖಲೆಗಳು</h2><button class="btn sm pri" id="stSave" type="button">ಉಳಿಸಿ</button></div>
+          <p class="muted small" style="margin:0;padding:0 20px 12px">ಇಲ್ಲಿ ಬದಲಿಸಿ "ಉಳಿಸಿ" ಒತ್ತಿದರೆ ಎಲ್ಲಾ ಶಿಕ್ಷಕರಿಗೂ ಹೊಸ ಬೆಲೆ ಕಾಣುತ್ತದೆ. ಈಗಾಗಲೇ ಖರೀದಿಸಿದವರಿಗೆ ಏನೂ ಬದಲಾಗುವುದಿಲ್ಲ.</p>
+          <div class="pad" style="padding-top:0"><div class="prices-ed" id="stPrices"></div></div>
+          <div class="pad" style="padding-top:0"><h3 class="h3">ಇತರೆ ದಾಖಲೆಗಳು</h3>
+            <p class="muted small" style="margin:0 0 10px">"ಗುರುತು" ಫೈಲ್ ಹೆಸರಿನಲ್ಲಿ ಬರುವ ಪದ: <code>doc-<b>kriya</b>-6.xlsx</code>. ಇಂಗ್ಲಿಷ್ ಸಣ್ಣ ಅಕ್ಷರ ಮಾತ್ರ. ಬೆಲೆ ಖಾಲಿ ಬಿಟ್ಟರೆ "ಇತರೆ ದಾಖಲೆ" ಬೆಲೆ.</p>
+            <div class="tw"><table class="list" id="stDocs" style="min-width:520px"></table></div>
+            <div class="opts" style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-top:12px">
+              <label class="field">ಗುರುತು (ಇಂಗ್ಲಿಷ್)<input type="text" id="ndCode" placeholder="ಉದಾ: pravasa" style="width:150px"></label>
+              <label class="field">ದಾಖಲೆಯ ಹೆಸರು<input type="text" id="ndName" placeholder="ಉದಾ: ಶೈಕ್ಷಣಿಕ ಪ್ರವಾಸ" style="width:200px"></label>
+              <label class="field">ಬೆಲೆ ₹<input type="number" id="ndPrice" min="0" style="width:90px"></label>
+              <button class="btn" type="button" id="ndAdd">+ ಸೇರಿಸಿ</button>
+            </div></div>
+        </div>
       </section>
 
       <!-- ===== ಫೈಲ್ ನಿರ್ವಹಣೆ ===== -->
@@ -490,6 +506,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
         <button class="btn pri" type="button" id="upAdd">ಸೇರಿಸಿ</button>
       </div></div>
     <div><h3 class="h3">ಶಾಲೆಯ ವಿವರ</h3><form class="form" id="udForm" novalidate></form></div>
+    <div class="banner bad"><span><b>ಈ ಶಿಕ್ಷಕರು / ಶಾಲೆಯನ್ನು ಅಳಿಸಿ.</b> ಶಾಲೆಯ ವಿವರ ಮತ್ತು ಖರೀದಿಗಳು ಹೋಗುತ್ತವೆ. ಆರ್ಡರ್‌ಗಳ ದಾಖಲೆ (ಆದಾಯ ಲೆಕ್ಕ) ಉಳಿಯುತ್ತದೆ. ಅದೇ ಸಂಖ್ಯೆಯಿಂದ ಮತ್ತೆ login ಆದರೆ ಹೊಸದಾಗಿ ಶಾಲೆಯ ವಿವರ ಕೇಳುತ್ತದೆ.</span><button class="btn sm" type="button" id="udDel">ಅಳಿಸಿ</button></div>
   </div>
 </dialog>
 
@@ -546,7 +563,7 @@ const CONFIG = {
   upi: '9902090911@ybl',             // ಹಣ ಬರಬೇಕಾದ UPI ID, ಉದಾ: '98xxxxxxxx@ybl'
   upiName: 'ಬೋಧನಾ ಮಿತ್ರ',
   whatsapp: '919902090911',        // ಆರ್ಡರ್ ಬರಬೇಕಾದ WhatsApp ಸಂಖ್ಯೆ, 91 ಸೇರಿಸಿ, ಉದಾ: '9198xxxxxxxx'
-  prices: { lp: 99, ppt: 150, aj: 50, doc: 50, sub: 200, cls: 500, sch: 1000 }
+  prices: { lp: 99, ppt: 150, aj: 50, doc: 50, sub: 200, cls: 500, sch: 1500 }
 };
 const PAID = !!CONFIG.firebase.apiKey;
 const LOGIN_DOMAIN = 'bodhana-mitra.in';     // ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು login ಗುರುತಾಗಿ ಬಳಸಲು (ಬದಲಿಸಬೇಡಿ)
@@ -1995,7 +2012,19 @@ const can = p => !PAID || ACC.can(p);
 
 const PACK_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
 const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF + PowerPoint)', sub: 'ಪಾಠಯೋಜನೆ + PPT', aj: 'ಎರಡೂ ಸೆಮಿಸ್ಟರ್', doc: '', cls: 'ಎಲ್ಲಾ ವಿಷಯ, ಎಲ್ಲಾ ದಾಖಲೆ', sch: 'ಎಲ್ಲಾ ತರಗತಿ, ಎಲ್ಲವೂ' };
-const packPrice = k => CONFIG.prices[k.split(':')[0]] || 0;
+/* ದಾಖಲೆವಾರು ಬೆಲೆ (Admin → ದರಪಟ್ಟಿ ಯಲ್ಲಿ ಬದಲಿಸಿದ್ದು). ಇಲ್ಲದಿದ್ದರೆ "ಇತರೆ ದಾಖಲೆ" ಬೆಲೆ */
+const DOC_PRICE = {};
+const packPrice = k => { const [t, , , x] = k.split(':'); return (t === 'doc' && DOC_PRICE[x] != null ? +DOC_PRICE[x] : +CONFIG.prices[t]) || 0; };
+/* Firestore ನಲ್ಲಿ ಉಳಿಸಿದ ದರಪಟ್ಟಿ ಮತ್ತು ದಾಖಲೆಗಳ ಹೆಸರು */
+function applySettings(st) {
+  if (!st) return;
+  if (st.prices) for (const k of Object.keys(CONFIG.prices)) if (st.prices[k] != null && st.prices[k] !== '') CONFIG.prices[k] = +st.prices[k];
+  if (st.docs) for (const [code, d] of Object.entries(st.docs)) {
+    if (d === null || d.removed) { delete DOCS[code]; delete DOC_PRICE[code]; continue; }
+    if (d.name) DOCS[code] = d.name;
+    if (d.price != null && d.price !== '') DOC_PRICE[code] = +d.price; else delete DOC_PRICE[code];
+  }
+}
 function packLabel(k, short) {
   const [t, m, c, x] = k.split(':');
   const head = t === 'doc' ? docTitle(x) : PACK_T[t] + (short || !PACK_D[t] ? '' : ` (${PACK_D[t]})`);
@@ -2060,7 +2089,7 @@ const ACC = (() => {
     $('rMob').oninput = adm; adm();
     $('auForgot').href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('ನಮಸ್ಕಾರ, ಬೋಧನಾ ಮಿತ್ರ ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೇನೆ. ನನ್ನ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ: ')}` : '#';
     $('auPrices').innerHTML = `<h3>ಬೆಲೆ ಪಟ್ಟಿ <small>(ಒಂದು ಶೈಕ್ಷಣಿಕ ವರ್ಷಕ್ಕೆ)</small></h3><div class="plist">` +
-      ['lp', 'ppt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
+      ['lp', 'ppt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (' + (Object.values(DOCS).slice(0, 2).join(', ') || 'ಕ್ರಿಯಾ ಯೋಜನೆ') + '…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
   }
   function hideAuth() { $('auth').hidden = true; document.body.style.overflow = ''; }
   function bindAuth() {
@@ -2117,6 +2146,7 @@ const ACC = (() => {
       const a = app.initializeApp(CONFIG.firebase);
       fb = { ...auth, ...fs, auth: auth.getAuth(a), db: fs.getFirestore(a) };
       bindAuth();
+      try { const st = await fs.getDoc(fs.doc(fb.db, 'settings', 'main')); if (st.exists()) applySettings(st.data()); } catch (e) { console.warn('settings', e); }
       user = await new Promise(res => { const off = auth.onAuthStateChanged(fb.auth, u => { off(); res(u); }); });
       if (user) { try { await loadProfile(); } catch (e) { console.warn(e); } }
       if (user && (prof || isAdmin())) return;
@@ -2152,7 +2182,9 @@ const ACC = (() => {
     async grant(m, keys, exp) { await fb.setDoc(uref(m), { packs: Object.fromEntries(keys.map(k => [k, exp])) }, { merge: true }); },
     async revoke(m, k) { await fb.updateDoc(uref(m), new fb.FieldPath('packs', k), fb.deleteField()); },
     async setOrder(id, d) { await fb.updateDoc(fb.doc(fb.db, 'orders', id), d); },
-    async setUser(m, d) { await fb.updateDoc(uref(m), d); }
+    async setUser(m, d) { await fb.updateDoc(uref(m), d); },
+    async delUser(m) { await fb.deleteDoc(uref(m)); },
+    async saveSettings(st) { await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), st); applySettings(st); }
   };
 })();
 
@@ -2280,9 +2312,10 @@ function renderAccount() {
 }
 
 /* ---------- Admin ---------- */
-const ADM = { users: [], orders: [], q: '' };
+const ADM = { users: [], orders: [], q: '', docs: null };
 async function adminLoad() {
   [ADM.users, ADM.orders] = await Promise.all([ACC.users(), ACC.allOrders()]);
+  ADM.docs = Object.fromEntries(Object.entries(DOCS).map(([c, n]) => [c, { name: n, price: DOC_PRICE[c] ?? null }]));
 }
 function adminRender() {
   const ord = ADM.orders.slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
@@ -2316,6 +2349,34 @@ function adminRender() {
   $('adDone').innerHTML = `<thead><tr><th>ದಿನಾಂಕ</th><th>ಶಾಲೆ</th><th>ಮೊಬೈಲ್</th><th>ದಾಖಲೆಗಳು</th><th>ಮೊತ್ತ</th></tr></thead><tbody>` +
     (done.slice(0, 30).map(o => `<tr><td>${dmy(o.doneAt || o.at)}</td><td>${esc(uName(o.uid)?.name || o.school)}</td><td>${esc(o.uid)}</td><td class="small">${o.items.map(k => esc(packLabel(k, true))).join('<br>')}</td><td>₹${o.total}</td></tr>`).join('') || `<tr><td colspan="5">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ಮಾರಾಟ ಆಗಿಲ್ಲ')}</td></tr>`) + '</tbody>';
   adminUsers();
+  adminSettings();
+}
+function adminSettings() {
+  const P = CONFIG.prices, L = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
+  $('stPrices').innerHTML = Object.keys(L).map(k => `<label class="field">${L[k]} ₹<input type="number" min="0" data-p="${k}" value="${esc(P[k])}"></label>`).join('');
+  const list = { ...ADM.docs };
+  const draw = () => {
+    $('stDocs').innerHTML = `<thead><tr><th>ಗುರುತು</th><th>ಹೆಸರು</th><th>ಬೆಲೆ ₹</th><th></th></tr></thead><tbody>` +
+      Object.entries(list).filter(([, d]) => !d.removed).map(([c, d]) => `<tr><td><code>${esc(c)}</code></td><td><input type="text" data-dn="${esc(c)}" value="${esc(d.name)}"></td><td><input type="number" min="0" data-dp="${esc(c)}" value="${esc(d.price ?? '')}" placeholder="${P.doc}" style="width:90px"></td><td style="text-align:right"><button class="x" type="button" data-dx="${esc(c)}" aria-label="ತೆಗೆಯಿರಿ">✕</button></td></tr>`).join('') + '</tbody>';
+    $('stDocs').querySelectorAll('[data-dn]').forEach(i => i.oninput = () => { list[i.dataset.dn].name = i.value; });
+    $('stDocs').querySelectorAll('[data-dp]').forEach(i => i.oninput = () => { list[i.dataset.dp].price = i.value === '' ? null : +i.value; });
+    $('stDocs').querySelectorAll('[data-dx]').forEach(b => b.onclick = () => { list[b.dataset.dx] = { ...list[b.dataset.dx], removed: true }; draw(); });
+  };
+  $('ndAdd').onclick = () => {
+    const c = $('ndCode').value.trim().toLowerCase(), n = $('ndName').value.trim();
+    if (!/^[a-z]+$/.test(c)) return toast('ಗುರುತು ಇಂಗ್ಲಿಷ್ ಸಣ್ಣ ಅಕ್ಷರಗಳಲ್ಲಿ ಮಾತ್ರ (ಸ್ಪೇಸ್, ಅಂಕೆ, - ಬೇಡ).', true);
+    if (!n) return toast('ದಾಖಲೆಯ ಹೆಸರು ಬರೆಯಿರಿ.', true);
+    list[c] = { name: n, price: $('ndPrice').value === '' ? null : +$('ndPrice').value };
+    $('ndCode').value = $('ndName').value = $('ndPrice').value = ''; draw();
+    toast('ಸೇರಿಸಲಾಗಿದೆ. ಕೊನೆಗೆ ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.');
+  };
+  $('stSave').onclick = () => busy($('stSave'), async () => {
+    const prices = {}; $('stPrices').querySelectorAll('[data-p]').forEach(i => { prices[i.dataset.p] = +i.value || 0; });
+    await ACC.saveSettings({ prices, docs: list, at: new Date().toISOString() });
+    ADM.docs = Object.fromEntries(Object.entries(list).filter(([, d]) => !d.removed));
+    makerReady = false; adminSettings(); toast('ದರಪಟ್ಟಿ ಉಳಿಸಲಾಗಿದೆ.');
+  });
+  draw();
 }
 function adminUsers() {
   const q = skel(ADM.q || '');
@@ -2338,6 +2399,14 @@ function adminUser(id) {
     $('udPacks').querySelectorAll('[data-rv]').forEach(b => b.onclick = () => busy(b, async () => { await ACC.revoke(u.id, b.dataset.rv); delete u.packs[b.dataset.rv]; draw(); adminUsers(); }));
   };
   $('udForm').innerHTML = F.map(([k, l]) => `<label class="f">${l}<input type="text" data-k="${k}" value="${esc(u[k] || '')}"></label>`).join('') + `<div><button class="btn sm pri" type="submit">ವಿವರ ಉಳಿಸಿ</button></div>`;
+  $('udDel').textContent = 'ಅಳಿಸಿ'; delete $('udDel').dataset.sure;
+  $('udDel').onclick = () => {
+    if (!$('udDel').dataset.sure) { $('udDel').dataset.sure = '1'; $('udDel').textContent = 'ಖಚಿತವೇ? ಮತ್ತೆ ಒತ್ತಿ'; return; }
+    busy($('udDel'), async () => {
+      await ACC.delUser(u.id); ADM.users = ADM.users.filter(x => x.id !== u.id);
+      $('ud').close(); adminRender(); toast(`${u.id} ಅಳಿಸಲಾಗಿದೆ.`);
+    });
+  };
   $('udForm').onsubmit = e => { e.preventDefault(); busy(e.submitter, async () => {
     const d = {}; $('udForm').querySelectorAll('input[data-k]').forEach(i => { d[i.dataset.k] = i.value.trim(); });
     await ACC.setUser(u.id, d); Object.assign(u, d); adminUsers(); toast('ಉಳಿಸಲಾಗಿದೆ.');
