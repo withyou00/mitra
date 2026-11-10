@@ -1,0 +1,2392 @@
+<!doctype html>
+<html lang="kn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ಬೋಧನಾ ಮಿತ್ರ</title>
+<!-- GitHub repo: ಖಾಲಿ ಬಿಟ್ಟರೆ ವೆಬ್‌ಸೈಟ್ ವಿಳಾಸದಿಂದ ತಾನೇ ಕಂಡುಕೊಳ್ಳುತ್ತದೆ (ಉದಾ: withyou00/mitra) -->
+<meta name="github-repo" content="">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Kannada:wght@400;500;600;700;800&family=Anek+Devanagari:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+/* Layout: fixed dark sidebar + content column on desktop; sidebar collapses to a top bar with a scrolling tab row on phones */
+:root{
+  --side:#10261f; --side-ink:#c9dbd2; --side-hi:#ffffff;
+  --bg:#f4f6f5; --panel:#ffffff; --ink:#15211b; --muted:#5f6f67; --line:#dfe6e2;
+  --accent:#17795a; --accent-2:#0f5c44; --accent-soft:#e4f2ec; --accent-ink:#ffffff;
+  --amber:#d9901c; --amber-soft:#fbf1df; --danger:#b8392e; --danger-soft:#fbe9e7; --ok:#1d7c4e;
+  --shadow:0 1px 2px rgba(16,38,31,.05),0 4px 16px rgba(16,38,31,.06);
+  --font:"Anek Kannada","Anek Devanagari","Noto Sans Kannada","Tunga","Nirmala UI",sans-serif;
+  --logo:"Anek Kannada","Noto Sans Kannada",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --side:#0b1712; --side-ink:#a9c0b5; --side-hi:#ffffff;
+  --bg:#0f1714; --panel:#16211c; --ink:#e3ece7; --muted:#97a9a0; --line:#26352e;
+  --accent:#4cc296; --accent-2:#7ad8b3; --accent-soft:#183329; --accent-ink:#06120d;
+  --amber:#f0b44e; --amber-soft:#2d2414; --danger:#ff8b7d; --danger-soft:#3a1d19; --ok:#6fd5a0;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --side:#0b1712; --side-ink:#a9c0b5; --side-hi:#ffffff;
+  --bg:#0f1714; --panel:#16211c; --ink:#e3ece7; --muted:#97a9a0; --line:#26352e;
+  --accent:#4cc296; --accent-2:#7ad8b3; --accent-soft:#183329; --accent-ink:#06120d;
+  --amber:#f0b44e; --amber-soft:#2d2414; --danger:#ff8b7d; --danger-soft:#3a1d19; --ok:#6fd5a0;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25); color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.6 var(--font)}
+button,input,select{font:inherit;color:inherit}
+h1,h2,h3{margin:0;line-height:1.3;text-wrap:balance}
+
+.app{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100%;background:linear-gradient(to right,var(--side) 252px,transparent 252px)}
+.side{background:var(--side);color:var(--side-ink);padding:22px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px;color:var(--side-hi);text-decoration:none}
+.brand .mk{width:40px;height:40px;border-radius:10px;background:var(--amber);color:#1d1404;display:grid;place-items:center;flex:none}
+.brand .mk svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.brand b{font:800 21px/1.1 var(--logo);display:block}
+.brand small{font-size:11.5px;opacity:.7}
+.nav{display:grid;gap:3px}
+.nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:8px;color:var(--side-ink);text-decoration:none;font-weight:500;font-size:14.5px}
+.nav a svg{width:19px;height:19px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.nav a:hover{background:rgba(255,255,255,.06);color:var(--side-hi)}
+.nav a.on{background:rgba(255,255,255,.1);color:var(--side-hi);box-shadow:inset 3px 0 0 var(--amber)}
+.nav .sep{height:1px;background:rgba(255,255,255,.08);margin:8px 6px}
+.side .note{margin-top:auto;font-size:12px;line-height:1.5;opacity:.7;padding:0 8px}
+
+.main{min-width:0;display:flex;flex-direction:column}
+.bar{position:sticky;top:0;z-index:4;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.barin{display:flex;align-items:center;justify-content:space-between;gap:14px;padding-block:14px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.bar h1{font-size:20px;font-weight:700}
+.chip{display:flex;align-items:center;gap:9px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 14px 5px 5px;cursor:pointer;max-width:min(420px,60vw);box-shadow:var(--shadow)}
+.chip .av{width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700;font-size:13px;flex:none}
+.chip span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:13.5px;font-weight:600}
+.chip.warn{border-color:var(--amber);background:var(--amber-soft)}
+.content{padding-block:24px 56px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));width:100%;max-width:1240px;display:grid;gap:22px}
+.view{display:grid;gap:20px;min-width:0}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+.pad{padding:20px}
+.muted{color:var(--muted)} .small{font-size:13px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.sec-h h2{font-size:17px;font-weight:700}
+
+.welcome{background:linear-gradient(135deg,#0d4a37,#17795a);color:#fff;border-radius:14px;padding:24px 26px;display:grid;gap:6px;position:relative;overflow:hidden}
+.welcome::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;border:28px solid rgba(255,255,255,.08)}
+.welcome p{margin:0;opacity:.9;font-size:14px}
+.welcome h2{font-size:clamp(21px,3vw,28px);font-weight:700}
+.welcome .meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;opacity:.92}
+
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stat{padding:16px 18px;display:grid;gap:2px}
+.stat b{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+.stat span{font-size:13px;color:var(--muted)}
+
+.quick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1150px){.quick{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.quick{grid-template-columns:minmax(0,1fr)}}
+.qa{display:flex;gap:14px;align-items:center;padding:18px;text-decoration:none;color:var(--ink);transition:border-color .15s,transform .15s}
+.qa:hover{border-color:var(--accent);transform:translateY(-1px)}
+.qa .ic,.ico{width:46px;height:46px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:none}
+.qa .ic svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.qa b{display:block;font-size:16px}
+.qa small{color:var(--muted);font-size:13px}
+
+.tw{overflow-x:auto}
+table.list{width:100%;border-collapse:collapse;font-size:14px;min-width:640px}
+.list th{font-size:12px;letter-spacing:.03em;color:var(--muted);font-weight:600;text-align:left;padding:10px 16px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 60%,var(--panel))}
+.list td{padding:11px 16px;border-bottom:1px solid var(--line);vertical-align:middle}
+.list tr:last-child td{border-bottom:0}
+.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.pill.off{background:var(--line);color:var(--muted)}
+.pill.bad{background:var(--danger-soft);color:var(--danger)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}
+.pills{display:flex;gap:5px;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-weight:600;font-size:14px;padding:9px 15px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{background:var(--accent-2);border-color:var(--accent-2);color:var(--accent-ink)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn:disabled{opacity:.55;cursor:progress}
+.btn:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,.chip:focus-visible,.seg button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:end;padding:16px 18px}
+.field{display:grid;gap:4px;font-size:12.5px;color:var(--muted);font-weight:500}
+select,input[type=text],input[type=tel],input[type=number]{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;min-width:0}
+.field select{min-width:140px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--bg)}
+.seg button{border:0;background:none;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button.on{background:var(--accent);color:var(--accent-ink)}
+.grow{flex:1}
+
+.units{display:grid}
+.unit{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;padding:13px 18px;border-top:1px solid var(--line)}
+.unit:first-child{border-top:0}
+.unit .no{width:36px;height:36px;border-radius:9px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-variant-numeric:tabular-nums}
+.unit .no.pdf{background:var(--amber-soft);color:var(--amber);font-size:11px}
+.unit b{display:block;font-size:15px;font-weight:600}
+.unit small{color:var(--muted);font-size:12.5px}
+.unit .acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+@media (max-width:620px){.unit{grid-template-columns:auto minmax(0,1fr)}.unit .acts{grid-column:1/-1}}
+
+.empty{padding:34px 20px;text-align:center;color:var(--muted);display:grid;gap:6px;justify-items:center}
+.empty b{color:var(--ink);font-size:15px}
+code{font-size:12.5px;background:var(--bg);border:1px solid var(--line);padding:1px 5px;border-radius:4px;word-break:break-all}
+
+/* ಅಂದಾಜು ಪತ್ರಿಕೆ */
+table.aj{width:100%;border-collapse:collapse;font-size:13.5px;min-width:1040px}
+.aj th{font-size:12px;color:var(--muted);font-weight:600;text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--bg) 60%,var(--panel));white-space:nowrap}
+.aj td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.aj td.m{font-weight:700;white-space:nowrap}
+.aj td.sj{color:var(--muted);font-size:12.5px}
+.aj td.n{font-variant-numeric:tabular-nums;text-align:center;width:46px}
+.aj tr.grp td{border-top:2px solid var(--line)}
+.aj tr.ev td{background:var(--amber-soft);font-size:13px}
+.aj input[type=text]{padding:5px 7px;font-size:13px;width:100%;min-width:110px}
+.aj tr.done td{background:color-mix(in srgb,var(--ok) 8%,transparent)}
+.aj tr.not td{background:color-mix(in srgb,var(--danger) 7%,transparent)}
+.st{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.st button{border:0;background:var(--panel);padding:4px 9px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--muted);white-space:nowrap}
+.st button+button{border-left:1px solid var(--line)}
+.st button.on[data-v=done]{background:var(--ok);color:#fff}
+.st button.on[data-v=not]{background:var(--danger);color:#fff}
+.ajsum{display:flex;gap:8px;flex-wrap:wrap}
+.ajsum span{font-size:13px;padding:5px 11px;border-radius:999px;background:var(--accent-soft);color:var(--ink);font-variant-numeric:tabular-nums}
+
+.form{display:grid;gap:14px;max-width:640px}
+.form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.form .row{grid-template-columns:1fr}}
+.form label.f{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+.form input[type=text],.form input[type=tel]{width:100%}
+.check{display:flex;gap:9px;align-items:center;font-size:14px}
+.check input{width:17px;height:17px;accent-color:var(--accent)}
+.banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--amber-soft);border:1px solid color-mix(in srgb,var(--amber) 45%,transparent);border-radius:12px;padding:14px 18px;font-size:14px}
+.banner.bad{background:var(--danger-soft);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
+
+/* ಫೈಲ್ ನಿರ್ವಹಣೆ */
+.maker{display:grid;gap:14px}
+.maker .opts{display:flex;flex-wrap:wrap;gap:12px;align-items:end}
+.fname{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg);border:1px dashed var(--accent);border-radius:10px;padding:12px 14px}
+.fname code{font-size:18px;font-weight:700;border:0;background:none;color:var(--accent);padding:0}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 18px;font-size:13px}
+.legend span b{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--accent);font-weight:600}
+
+dialog{border:0;padding:0;border-radius:14px;width:min(1040px,calc(100vw - 24px));max-height:calc(100vh - 24px);background:var(--panel);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(8,20,15,.55)}
+.dh{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.dh h3{font-size:16px;min-width:0}
+.dstage{background:var(--bg);padding:16px;display:flex;justify-content:center;overflow:auto;max-height:calc(100vh - 170px)}
+.dstage canvas{background:#fff;box-shadow:0 2px 14px rgba(0,0,0,.2);max-width:100%;height:auto}
+.pager{display:flex;align-items:center;gap:6px;font-size:13.5px;font-variant-numeric:tabular-nums;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:9px;font-size:14px;z-index:20;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:calc(100vw - 32px)}
+.toast.err{background:var(--danger);color:#fff}
+
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr);background:none}
+  .side{position:sticky;top:0;z-index:6;height:auto;overflow:visible;flex-direction:row;align-items:center;flex-wrap:wrap;gap:10px;padding:10px max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+  .brand b{font-size:18px} .brand small{display:none} .brand .mk{width:34px;height:34px}
+  .nav{order:3;width:100%;display:flex;overflow-x:auto;gap:4px;padding-bottom:8px;scrollbar-width:none}
+  .nav a{white-space:nowrap;padding:7px 11px;font-size:13.5px}
+  .nav a.on{box-shadow:inset 0 -2px 0 var(--amber)}
+  .nav .sep,.side .note{display:none}
+  .bar{position:static}
+  .barin,.content{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+}
+/* ಖಾತೆ, ಕಾರ್ಟ್, 🔒 */
+input[type=password],input[type=date]{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;min-width:0;width:100%}
+.barr{display:flex;gap:10px;align-items:center;min-width:0}
+@media (max-width:620px){.barin{flex-wrap:wrap;row-gap:10px}.barr{flex:1 1 100%}.barr select{flex:0 1 auto;max-width:42%}.chip{flex:1 1 auto;min-width:0;max-width:none}}
+.cartb{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel);cursor:pointer;flex:none;box-shadow:var(--shadow)}
+.cartb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cartb span{position:absolute;top:-4px;right:-4px;min-width:19px;height:19px;border-radius:999px;background:var(--amber);color:#1d1404;font-size:11.5px;font-weight:700;display:grid;place-items:center;padding:0 5px}
+.lock{padding:20px;display:grid;gap:14px;border-bottom:1px solid var(--line)}
+.lk-h{display:flex;gap:14px;align-items:flex-start}
+.lk-h b{display:block;font-size:16px}
+.lk-h small{color:var(--muted);font-size:13px}
+.lk-i{width:42px;height:42px;border-radius:11px;background:var(--amber-soft);color:var(--amber);display:grid;place-items:center;flex:none}
+.lk-i svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lk-opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+.opt{display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer}
+.opt:hover{border-color:var(--accent)}
+.opt b{display:block;font-size:14px}
+.opt small{color:var(--muted);font-size:12px}
+.opt em{font-style:normal;font-weight:700;font-size:15px;color:var(--accent);white-space:nowrap}
+.opt.best{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
+.opt[data-in] em{font-size:12.5px;color:var(--ok)}
+.pill.lk::before{content:"🔒";font-size:10px}
+dialog.narrow{width:min(640px,calc(100vw - 24px))}
+.dbody{max-height:calc(100vh - 110px);overflow:auto}
+.cl{display:grid}
+.ci{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line)}
+#udPacks .ci{padding:9px 0}
+.ci b{display:block;font-size:14.5px}
+.ci small{color:var(--muted);font-size:12.5px}
+.x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 8px;border-radius:6px}
+.x:hover{background:var(--danger-soft);color:var(--danger)}
+.hint{display:flex;gap:10px;align-items:center;justify-content:space-between;margin:12px 18px 0;padding:10px 14px;border-radius:10px;background:var(--amber-soft);font-size:13.5px}
+.ctot{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font-size:15px}
+.ctot b{font-size:22px}
+.ctot small{color:var(--muted);font-size:12.5px}
+.pay{display:grid;gap:16px;padding:16px 18px 20px;border-top:1px solid var(--line);background:color-mix(in srgb,var(--bg) 50%,var(--panel))}
+.step{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px}
+.sn{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-weight:700;font-size:13px}
+.upi{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-top:8px}
+.qr{width:150px;height:150px;background:#fff;border-radius:8px;padding:4px;flex:none}
+.qr svg{width:100%;height:100%;display:block}
+.h3{font-size:15px;font-weight:700;margin:0 0 8px}
+.addp .opts{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.addp .field select{min-width:110px}
+.ord small{display:block}
+.ord .items{margin-top:4px;color:var(--ink)}
+.auth{position:fixed;inset:0;z-index:30;background:linear-gradient(160deg,#0d3a2c,#10261f 60%);overflow:auto;padding:28px 16px}
+.auth-in{max-width:960px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:820px){.auth-in{grid-template-columns:minmax(0,1fr)}}
+.auth-card{background:var(--panel);border-radius:16px;padding:24px;display:grid;gap:16px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.auth-card .form{max-width:none}
+.auth-card .seg{justify-self:start}
+.brand.dark{color:var(--ink);padding:0}
+.brand.dark small{display:block}
+.auerr{margin:0;color:var(--danger);font-size:14px;font-weight:600;min-height:0}
+.auerr:empty{display:none}
+.prices h3{font-size:16px} .prices h3 small{font-weight:500;color:var(--muted);font-size:12.5px}
+.plist{display:grid}
+.plist div{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.plist div:last-child{border-bottom:0}
+.plist span{font-weight:600;font-size:14.5px}
+.plist small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.plist b{font-size:16px;color:var(--accent);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a class="brand" href="#home"><span class="mk"><svg viewBox="0 0 24 24"><path d="M2 5.5C4.5 4 8 4 12 6c4-2 7.5-2 10-.5V19c-2.5-1.5-6-1.5-10 .5-4-2-7.5-2-10-.5z"/><path d="M12 6v13.5"/></svg></span><span><b>ಬೋಧನಾ ಮಿತ್ರ</b><small>ಶಿಕ್ಷಕರ ದಾಖಲೆ ಭಂಡಾರ</small></span></a>
+    <nav class="nav" id="nav">
+      <a href="#home" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>ಮುಖಪುಟ</a>
+      <a href="#lesson" data-v="lesson"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"/><path d="M8 9h8M8 13h6"/></svg>ಪಾಠಯೋಜನೆ</a>
+      <a href="#ppt" data-v="ppt"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg>PPT</a>
+      <a href="#andaju" data-v="andaju"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 10h16M8 14l2 2 4-4"/></svg>ಅಂದಾಜು ಪತ್ರಿಕೆ</a>
+      <a href="#docs" data-v="docs"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>ಇತರೆ ದಾಖಲೆಗಳು</a>
+      <a href="#school" data-v="school"><svg viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg><span id="navSchool">ಶಾಲೆಯ ವಿವರ</span></a>
+      <span class="sep"></span>
+      <a href="#admin" data-v="admin" id="navAdmin" hidden><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Admin</a>
+      <a href="#files" data-v="files" id="navFiles"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M12 11v5M9.5 13.5h5"/></svg>ಫೈಲ್ ನಿರ್ವಹಣೆ</a>
+    </nav>
+    <p class="note" id="sideNote">ಶಾಲೆಯ ವಿವರ ಮತ್ತು ಅಂದಾಜು ಪತ್ರಿಕೆಯ ಪ್ರಗತಿ ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.</p>
+  </aside>
+
+  <div class="main">
+    <header class="bar"><div class="barin">
+      <h1 id="pageTitle">ಮುಖಪುಟ</h1>
+      <div class="barr"><select id="medSel" aria-label="ಮಾಧ್ಯಮ" style="font-weight:600"></select><button class="cartb" id="cartBtn" type="button" aria-label="ಕಾರ್ಟ್" hidden><svg viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h10.2L20 8H6.2"/><circle cx="9" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/></svg><span id="cartN" hidden>0</span></button><button class="chip" id="chip" type="button"></button></div>
+    </div></header>
+
+    <main class="content">
+      <div id="globalMsg"></div>
+
+      <!-- ===== ಮುಖಪುಟ ===== -->
+      <section id="v-home" class="view">
+        <div id="homeTop"></div>
+        <div class="stats" id="stats"></div>
+        <div class="quick">
+          <a class="card qa" href="#lesson"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"/><path d="M8 9h8M8 13h6"/></svg></span><span><b>ಪಾಠಯೋಜನೆ</b><small>5E ಮಾದರಿ · ಘಟಕವಾರು / ಅವಧಿವಾರು</small></span></a>
+          <a class="card qa" href="#ppt"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg></span><span><b>ಪಾಠಗಳ PPT</b><small>PDF ಮತ್ತು PowerPoint</small></span></a>
+          <a class="card qa" href="#andaju"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 10h16M8 14l2 2 4-4"/></svg></span><span><b>ಅಂದಾಜು ಪತ್ರಿಕೆ</b><small>ಸೆಮಿಸ್ಟರ್‌ವಾರು ಪಾಠ ಹಂಚಿಕೆ ಮತ್ತು ಪ್ರಗತಿ</small></span></a>
+          <a class="card qa" href="#docs"><span class="ic"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg></span><span><b>ಇತರೆ ದಾಖಲೆಗಳು</b><small>ಕ್ರಿಯಾ ಯೋಜನೆ, ವಾರ್ಷಿಕ ಯೋಜನೆ…</small></span></a>
+        </div>
+        <div class="card">
+          <div class="pad sec-h"><h2>ಲಭ್ಯವಿರುವ ದಾಖಲೆಗಳು</h2></div>
+          <div class="tw"><table class="list" id="catTable"></table></div>
+        </div>
+      </section>
+
+      <!-- ===== ಪಾಠಯೋಜನೆ ===== -->
+      <section id="v-lesson" class="view" hidden>
+        <div class="card toolbar">
+          <label class="field">ತರಗತಿ<select id="lpClass"></select></label>
+          <label class="field">ವಿಷಯ<select id="lpSubject"></select></label>
+          <label class="field">ಭಾಗ / ಸೆಮಿಸ್ಟರ್<select id="lpPart"></select></label>
+          <div class="field">ರೂಪ<div class="seg" id="lpFmt"><button type="button" data-f="unit" class="on">ಘಟಕವಾರು</button><button type="button" data-f="period">ಅವಧಿವಾರು</button></div></div>
+          <div class="field">ಶಿಕ್ಷಕರ ಸ್ವ-ಅವಲೋಕನ<div class="seg" id="lpRefl"><button type="button" data-r="1" class="on">ತುಂಬಿರಲಿ</button><button type="button" data-r="0">ಖಾಲಿ ಬಿಡಿ</button></div></div>
+          <span class="grow"></span>
+          <button class="btn pri" id="lpAll" type="button" hidden><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>ಎಲ್ಲಾ ಘಟಕಗಳು</span></button>
+        </div>
+        <div class="card">
+          <div class="pad sec-h"><h2 id="lpHead">ಘಟಕಗಳು</h2><span class="muted small" id="lpInfo"></span></div>
+          <div class="units" id="lpUnits"></div>
+        </div>
+      </section>
+
+      <!-- ===== PPT ===== -->
+      <section id="v-ppt" class="view" hidden>
+        <div class="card toolbar">
+          <label class="field">ತರಗತಿ<select id="ppClass"></select></label>
+          <label class="field">ವಿಷಯ<select id="ppSubject"></select></label>
+          <label class="field">ಭಾಗ / ಸೆಮಿಸ್ಟರ್<select id="ppPart"></select></label>
+        </div>
+        <div class="card"><div class="units" id="ppList"></div></div>
+      </section>
+
+      <!-- ===== ಅಂದಾಜು ಪತ್ರಿಕೆ ===== -->
+      <section id="v-andaju" class="view" hidden>
+        <div class="card toolbar">
+          <label class="field">ತರಗತಿ<select id="ajClass"></select></label>
+          <div class="field">ಸೆಮಿಸ್ಟರ್<div class="seg" id="ajSem"></div></div>
+          <label class="field">ವಿಷಯ<select id="ajSubject"></select></label>
+          <span class="grow"></span>
+          <button class="btn" id="ajView" type="button"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>ಮುನ್ನೋಟ</button>
+          <button class="btn" id="ajBlank" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ಖಾಲಿ ಪತ್ರಿಕೆ</button>
+          <button class="btn pri" id="ajFilled" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ತುಂಬಿದ ಪತ್ರಿಕೆ</button>
+        </div>
+        <div class="card">
+          <div class="pad sec-h"><h2 id="ajHead">ಪಾಠ ಹಂಚಿಕೆ ಮತ್ತು ಪ್ರಗತಿ</h2><div class="ajsum" id="ajSum"></div></div>
+          <p class="muted small" style="margin:0;padding:0 20px 12px">ಪಾಠ ಮುಗಿದಂತೆ "ಸಾಗಿದೆ" ಒತ್ತಿ. ಸಾಗದಿದ್ದರೆ ಕಾರಣ ಮತ್ತು ಕೈಗೊಂಡ ಕ್ರಮ ಬರೆಯಿರಿ. ಎಲ್ಲವೂ ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.</p>
+          <div class="tw"><table class="aj" id="ajTable"></table></div>
+        </div>
+      </section>
+
+      <!-- ===== ಇತರೆ ದಾಖಲೆಗಳು ===== -->
+      <section id="v-docs" class="view" hidden>
+        <div class="card toolbar">
+          <label class="field">ದಾಖಲೆ<select id="dcName"></select></label>
+          <label class="field">ತರಗತಿ<select id="dcClass"></select></label>
+        </div>
+        <div class="card"><div class="units" id="dcList"></div></div>
+      </section>
+
+      <!-- ===== ಶಾಲೆಯ ವಿವರ ===== -->
+      <section id="v-school" class="view" hidden>
+        <div class="card pad">
+          <form class="form" id="schoolForm" novalidate>
+            <div><h2 style="font-size:17px">ಶಾಲೆಯ ವಿವರ</h2><p class="muted small" style="margin:4px 0 0">ಇಲ್ಲಿ ತುಂಬಿದ ವಿವರಗಳು ಎಲ್ಲಾ download ಗಳ ಮೇಲೆ ಮುದ್ರಣವಾಗುತ್ತವೆ.</p></div>
+            <p class="banner" id="sLockNote" hidden style="margin:0"><span>ಶಾಲೆಯ ಹೆಸರು, UDISE ಮತ್ತು ವಿಳಾಸ ನೋಂದಣಿಯಲ್ಲಿ ಉಳಿದಿವೆ. ತಪ್ಪಿದ್ದರೆ ಸರಿಪಡಿಸಲು admin ಅವರನ್ನು ಸಂಪರ್ಕಿಸಿ.</span></p>
+            <label class="f">ಶಾಲೆಯ ಹೆಸರು *<input type="text" id="sName" placeholder="ಸರ್ಕಾರಿ ಹಿರಿಯ ಪ್ರಾಥಮಿಕ ಶಾಲೆ, ..."></label>
+            <div class="row">
+              <label class="f">UDISE ಕೋಡ್<input type="text" id="sUdise" inputmode="numeric"></label>
+              <label class="f">ಶೈಕ್ಷಣಿಕ ವರ್ಷ<input type="text" id="sYear" value="2026-27"></label>
+            </div>
+            <label class="f">ಗ್ರಾಮ / ಸ್ಥಳ<input type="text" id="sPlace"></label>
+            <div class="row">
+              <label class="f">ತಾಲ್ಲೂಕು<input type="text" id="sTaluk"></label>
+              <label class="f">ಜಿಲ್ಲೆ<input type="text" id="sDist"></label>
+            </div>
+            <div class="row">
+              <label class="f">ಶಿಕ್ಷಕರ ಹೆಸರು<input type="text" id="sTeacher"></label>
+              <label class="f">ಮುಖ್ಯ ಶಿಕ್ಷಕರ ಹೆಸರು<input type="text" id="sHm"></label>
+            </div>
+            <label class="f">ಮಾಧ್ಯಮ<select id="sMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option></select></label>
+            <label class="check"><input type="checkbox" id="sWm"> ಪಾಠಯೋಜನೆ ಪುಟಗಳ ಮಧ್ಯದಲ್ಲಿ ಮಸುಕಾದ watermark</label>
+            <div><button class="btn pri" type="submit">ಉಳಿಸಿ</button></div>
+          </form>
+        </div>
+        <div class="card pad" id="acct" hidden>
+          <div class="sec-h" style="margin-bottom:10px"><h2>ನನ್ನ ಖಾತೆ</h2><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="acctReload">ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button><button class="btn sm" type="button" id="acctLogout">Logout</button></span></div>
+          <div id="acctBody"></div>
+        </div>
+      </section>
+
+      <!-- ===== Admin ===== -->
+      <section id="v-admin" class="view" hidden>
+        <div class="stats" id="adStats"></div>
+        <div class="card">
+          <div class="pad sec-h"><h2>ಬಾಕಿ ಆರ್ಡರ್‌ಗಳು</h2><button class="btn sm" id="adRefresh" type="button"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></svg>ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button></div>
+          <p class="muted small" style="margin:0;padding:0 20px 12px">ನಿಮ್ಮ UPI ಆಪ್‌ನಲ್ಲಿ ಹಣ ಬಂದಿದೆಯೇ ನೋಡಿ (ಮೊತ್ತ, UTR), ನಂತರ "ಸಕ್ರಿಯಗೊಳಿಸಿ" ಒತ್ತಿ. ಶಿಕ್ಷಕರಿಗೆ ತಕ್ಷಣ ತೆರೆಯುತ್ತದೆ.</p>
+          <div class="units" id="adOrders"></div>
+        </div>
+        <div class="card">
+          <div class="pad sec-h"><h2>ಶಿಕ್ಷಕರು / ಶಾಲೆಗಳು</h2><input type="text" id="adSearch" placeholder="ಮೊಬೈಲ್, ಶಾಲೆ, ಹೆಸರು, UDISE ಹುಡುಕಿ" style="width:min(320px,100%)"></div>
+          <div class="tw"><table class="list" id="adUsers"></table></div>
+        </div>
+        <div class="card">
+          <div class="pad sec-h"><h2>ಇತ್ತೀಚಿನ ಮಾರಾಟ</h2></div>
+          <div class="tw"><table class="list" id="adDone"></table></div>
+        </div>
+      </section>
+
+      <!-- ===== ಫೈಲ್ ನಿರ್ವಹಣೆ ===== -->
+      <section id="v-files" class="view" hidden>
+        <div class="card pad maker">
+          <div><h2 style="font-size:17px">ಫೈಲ್ ಹೆಸರು ತಯಾರಕ</h2><p class="muted small" style="margin:4px 0 0">ಆಯ್ಕೆ ಮಾಡಿ, ಕೆಳಗೆ ಬರುವ ಹೆಸರನ್ನೇ ನಿಮ್ಮ ಫೈಲ್‌ಗೆ ಇಟ್ಟು GitHub ಗೆ upload ಮಾಡಿ. ವೆಬ್‌ಸೈಟ್ ತಾನಾಗಿಯೇ ಅದನ್ನು ಸರಿಯಾದ ಜಾಗದಲ್ಲಿ ತೋರಿಸುತ್ತದೆ.</p></div>
+          <div class="opts">
+            <label class="field">ಮಾಧ್ಯಮ<select id="mkMed"><option value="kn">ಕನ್ನಡ (ಗುರುತು ಇಲ್ಲ)</option><option value="en">English (en-)</option><option value="mr">ಮರಾಠಿ (mr-)</option><option value="ur">ಉರ್ದು (ur-)</option></select></label>
+            <label class="field">ದಾಖಲೆ<select id="mkType"><option value="lp">ಪಾಠಯೋಜನೆ</option><option value="ppt">PPT</option><option value="aj">ಅಂದಾಜು ಪತ್ರಿಕೆ</option><option value="doc">ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)</option></select></label>
+            <label class="field" id="mkDocW" hidden>ದಾಖಲೆಯ ಹೆಸರು<select id="mkDoc"></select></label>
+            <label class="field" id="mkClassW">ತರಗತಿ<select id="mkClass"></select></label>
+            <label class="field" id="mkDocClsW" hidden>ತರಗತಿ<select id="mkDocCls"></select></label>
+            <label class="field" id="mkDocSubjW" hidden>ವಿಷಯ<select id="mkDocSubj"></select></label>
+            <label class="field" id="mkDocPartW" hidden>ಭಾಗ<select id="mkDocPart"><option value="">ಇಲ್ಲ</option><option value="1">ಭಾಗ 1</option><option value="2">ಭಾಗ 2</option></select></label>
+            <label class="field" id="mkSubjW">ವಿಷಯ<select id="mkSubj"></select></label>
+            <label class="field" id="mkPartW">ಭಾಗ<select id="mkPart"><option value="1">ಭಾಗ 1 (ಪ್ರಥಮ ಸೆಮಿಸ್ಟರ್)</option><option value="2">ಭಾಗ 2 (ದ್ವಿತೀಯ ಸೆಮಿಸ್ಟರ್)</option></select></label>
+            <label class="field" id="mkUnitW">ಘಟಕ ಸಂಖ್ಯೆ<input type="number" id="mkUnit" min="1" max="40" value="1" style="width:90px"></label>
+            <label class="field" id="mkTitleW">PPT ಯ ಹೆಸರು (ಐಚ್ಛಿಕ)<input type="text" id="mkTitle" placeholder="ಉದಾ: ಶಿಲೆಗಳು" style="width:170px"></label>
+            <label class="field">ಫೈಲ್ ರೂಪ<select id="mkExt"></select></label>
+          </div>
+          <div class="fname"><code id="mkOut"></code><span class="grow"></span><button class="btn sm pri" id="mkCopy" type="button">ಹೆಸರು copy ಮಾಡಿ</button></div>
+          <p class="muted small" id="mkNote" style="margin:0"></p>
+        </div>
+
+        <div class="card">
+          <div class="pad sec-h"><h2>GitHub ನಲ್ಲಿರುವ ಫೈಲ್‌ಗಳು</h2><button class="btn sm" id="fRefresh" type="button"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 10-2.3 5.7M20 4v7h-7"/></svg>ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button></div>
+          <div id="fSummary" style="padding:0 20px 14px"></div>
+          <div class="tw"><table class="list" id="fTable"></table></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<dialog id="ov">
+  <div class="dh">
+    <h3 id="ovTitle">PowerPoint ಮುನ್ನೋಟ</h3>
+    <div class="pager">
+      <div class="seg" id="ovSrc"><button type="button" data-s="office" class="on">ಮುನ್ನೋಟ 1</button><button type="button" data-s="google">ಮುನ್ನೋಟ 2</button></div>
+      <button class="btn sm pri" type="button" id="ovDl"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PowerPoint</button>
+      <button class="btn sm" type="button" id="ovClose">ಮುಚ್ಚಿ</button>
+    </div>
+  </div>
+  <iframe id="ovFrame" title="PowerPoint ಮುನ್ನೋಟ" style="display:block;width:100%;height:min(70vh,640px);border:0;background:var(--bg)"></iframe>
+  <p class="muted small" style="margin:0;padding:10px 18px">ಮುನ್ನೋಟದಲ್ಲಿ ಮೂಲ ಸ್ಲೈಡ್‌ಗಳು ಕಾಣುತ್ತವೆ. Download ಮಾಡಿದ ಫೈಲ್‌ನಲ್ಲಿ ಶಾಲೆಯ ಹೆಸರು ಸೇರಿರುತ್ತದೆ. ಒಂದು ಮುನ್ನೋಟ ತೆರೆಯದಿದ್ದರೆ ಇನ್ನೊಂದನ್ನು ಒತ್ತಿ.</p>
+</dialog>
+<dialog id="pv">
+  <div class="dh">
+    <h3 id="pvTitle">ಮುನ್ನೋಟ</h3>
+    <div class="pager">
+      <button class="btn sm" type="button" id="pvPrev" aria-label="ಹಿಂದಿನ ಪುಟ">‹</button>
+      <span id="pvInfo">–</span>
+      <button class="btn sm" type="button" id="pvNext" aria-label="ಮುಂದಿನ ಪುಟ">›</button>
+      <button class="btn sm pri" type="button" id="pvDl"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download</button>
+      <button class="btn sm" type="button" id="pvClose">ಮುಚ್ಚಿ</button>
+    </div>
+  </div>
+  <div class="dstage"><canvas id="pvCanvas"></canvas></div>
+</dialog>
+<dialog id="cart" class="narrow">
+  <div class="dh"><h3>ಕಾರ್ಟ್</h3><button class="btn sm" type="button" id="cartClose">ಮುಚ್ಚಿ</button></div>
+  <div id="cartBody" class="dbody"></div>
+</dialog>
+<dialog id="ud" class="narrow">
+  <div class="dh"><h3 id="udTitle">ಶಿಕ್ಷಕರು</h3><button class="btn sm" type="button" id="udClose">ಮುಚ್ಚಿ</button></div>
+  <div class="dbody" style="padding:18px;display:grid;gap:18px">
+    <div><h3 class="h3">ಖರೀದಿಗಳು</h3><div id="udPacks" class="cl"></div></div>
+    <div class="addp"><h3 class="h3">ಪ್ಯಾಕ್ ಸೇರಿಸಿ (ನೇರವಾಗಿ / ಉಚಿತ)</h3>
+      <div class="opts">
+        <label class="field">ಪ್ಯಾಕ್<select id="upType"></select></label>
+        <label class="field">ಮಾಧ್ಯಮ<select id="upMed"></select></label>
+        <label class="field" id="upClsW">ತರಗತಿ<select id="upCls"></select></label>
+        <label class="field" id="upSubjW">ವಿಷಯ<select id="upSubj"></select></label>
+        <label class="field" id="upDocW">ದಾಖಲೆ<select id="upDoc"></select></label>
+        <label class="field">ಅವಧಿ<input type="date" id="upExp"></label>
+        <button class="btn pri" type="button" id="upAdd">ಸೇರಿಸಿ</button>
+      </div></div>
+    <div><h3 class="h3">ಶಾಲೆಯ ವಿವರ</h3><form class="form" id="udForm" novalidate></form></div>
+  </div>
+</dialog>
+
+<div class="auth" id="auth" hidden>
+  <div class="auth-in">
+    <div class="auth-card">
+      <div class="brand dark"><span class="mk"><svg viewBox="0 0 24 24"><path d="M2 5.5C4.5 4 8 4 12 6c4-2 7.5-2 10-.5V19c-2.5-1.5-6-1.5-10 .5-4-2-7.5-2-10-.5z"/><path d="M12 6v13.5"/></svg></span><span><b>ಬೋಧನಾ ಮಿತ್ರ</b><small>ಶಿಕ್ಷಕರ ದಾಖಲೆ ಭಂಡಾರ</small></span></div>
+      <div class="seg" id="auTabs"><button type="button" data-t="login" class="on">ಲಾಗಿನ್</button><button type="button" data-t="reg">ಹೊಸ ನೋಂದಣಿ</button></div>
+      <p class="auerr" id="auErr" role="alert"></p>
+      <form class="form" id="auLogin" novalidate>
+        <label class="f">ಮೊಬೈಲ್ ಸಂಖ್ಯೆ<input type="tel" id="auMob" inputmode="numeric" maxlength="10" autocomplete="username"></label>
+        <label class="f">ಪಾಸ್‌ವರ್ಡ್<input type="password" id="auPw" autocomplete="current-password"></label>
+        <button class="btn pri" type="submit">ಲಾಗಿನ್</button>
+        <p class="small muted" style="margin:0">ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದರೆ <a id="auForgot" target="_blank" rel="noopener">WhatsApp ನಲ್ಲಿ ಸಂಪರ್ಕಿಸಿ</a>.</p>
+      </form>
+      <form class="form" id="auReg" novalidate hidden>
+        <p class="banner" id="auProfNote" hidden style="margin:0"><span>ನೋಂದಣಿ ಪೂರ್ಣವಾಗಿಲ್ಲ. ಶಾಲೆಯ ವಿವರ ತುಂಬಿ.</span></p>
+        <div class="row" id="auRegCred">
+          <label class="f">ಮೊಬೈಲ್ ಸಂಖ್ಯೆ *<input type="tel" id="rMob" inputmode="numeric" maxlength="10" autocomplete="username"></label>
+          <label class="f">ಪಾಸ್‌ವರ್ಡ್ * <small>(ಕನಿಷ್ಠ 6)</small><input type="password" id="rPw" autocomplete="new-password"></label>
+        </div>
+        <label class="f">ಶಿಕ್ಷಕರ ಹೆಸರು *<input type="text" id="rTeacher"></label>
+        <label class="f">ಶಾಲೆಯ ಪೂರ್ಣ ಹೆಸರು * <small>(ಎಲ್ಲಾ download ಗಳಲ್ಲಿ ಮುದ್ರಣವಾಗುತ್ತದೆ)</small><input type="text" id="rName" placeholder="ಸರ್ಕಾರಿ ಹಿರಿಯ ಪ್ರಾಥಮಿಕ ಶಾಲೆ, ..."></label>
+        <div class="row">
+          <label class="f">UDISE ಕೋಡ್<input type="text" id="rUdise" inputmode="numeric"></label>
+          <label class="f">ಗ್ರಾಮ / ಸ್ಥಳ<input type="text" id="rPlace"></label>
+        </div>
+        <div class="row">
+          <label class="f">ತಾಲ್ಲೂಕು<input type="text" id="rTaluk"></label>
+          <label class="f">ಜಿಲ್ಲೆ<input type="text" id="rDist"></label>
+        </div>
+        <label class="f">ಮಾಧ್ಯಮ<select id="rMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option></select></label>
+        <label class="check"><input type="checkbox" id="rOk"> ಶಾಲೆಯ ಹೆಸರು ಸರಿಯಾಗಿದೆ. ನೋಂದಣಿ ನಂತರ ಬದಲಿಸಲು ಆಗುವುದಿಲ್ಲ ಎಂದು ತಿಳಿದಿದೆ.</label>
+        <button class="btn pri" type="submit">ನೋಂದಣಿ ಮಾಡಿ</button>
+      </form>
+    </div>
+    <div class="auth-card prices" id="auPrices"></div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ============================================================
+   ⚙️ ಸೆಟ್ಟಿಂಗ್‌ಗಳು — ನೀವು ಬದಲಿಸಬೇಕಾದದ್ದು ಇಲ್ಲಿ ಮಾತ್ರ (README ನೋಡಿ)
+   firebase.apiKey ಖಾಲಿ ಇದ್ದರೆ: login ಇಲ್ಲ, ಎಲ್ಲವೂ ಎಲ್ಲರಿಗೂ ತೆರೆದಿರುತ್ತದೆ (ಹಳೆಯ ರೀತಿ)
+   ============================================================ */
+const CONFIG = {
+  firebase: { apiKey: '', authDomain: '', projectId: '', appId: '' },   // Firebase → Project settings → Your apps → Config
+  worker: '',          // Cloudflare Worker ವಿಳಾಸ, ಉದಾ: 'https://mitra-files.withyou00.workers.dev'
+  admin: '',           // ನಿಮ್ಮ (admin) ಮೊಬೈಲ್ ಸಂಖ್ಯೆ, 10 ಅಂಕಿ
+  upi: '',             // ಹಣ ಬರಬೇಕಾದ UPI ID, ಉದಾ: '98xxxxxxxx@ybl'
+  upiName: 'ಬೋಧನಾ ಮಿತ್ರ',
+  whatsapp: '',        // ಆರ್ಡರ್ ಬರಬೇಕಾದ WhatsApp ಸಂಖ್ಯೆ, 91 ಸೇರಿಸಿ, ಉದಾ: '9198xxxxxxxx'
+  prices: { lp: 99, ppt: 150, aj: 50, doc: 50, sub: 200, cls: 500, sch: 1000 }
+};
+const PAID = !!CONFIG.firebase.apiKey;
+const LOGIN_DOMAIN = 'bodhana-mitra.in';     // ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು login ಗುರುತಾಗಿ ಬಳಸಲು (ಬದಲಿಸಬೇಡಿ)
+
+/* ============================================================
+   PDF ತಯಾರಿಕೆ — ಕನ್ನಡ ಸರಿಯಾಗಿ ಬರಲು canvas ನಲ್ಲಿ ಬರೆದು ಚಿತ್ರವಾಗಿ ಸೇರಿಸಲಾಗುತ್ತದೆ
+   ============================================================ */
+/* ಪಾಠಯೋಜನೆ PDF ನ ಶೀರ್ಷಿಕೆಗಳು — ಪಾಠಯೋಜನೆಯ ಭಾಷೆಯಲ್ಲೇ */
+const LANG = {
+  kn: { unit: 'ಪಾಠ / ಘಟಕ', subject: 'ವಿಷಯ', cls: 'ತರಗತಿ', start: 'ಪ್ರಾರಂಭ ದಿನಾಂಕ', end: 'ಮುಕ್ತಾಯ ದಿನಾಂಕ', obj: 'ನಿರ್ದಿಷ್ಟ ಉದ್ದೇಶಗಳು',
+    cols: ['5E ಹಂತ', 'ಕಲಿಕಾಂಶಗಳು', 'ಚಟುವಟಿಕೆಗಳು', 'ಕಲಿಕೋಪಕರಣಗಳು', 'ಮೌಲ್ಯಮಾಪನ', 'ಶಿಕ್ಷಕರ ಸ್ವ-ಅವಲೋಕನ', 'ದಿನಾಂಕ'],
+    content: 'ಕಲಿಕಾಂಶ', activity: 'ಚಟುವಟಿಕೆ', teacher: 'ಶಿಕ್ಷಕರ ಚಟುವಟಿಕೆ', student: 'ವಿದ್ಯಾರ್ಥಿ ಚಟುವಟಿಕೆ',
+    period: 'ಅವಧಿ', date: 'ದಿನಾಂಕ', part: 'ಭಾಗ', tsig: 'ಶಿಕ್ಷಕರ ಸಹಿ', hsig: 'ಮುಖ್ಯ ಶಿಕ್ಷಕರ ಸಹಿ', ord: c => c + 'ನೇ' },
+  hi: { unit: 'पाठ / घटक', subject: 'विषय', cls: 'कक्षा', start: 'प्रारंभ दिनांक', end: 'समाप्ति दिनांक', obj: 'विशिष्ट उद्देश्य',
+    cols: ['5E चरण', 'अधिगम बिंदु', 'गतिविधियाँ', 'शिक्षण सामग्री', 'मूल्यांकन', 'शिक्षक का आत्मावलोकन', 'दिनांक'],
+    content: 'अधिगम बिंदु', activity: 'गतिविधि', teacher: 'शिक्षक गतिविधि', student: 'छात्र गतिविधि',
+    period: 'कालांश', date: 'दिनांक', part: 'भाग', tsig: 'शिक्षक के हस्ताक्षर', hsig: 'प्रधानाध्यापक के हस्ताक्षर', ord: c => c + 'वीं' },
+  mr: { unit: 'पाठ / घटक', subject: 'विषय', cls: 'इयत्ता', start: 'प्रारंभ दिनांक', end: 'समाप्ती दिनांक', obj: 'विशिष्ट उद्दिष्टे',
+    cols: ['5E टप्पा', 'अध्ययन घटक', 'उपक्रम', 'शैक्षणिक साहित्य', 'मूल्यमापन', 'शिक्षकाचे स्व-अवलोकन', 'दिनांक'],
+    content: 'अध्ययन घटक', activity: 'कृती', teacher: 'शिक्षकाची कृती', student: 'विद्यार्थ्यांची कृती',
+    period: 'तासिका', date: 'दिनांक', part: 'भाग', tsig: 'शिक्षकाची स्वाक्षरी', hsig: 'मुख्याध्यापकांची स्वाक्षरी', ord: c => c + 'वी' },
+  en: { unit: 'Lesson / Unit', subject: 'Subject', cls: 'Class', start: 'Start date', end: 'End date', obj: 'Specific Objectives',
+    cols: ['5E Stage', 'Learning Points', 'Activities', 'Teaching Aids', 'Evaluation', "Teacher's Reflection", 'Date'],
+    content: 'Learning points', activity: 'Activity', teacher: "Teacher's activity", student: "Students' activity",
+    period: 'Period', date: 'Date', part: 'Part', tsig: "Teacher's signature", hsig: "Head Teacher's signature",
+    ord: c => c + ({ 1: 'st', 2: 'nd', 3: 'rd' }[c] || 'th') }
+};
+const langOf = lp => LANG[lp.lang] || LANG.kn;
+const AJ_LANG = {
+  kn: { title: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', sem: 'ಸೆಮಿಸ್ಟರ್', all: 'ಎಲ್ಲಾ ವಿಷಯಗಳು', teacher: 'ಶಿಕ್ಷಕರು', done: 'ಸಾಗಿದ ಘಟಕಗಳು',
+    cols: ['ತಿಂಗಳು', 'ವಿಷಯ', 'ಬೋಧಿಸಬೇಕಾದ ಘಟಕಗಳು', 'ಅವಧಿ', 'ಸಾಗಿದೆ', 'ಸಾಗಿಲ್ಲ', 'ಸಾಗದಿದ್ದರೆ ಕಾರಣ', 'ಕೈಗೊಂಡ ಕ್ರಮಗಳು', 'ಮೌಲ್ಯಮಾಪನ'] },
+  en: { title: 'Annual Teaching Plan', sem: 'Semester', all: 'All subjects', teacher: 'Teacher', done: 'Units completed',
+    cols: ['Month', 'Subject', 'Units to be taught', 'Periods', 'Done', 'Not done', 'Reason if not done', 'Action taken', 'Evaluation'] },
+  mr: { title: 'अंदाजपत्रक', sem: 'सत्र', all: 'सर्व विषय', teacher: 'शिक्षक', done: 'पूर्ण घटक',
+    cols: ['महिना', 'विषय', 'शिकवायचे घटक', 'तासिका', 'पूर्ण', 'अपूर्ण', 'अपूर्ण असल्यास कारण', 'केलेली कार्यवाही', 'मूल्यमापन'] }
+};
+
+const PM = (() => {
+  const { PDFDocument, rgb } = PDFLib;
+  const F = '"Anek Kannada","Anek Devanagari","Noto Sans Kannada","Noto Sans Devanagari","Tunga","Nirmala UI",sans-serif';
+  const GREEN = '#17583f';
+  const toPng = c => new Promise((res, rej) => c.toBlob(b => b ? b.arrayBuffer().then(a => res(new Uint8Array(a))) : rej(new Error('canvas')), 'image/png'));
+  const s = v => v == null ? '' : String(v);
+
+  function wrap(ctx, text, maxW) {
+    const out = [];
+    for (const para of s(text).split('\n')) {
+      let cur = '';
+      for (const w of para.split(/\s+/).filter(Boolean)) {
+        const t = cur ? cur + ' ' + w : w;
+        if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t;
+      }
+      out.push(cur);
+    }
+    return out.length ? out : [''];
+  }
+
+  class Flow {
+    constructor({ w = 595, h = 842, top = 84, bottom = 44, side = 34 } = {}) {
+      Object.assign(this, { W: w, H: h, top, bottom, left: side, right: side, S: 2.4, pages: [] });
+      this.newPage();
+    }
+    get cw() { return this.W - this.left - this.right; }
+    newPage() {
+      const c = document.createElement('canvas'); c.width = this.W * this.S; c.height = this.H * this.S;
+      const ctx = c.getContext('2d'); ctx.scale(this.S, this.S);
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, this.W, this.H); ctx.textBaseline = 'alphabetic';
+      this.ctx = ctx; this.pages.push(c); this.y = this.top;
+    }
+    ensure(h) { if (this.y + h > this.H - this.bottom) this.newPage(); }
+    text(t, { size = 10.5, weight = 400, color = '#111', indent = 0, gap = 3, lh = 1.6, width } = {}) {
+      this.ctx.font = `${weight} ${size}px ${F}`;
+      for (const l of wrap(this.ctx, t, (width || this.cw) - indent)) {
+        this.ensure(size * lh);
+        this.ctx.font = `${weight} ${size}px ${F}`; this.ctx.fillStyle = color;
+        this.ctx.fillText(l, this.left + indent, this.y + size); this.y += size * lh;
+      }
+      this.y += gap;
+    }
+    /* one line of label:value pairs spread across the width */
+    infoRow(pairs, size = 10.5) {
+      this.ensure(size * 2);
+      const ctx = this.ctx, colW = this.cw / pairs.length;
+      pairs.forEach(([k, v], i) => {
+        const x = this.left + i * colW;
+        ctx.font = `700 ${size}px ${F}`; ctx.fillStyle = '#111'; ctx.fillText(k + ' : ', x, this.y + size);
+        const kw = ctx.measureText(k + ' : ').width;
+        ctx.font = `400 ${size}px ${F}`;
+        if (v) ctx.fillText(v, x + kw, this.y + size);
+        else { ctx.strokeStyle = '#777'; ctx.lineWidth = .6; ctx.beginPath(); ctx.moveTo(x + kw, this.y + size + 2); ctx.lineTo(x + colW - 14, this.y + size + 2); ctx.stroke(); }
+      });
+      this.y += size * 1.9;
+    }
+    twoCol(items, { size = 10, start = 1 } = {}) {
+      const ctx = this.ctx, gap = 18, colW = (this.cw - gap) / 2, lh = size * 1.55, half = Math.ceil(items.length / 2);
+      ctx.font = `400 ${size}px ${F}`;
+      for (let i = 0; i < half; i++) {
+        const L = wrap(ctx, `${i + start}. ${items[i]}`, colW - 6);
+        const R = items[i + half] != null ? wrap(ctx, `${i + half + start}. ${items[i + half]}`, colW - 6) : [];
+        const h = Math.max(L.length, R.length) * lh;
+        this.ensure(h);
+        ctx.font = `400 ${size}px ${F}`; ctx.fillStyle = '#111';
+        L.forEach((l, j) => ctx.fillText(l, this.left, this.y + size + j * lh));
+        R.forEach((l, j) => ctx.fillText(l, this.left + colW + gap, this.y + size + j * lh));
+        this.y += h + 2;
+      }
+      this.y += 4;
+    }
+    table(fr, head, rows, { fs = 9, headFill = '#e3efe9', firstBold = false, lhf = 1.55, pad = 4.5 } = {}) {
+      const cols = fr.map(f => f * this.cw), lh = fs * lhf;
+      const cell = (t) => Array.isArray(t) ? t : [{ t: s(t) }];   // a cell is a list of {t, b}
+      const measure = (cells, bold) => {
+        const wr = cells.map((c, i) => cell(c).flatMap(part => {
+          this.ctx.font = `${bold || part.b ? 700 : 400} ${fs}px ${F}`;
+          return wrap(this.ctx, part.t, cols[i] - pad * 2).map(l => ({ l, b: bold || part.b }));
+        }));
+        return { wr, h: Math.max(...wr.map(l => l.length)) * lh + pad * 2 };
+      };
+      const draw = (m, fill, boldFirstCol) => {
+        const ctx = this.ctx; let x = this.left;
+        m.wr.forEach((ls, i) => {
+          if (fill) { ctx.fillStyle = fill; ctx.fillRect(x, this.y, cols[i], m.h); }
+          ctx.strokeStyle = '#4a4a4a'; ctx.lineWidth = .6; ctx.strokeRect(x, this.y, cols[i], m.h);
+          ls.forEach((o, j) => {
+            ctx.font = `${o.b || (boldFirstCol && i === 0) ? 700 : 400} ${fs}px ${F}`; ctx.fillStyle = '#111';
+            ctx.fillText(o.l, x + pad, this.y + pad + fs + j * lh);
+          });
+          x += cols[i];
+        });
+        this.y += m.h;
+      };
+      const hm = head ? measure(head, true) : null;
+      if (hm) { this.ensure(hm.h + 40); draw(hm, headFill); }
+      for (const r of rows) {
+        const m = measure(r, false);
+        if (this.y + m.h > this.H - this.bottom) { this.newPage(); if (head) draw(measure(head, true), headFill); }
+        draw(m, null, firstBold);
+      }
+      this.y += 8;
+    }
+    signatures(names = [], compact = false, lab = LANG.kn) {
+      if (compact) {                          // ಕೋಷ್ಟಕದ ಕೆಳಗೆ ಒಂದೇ ಸಾಲು: ಪುಟ ಬದಲಾಗದಂತೆ
+        this.ensure(24); const ctx = this.ctx, y = this.y + 16;
+        ctx.font = `600 9.5px ${F}`; ctx.fillStyle = '#111';
+        const L = lab.tsig + ': ' + (names[0] ? `(${names[0]})` : ''), R = lab.hsig + ': ' + (names[1] ? `(${names[1]})` : '');
+        ctx.fillText(L, this.left, y); ctx.fillText(R, this.W - this.right - ctx.measureText(R).width - 110, y);
+        ctx.strokeStyle = '#555'; ctx.lineWidth = .6; ctx.beginPath();
+        const lx = this.left + ctx.measureText(L).width + 6; ctx.moveTo(lx, y + 2); ctx.lineTo(lx + 110, y + 2);
+        const rx = this.W - this.right - 106; ctx.moveTo(rx, y + 2); ctx.lineTo(this.W - this.right, y + 2); ctx.stroke();
+        this.y += 24; return;
+      }
+      this.ensure(56); this.y += 30;
+      const ctx = this.ctx, w = 170, l = this.left, r = this.W - this.right - w;
+      ctx.strokeStyle = '#333'; ctx.lineWidth = .7; ctx.fillStyle = '#111';
+      [[l, lab.tsig, names[0]], [r, lab.hsig, names[1]]].forEach(([x, t, n]) => {
+        ctx.beginPath(); ctx.moveTo(x, this.y); ctx.lineTo(x + w, this.y); ctx.stroke();
+        ctx.font = `600 10px ${F}`; ctx.fillText(t, x + (w - ctx.measureText(t).width) / 2, this.y + 14);
+        if (n) { ctx.font = `400 9.5px ${F}`; ctx.fillText(`(${n})`, x + (w - ctx.measureText(`(${n})`).width) / 2, this.y + 28); }
+      });
+      this.y += 34;
+    }
+    async toPdf() {
+      const doc = await PDFDocument.create();
+      for (const c of this.pages) {
+        const img = await doc.embedPng(await toPng(c));
+        doc.addPage([this.W, this.H]).drawImage(img, { x: 0, y: 0, width: this.W, height: this.H });
+      }
+      return doc.save();
+    }
+  }
+
+  const clsTxt = (c, L = LANG.kn) => /^\d+$/.test(s(c)) ? L.ord(c) : s(c);
+  const subjTxt = (lp, L) => (lp.subjLabel || lp.subject) + (lp.part ? ` (${L.part} ${lp.part})` : '');
+  const activity = (r, L) => r.activity != null ? [{ t: s(r.activity) }]
+    : [{ t: L.teacher + ':', b: true }, { t: s(r.teacher) }, { t: L.student + ':', b: true }, { t: s(r.student) }];
+
+  /* ಘಟಕವಾರು: ನಿಮ್ಮ Excel ಮಾದರಿಯಂತೆಯೇ (A4 ಅಡ್ಡ) */
+  async function lessonUnit(lp, units, school) {
+    const L = langOf(lp), f = new Flow({ w: 842, h: 595, top: 70, bottom: 30, side: 26 });
+    units.forEach((u, i) => {
+      if (i) f.newPage();
+      f.text(`${L.unit} ${u.no} : ${u.title}`, { size: 13, weight: 700, color: GREEN, gap: 0 });
+      f.infoRow([[L.subject, subjTxt(lp, L)], [L.cls, clsTxt(lp.class, L)], [L.start, ''], [L.end, '']], 9.5);
+      if (u.objectives?.length) {
+        f.text(L.obj, { size: 10, weight: 700, gap: 0 });
+        f.twoCol(u.objectives, { size: 8.6 });
+      }
+      const R = lp.reflection !== false;
+      f.table([0.095, 0.11, 0.32, 0.13, 0.13, 0.155, 0.06], L.cols,
+        (u.rows || []).map(r => [r.stage, r.content, activity(r, L), r.materials, r.evaluation, R ? r.reflection : '', '']),
+        { fs: 7.9, firstBold: true, lhf: 1.45, pad: 3.5 });
+      f.signatures([school.teacher, school.hm], true, L);
+    });
+    return f.toPdf();
+  }
+
+  /* ಅವಧಿವಾರು: ಪ್ರತಿ 5E ಹಂತ = ಒಂದು ಅವಧಿ (A4 ಉದ್ದ) */
+  async function lessonPeriod(lp, units, school) {
+    const L = langOf(lp), f = new Flow();
+    units.forEach((u, i) => {
+      if (i) f.newPage();
+      f.text(`${L.unit} ${u.no} : ${u.title}`, { size: 14, weight: 700, color: GREEN, gap: 2 });
+      f.infoRow([[L.subject, subjTxt(lp, L)], [L.cls, clsTxt(lp.class, L)]]);
+      if (u.objectives?.length) {
+        f.text(L.obj, { size: 11, weight: 700, gap: 1 });
+        u.objectives.forEach((o, j) => f.text(`${j + 1}. ${o}`, { size: 9.8, indent: 6, gap: 0 }));
+        f.y += 8;
+      }
+      (u.rows || []).forEach((r, j) => {
+        f.ensure(120);
+        const ctx = f.ctx, y0 = f.y;
+        ctx.fillStyle = '#e3efe9'; ctx.fillRect(f.left, y0, f.cw, 22);
+        ctx.font = `700 11px ${F}`; ctx.fillStyle = GREEN;
+        ctx.fillText(`${L.period} ${j + 1}  —  ${s(r.stage)}`, f.left + 8, y0 + 15);
+        ctx.font = `400 10px ${F}`; ctx.fillStyle = '#111';
+        const dt = L.date + ': ______________'; ctx.fillText(dt, f.left + f.cw - ctx.measureText(dt).width - 8, y0 + 15);
+        f.y += 28;
+        const kv = (k, v) => { if (!s(v)) return; f.text(k, { size: 10, weight: 700, gap: 0, indent: 6 }); f.text(v, { size: 10, indent: 18, gap: 4 }); };
+        kv(L.content, r.content);
+        if (r.activity != null) kv(L.activity, r.activity); else { kv(L.teacher, r.teacher); kv(L.student, r.student); }
+        kv(L.cols[3], r.materials); kv(L.cols[4], r.evaluation);
+        if (lp.reflection !== false) kv(L.cols[5], r.reflection);
+        else {                                  // ಖಾಲಿ: ಶಿಕ್ಷಕರು ಕೈಯಲ್ಲಿ ಬರೆಯಲು ಎರಡು ಗೆರೆಗಳು
+          f.ensure(52); f.text(L.cols[5], { size: 10, weight: 700, gap: 0, indent: 6 });
+          const c = f.ctx; c.strokeStyle = '#9a9a9a'; c.lineWidth = .6;
+          for (let l = 0; l < 2; l++) { f.y += 16; c.beginPath(); c.moveTo(f.left + 18, f.y); c.lineTo(f.left + f.cw, f.y); c.stroke(); }
+          f.y += 8;
+        }
+        f.y += 8;
+      });
+      f.signatures([school.teacher, school.hm], false, L);
+    });
+    return f.toPdf();
+  }
+
+  /* ಶಾಲೆಯ ಹೆಸರು ಮುದ್ರಣ */
+  async function textImg(lines) {
+    const S = 4, c = document.createElement('canvas'), ctx = c.getContext('2d');
+    let w = 0, h = 0;
+    const m = lines.map(l => { ctx.font = `${l.w || 400} ${l.s}px ${F}`; const tw = ctx.measureText(l.t).width, lh = l.s * 1.5; w = Math.max(w, tw); h += lh; return { ...l, tw, lh }; });
+    w = Math.ceil(w + 6); h = Math.ceil(h + 2);
+    c.width = w * S; c.height = h * S; ctx.scale(S, S); ctx.textBaseline = 'middle';
+    let y = 1;
+    for (const l of m) { ctx.font = `${l.w || 400} ${l.s}px ${F}`; ctx.fillStyle = l.c || '#111'; ctx.fillText(l.t, (w - l.tw) / 2, y + l.lh / 2); y += l.lh; }
+    return { bytes: await toPng(c), w, h };
+  }
+  async function wmImg(text) {
+    const S = 2, size = 46, p = document.createElement('canvas').getContext('2d'); p.font = `700 ${size}px ${F}`;
+    const tw = p.measureText(text).width, th = size * 1.4, a = -30 * Math.PI / 180;
+    const W = Math.ceil(Math.abs(tw * Math.cos(a)) + Math.abs(th * Math.sin(a))) + 8, H = Math.ceil(Math.abs(tw * Math.sin(a)) + Math.abs(th * Math.cos(a))) + 8;
+    const c = document.createElement('canvas'); c.width = W * S; c.height = H * S;
+    const ctx = c.getContext('2d'); ctx.scale(S, S); ctx.translate(W / 2, H / 2); ctx.rotate(a);
+    ctx.font = `700 ${size}px ${F}`; ctx.fillStyle = GREEN; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(text, 0, 0);
+    return { bytes: await toPng(c), w: W, h: H };
+  }
+  const addrOf = sc => [sc.place, sc.taluk && 'ತಾ: ' + sc.taluk, sc.dist && 'ಜಿ: ' + sc.dist].filter(Boolean).join(', ');
+
+  async function stampPdf(bytes, sc, { backdrop = false } = {}) {
+    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const pages = doc.getPages(), n = pages.length, accent = rgb(0.09, 0.35, 0.25);
+    const sub = [addrOf(sc), sc.udise && 'UDISE: ' + sc.udise].filter(Boolean).join('   ·   ');
+    const hd = await textImg([{ t: sc.name, s: 19, w: 700, c: '#0f3d2c' }, ...(sub ? [{ t: sub, s: 10.5, c: '#333' }] : [])]);
+    const hImg = await doc.embedPng(hd.bytes);
+    let wImg, wd; if (sc.watermark) { wd = await wmImg(sc.name); wImg = await doc.embedPng(wd.bytes); }
+    for (let i = 0; i < n; i++) {
+      const p = pages[i], { width, height } = p.getSize(), k = Math.min(width, height) / 595;
+      if (wImg) { const dw = width * .8, dh = wd.h * dw / wd.w; p.drawImage(wImg, { x: (width - dw) / 2, y: (height - dh) / 2, width: dw, height: dh, opacity: .07 }); }
+      let dw = Math.min(hd.w * k, width * .86), dh = hd.h * dw / hd.w; const maxH = 44 * k; if (dh > maxH) { dw *= maxH / dh; dh = maxH; }
+      const y = height - 10 * k - dh;
+      if (backdrop) p.drawRectangle({ x: 0, y: y - 8 * k, width, height: dh + 18 * k, color: rgb(1, 1, 1), opacity: .94 });
+      p.drawImage(hImg, { x: (width - dw) / 2, y, width: dw, height: dh });
+      p.drawLine({ start: { x: width * .04, y: y - 4 * k }, end: { x: width * .96, y: y - 4 * k }, thickness: .8 * k, color: accent });
+      const parts = [sc.name, sc.year && 'ಶೈಕ್ಷಣಿಕ ವರ್ಷ ' + sc.year, `ಪುಟ ${i + 1} / ${n}`].filter(Boolean);
+      const ft = await textImg([{ t: parts.join('    |    '), s: 8.5, c: '#555' }]);
+      const fImg = await doc.embedPng(ft.bytes);
+      const fw = Math.min(ft.w * k, width * .9), fh = ft.h * fw / ft.w;
+      if (backdrop) p.drawRectangle({ x: 0, y: 4 * k, width, height: fh + 9 * k, color: rgb(1, 1, 1), opacity: .94 });
+      p.drawImage(fImg, { x: (width - fw) / 2, y: 8 * k, width: fw, height: fh });
+    }
+    return doc.save();
+  }
+
+
+  /* ಅಂದಾಜು ಪತ್ರಿಕೆ (ನಿಮ್ಮ Excel ಮಾದರಿ) */
+  async function andaju(sheet, rows, state, school, { blank, subject }) {
+    const A = AJ_LANG[sheet.lang] || AJ_LANG.kn, L = LANG[sheet.lang] || LANG.kn;
+    const f = new Flow({ w: 842, h: 595, top: 74, bottom: 34, side: 26 });
+    f.text(`${A.title} ${school.year || ''}`, { size: 14, weight: 700, color: GREEN, gap: 0 });
+    f.infoRow([[A.sem, sheet.sem], [L.cls, clsTxt(sheet.cls, L)], [L.subject, subject || A.all], [A.teacher, school.teacher || '']], 9.5);
+    let lastM = null, lastS = null;
+    const body = rows.map(r => {
+      const t = blank ? {} : (state[r.key] || {});
+      const m = r.month !== lastM ? r.month : ''; const sj = (r.month !== lastM || r.subject !== lastS) ? r.subject : '';
+      lastM = r.month; lastS = r.subject;
+      if (r.event) return [m, '', [{ t: r.text, b: true }], '', '', '', '', '', ''];
+      return [m, sj, r.unit, r.periods, t.s === 'done' ? '✓' : '', t.s === 'not' ? '✓' : '', t.reason || '', t.action || '', t.eval || ''];
+    });
+    f.table([0.085, 0.1, 0.25, 0.055, 0.06, 0.06, 0.135, 0.135, 0.12],
+      A.cols, body, { fs: 9, firstBold: true, lhf: 1.45, pad: 4 });
+    if (!blank) {
+      const u = rows.filter(r => !r.event), d = u.filter(r => state[r.key]?.s === 'done').length;
+      f.text(`${A.done}: ${d} / ${u.length}`, { size: 10, weight: 600, gap: 0 });
+    }
+    f.signatures([school.teacher, school.hm], true, L);
+    return f.toPdf();
+  }
+
+  /* upload ಮಾಡಿದ PDF: ಮೂಲ ಪುಟದ ಮೇಲೆ ಏನೂ ಮುಚ್ಚದೆ, ಮೇಲೆ-ಕೆಳಗೆ ಹೊಸ ಪಟ್ಟಿ ಸೇರಿಸಿ ಹೆಸರು */
+  async function stampUploaded(bytes, sc) {
+    const src = await PDFDocument.load(bytes, { ignoreEncryption: true });
+    const out = await PDFDocument.create();
+    const n = src.getPageCount();
+    const pages = await out.embedPdf(src, [...Array(n).keys()]);
+    const sub = [addrOf(sc), sc.udise && 'UDISE: ' + sc.udise].filter(Boolean).join('   ·   ');
+    const hd = await textImg([{ t: sc.name, s: 19, w: 700, c: '#0f3d2c' }, ...(sub ? [{ t: sub, s: 10.5, c: '#333' }] : [])]);
+    const hImg = await out.embedPng(hd.bytes);
+    for (let i = 0; i < n; i++) {
+      const ep = pages[i], w = ep.width, h = ep.height, k = Math.min(w, h) / 595;
+      const top = Math.round(54 * k), bot = Math.round(22 * k);
+      const p = out.addPage([w, h + top + bot]);
+      p.drawRectangle({ x: 0, y: 0, width: w, height: h + top + bot, color: rgb(1, 1, 1) });
+      p.drawPage(ep, { x: 0, y: bot, width: w, height: h });
+      let dw = Math.min(hd.w * k, w * .9), dh = hd.h * dw / hd.w; const maxH = top - 12 * k; if (dh > maxH) { dw *= maxH / dh; dh = maxH; }
+      p.drawImage(hImg, { x: (w - dw) / 2, y: bot + h + (top - dh) / 2, width: dw, height: dh });
+      p.drawLine({ start: { x: 0, y: bot + h }, end: { x: w, y: bot + h }, thickness: 1.2 * k, color: rgb(0.09, 0.35, 0.25) });
+      const parts = [sc.name, sc.year && 'ಶೈಕ್ಷಣಿಕ ವರ್ಷ ' + sc.year, `ಪುಟ ${i + 1} / ${n}`].filter(Boolean);
+      const ft = await textImg([{ t: parts.join('    |    '), s: 8.5, c: '#555' }]);
+      const fImg = await out.embedPng(ft.bytes);
+      let fw = Math.min(ft.w * k, w * .9), fh = ft.h * fw / ft.w; if (fh > bot - 4 * k) { fw *= (bot - 4 * k) / fh; fh = bot - 4 * k; }
+      p.drawImage(fImg, { x: (w - fw) / 2, y: (bot - fh) / 2, width: fw, height: fh });
+    }
+    return out.save();
+  }
+
+  /* PowerPoint: ಪ್ರತಿ ಸ್ಲೈಡ್‌ನ ಕೆಳಭಾಗದಲ್ಲಿ ಶಾಲೆಯ ಹೆಸರಿನ ಪಟ್ಟಿ (ಶೀರ್ಷಿಕೆಗಳನ್ನು ಮುಚ್ಚುವುದಿಲ್ಲ) */
+  const xesc = t => s(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  async function stampPptx(bytes, sc) {
+    const zip = await JSZip.loadAsync(bytes);
+    const pres = zip.file('ppt/presentation.xml') ? await zip.file('ppt/presentation.xml').async('string') : '';
+    const m = pres.match(/<p:sldSz[^>]*?cx="(\d+)"[^>]*?cy="(\d+)"/);
+    const cx = m ? +m[1] : 12192000, cy = m ? +m[2] : 6858000, h = Math.round(cy * .055);
+    const text = [sc.name, addrOf(sc), sc.udise && 'UDISE: ' + sc.udise].filter(Boolean).join('   |   ');
+    const box = `<p:sp><p:nvSpPr><p:cNvPr id="90001" name="SchoolName"/><p:cNvSpPr txBox="1"/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="${cy - h}"/><a:ext cx="${cx}" cy="${h}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"><a:alpha val="90000"/></a:srgbClr></a:solidFill></p:spPr><p:txBody><a:bodyPr wrap="square" lIns="91440" tIns="9144" rIns="91440" bIns="9144" anchor="ctr"><a:normAutofit/></a:bodyPr><a:lstStyle/><a:p><a:pPr algn="ctr"/><a:r><a:rPr lang="kn-IN" sz="1200" b="1"><a:solidFill><a:srgbClr val="0F3D2C"/></a:solidFill><a:latin typeface="Nirmala UI"/><a:cs typeface="Nirmala UI"/></a:rPr><a:t>${xesc(text)}</a:t></a:r></a:p></p:txBody></p:sp>`;
+    for (const n of Object.keys(zip.files).filter(n => /^ppt\/slides\/slide\d+\.xml$/.test(n))) {
+      const x = await zip.file(n).async('string'), i = x.lastIndexOf('</p:spTree>');
+      if (i >= 0) zip.file(n, x.slice(0, i) + box + x.slice(i));
+    }
+    return zip.generateAsync({ type: 'uint8array' });
+  }
+
+  /* ಯಾವುದೇ Excel → PDF ಕೋಷ್ಟಕ (ಕ್ರಿಯಾ ಯೋಜನೆ ಮುಂತಾದ ಹೊಸ ದಾಖಲೆಗಳಿಗೆ) */
+  async function excelDoc(sheets, title, sub) {
+    let f = null;
+    for (const sh of sheets) {
+      const used = [];
+      for (let k = 1; k <= sh.maxC; k++) for (let r = 1; r <= sh.maxR; r++) if (sh.raw(r, k)) { used.push(k); break; }
+      if (!used.length) continue;
+      const rowVals = r => used.map(k => sh.raw(r, k));
+      const minHead = Math.max(2, Math.ceil(used.length * .5));
+      let hr = 0;
+      for (let r = 1; r <= sh.maxR && !hr; r++) if (rowVals(r).filter(Boolean).length >= minHead) hr = r;
+      const land = used.length >= 5;
+      if (!f) f = new Flow(land ? { w: 842, h: 595, top: 74, bottom: 34, side: 26 } : { top: 84 }); else f.newPage();
+      f.text(title, { size: 14, weight: 700, color: GREEN, gap: 0 });
+      if (sub) f.text(sub, { size: 10, color: '#333', gap: 4 });
+      const len = used.map(k => { let t = 0, n = 0; for (let r = hr || 1; r <= sh.maxR; r++) { const v = sh.raw(r, k); if (v && rowVals(r).filter(Boolean).length > 1) { t += Math.min(v.length, 60); n++; } } return Math.max(4, Math.min(40, n ? t / n : 4)); });
+      const tot = len.reduce((a, b) => a + b, 0), fr = len.map(x => x / tot);
+      let head = null, block = [];
+      const flush = () => { if (head || block.length) f.table(fr, head, block, { fs: used.length > 8 ? 8 : 9, lhf: 1.45, pad: 4 }); head = null; block = []; };
+      for (let r = 1; r <= sh.maxR; r++) {
+        const vals = rowVals(r), n = vals.filter(Boolean).length;
+        if (!n) continue;
+        if (!hr || r < hr) {                       // ಕೋಷ್ಟಕದ ಮೇಲಿನ ಶೀರ್ಷಿಕೆ ಸಾಲುಗಳು (ಶಾಲೆಯ ಹೆಸರಿನ ಸಾಲು ಬಿಡಲಾಗುತ್ತದೆ)
+          const t = vals.filter(Boolean).join('     ');
+          if (!/ಶಾಲೆ|ಶಾಲಾ/.test(t)) f.text(t, { size: 10.5, weight: 600, gap: 2 });
+          continue;
+        }
+        if (r === hr) { head = vals; continue; }
+        const k0 = used[vals.findIndex(Boolean)], spans = n === 1 && sh.isMergedChild(r, used[used.indexOf(k0) + 1]);
+        if (spans) { flush(); f.text(vals.find(Boolean), { size: 10.5, weight: 700, gap: 2 }); continue; }
+        block.push(vals);
+      }
+      flush();
+    }
+    if (!f) throw new Error('Excel ಖಾಲಿಯಾಗಿದೆ.');
+    return f.toPdf();
+  }
+
+  /* PDF → PowerPoint: ಪ್ರತಿ ಪುಟ ಒಂದು ಸ್ಲೈಡ್ (ಚಿತ್ರವಾಗಿ), ಮೇಲೆ ಶಾಲೆಯ ಹೆಸರಿನ ಬದಲಿಸಬಹುದಾದ text box */
+  let pptxLib = null;
+  const loadPptxLib = () => pptxLib ||= new Promise((res, rej) => {
+    if (window.PptxGenJS) return res();
+    const sc = document.createElement('script');
+    sc.src = 'https://cdn.jsdelivr.net/npm/pptxgenjs@4.0.1/dist/pptxgen.bundle.js';
+    sc.onload = res; sc.onerror = () => { pptxLib = null; rej(new Error('PowerPoint ತಯಾರಿಸುವ ಸಾಧನ ತೆರೆಯಲಿಲ್ಲ. Internet ನೋಡಿ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.')); };
+    document.head.appendChild(sc);
+  });
+  async function pdfToPptx(bytes, sc, onPage) {
+    await loadPptxLib();
+    const pdf = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+    const first = (await pdf.getPage(1)).getViewport({ scale: 1 });
+    const W = 10, imgH = W * first.height / first.width, band = 0.55;
+    const pptx = new PptxGenJS();
+    pptx.defineLayout({ name: 'BM', width: W, height: +(imgH + band).toFixed(3) });
+    pptx.layout = 'BM';
+    const sub = [addrOf(sc), sc.udise && 'UDISE: ' + sc.udise].filter(Boolean).join('   ·   ');
+    for (let i = 1; i <= pdf.numPages; i++) {
+      onPage && onPage(i, pdf.numPages);
+      const page = await pdf.getPage(i), vp0 = page.getViewport({ scale: 1 });
+      const vp = page.getViewport({ scale: Math.min(2.2, 1600 / vp0.width) });
+      const cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height;
+      const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+      await page.render({ canvasContext: ctx, viewport: vp, canvas: cv }).promise;
+      const slide = pptx.addSlide();
+      slide.background = { color: 'FFFFFF' };
+      slide.addText([
+        { text: sc.name, options: { fontSize: 16, bold: true, color: '0F3D2C', breakLine: !!sub } },
+        ...(sub ? [{ text: sub, options: { fontSize: 9, color: '444444' } }] : [])
+      ], { x: 0, y: 0, w: W, h: band, align: 'center', valign: 'middle', fontFace: 'Nirmala UI', margin: 2 });
+      slide.addShape(pptx.ShapeType.line, { x: 0, y: band, w: W, h: 0, line: { color: '17583F', width: 1 } });
+      const h = W * vp.height / vp.width;
+      slide.addImage({ data: cv.toDataURL('image/jpeg', 0.86), x: 0, y: band, w: W, h: Math.min(h, imgH) });
+    }
+    return pptx.write({ outputType: 'uint8array' });
+  }
+
+  return { lessonUnit, lessonPeriod, andaju, excelDoc, stampPdf, stampUploaded, stampPptx, pdfToPptx };
+})();
+
+/* ============================================================
+   Excel (.xlsx) ಓದುವಿಕೆ — ಹೆಚ್ಚುವರಿ ಲೈಬ್ರರಿ ಇಲ್ಲದೆ
+   ============================================================ */
+const XL = (() => {
+  const P = s => new DOMParser().parseFromString(s, 'application/xml');
+  const tx = el => [...el.getElementsByTagName('t')].filter(t => t.parentNode.nodeName !== 'rPh').map(t => t.textContent).join('');
+  const colNum = c => [...c].reduce((a, ch) => a * 26 + ch.charCodeAt(0) - 64, 0);
+  const ref = r => { const m = /^([A-Z]+)(\d+)$/.exec(r); return [+m[2], colNum(m[1])]; };
+  const clean = v => String(v).replace(/ø/g, 'ೃ').replace(/[ \t\r\n ]+/g, ' ').trim();
+  async function read(bytes) {
+    const zip = await JSZip.loadAsync(bytes);
+    const file = async p => { const f = zip.file(p); return f ? P(await f.async('string')) : null; };
+    const ssDoc = await file('xl/sharedStrings.xml');
+    const ss = ssDoc ? [...ssDoc.getElementsByTagName('si')].map(tx) : [];
+    const wb = await file('xl/workbook.xml'), rels = await file('xl/_rels/workbook.xml.rels');
+    const rel = {}; for (const r of rels.getElementsByTagName('Relationship')) rel[r.getAttribute('Id')] = r.getAttribute('Target');
+    const sheets = [];
+    for (const sh of wb.getElementsByTagName('sheet')) {
+      const id = sh.getAttribute('r:id') || [...sh.attributes].find(a => a.localName === 'id')?.value;
+      let t = rel[id] || ''; t = t.startsWith('/') ? t.slice(1) : 'xl/' + t.replace(/^\.\//, '');
+      const d = await file(t); if (!d) continue;
+      const cells = {}; let maxR = 0, maxC = 0;
+      for (const c of d.getElementsByTagName('c')) {
+        const [r, k] = ref(c.getAttribute('r')), ty = c.getAttribute('t'), vEl = c.getElementsByTagName('v')[0];
+        let v = ty === 's' ? ss[+vEl?.textContent] : ty === 'inlineStr' ? tx(c) : vEl?.textContent;
+        if (v == null) continue; v = clean(v); if (!v) continue;
+        (cells[r] ||= {})[k] = v; maxR = Math.max(maxR, r); maxC = Math.max(maxC, k);
+      }
+      const merged = {};
+      for (const mc of d.getElementsByTagName('mergeCell')) {
+        const [a, b] = mc.getAttribute('ref').split(':'); if (!b) continue;
+        const [r1, c1] = ref(a), [r2, c2] = ref(b);
+        for (let r = r1; r <= r2; r++) for (let k = c1; k <= c2; k++) if (r !== r1 || k !== c1) merged[r + ':' + k] = [r1, c1];
+      }
+      sheets.push({
+        name: sh.getAttribute('name'), maxR, maxC,
+        raw: (r, k) => cells[r]?.[k] || '',
+        get(r, k) { const m = merged[r + ':' + k]; return m ? (cells[m[0]]?.[m[1]] || '') : (cells[r]?.[k] || ''); },
+        isMergedChild: (r, k) => !!merged[r + ':' + k]
+      });
+    }
+    return sheets;
+  }
+
+  /* ಪಾಠಯೋಜನೆ Excel → ಘಟಕಗಳು
+     ಘಟಕದ ಆರಂಭ: "ಪಾಠ / ಘಟಕ : ಹೆಸರು" ಅಥವಾ "ಘಟಕ 12 : ಹೆಸರು" (ಯಾವ ಕಾಲಂನಲ್ಲಾದರೂ)
+     5E ಕೋಷ್ಟಕದ ಕಾಲಂಗಳನ್ನು ಶೀರ್ಷಿಕೆಯ ಹೆಸರಿನಿಂದ ಗುರುತಿಸಲಾಗುತ್ತದೆ, ಸ್ಥಾನದಿಂದಲ್ಲ */
+  /* ಕನ್ನಡ, ಹಿಂದಿ, ಮರಾಠಿ, ಇಂಗ್ಲಿಷ್ — ಎಲ್ಲಾ ಭಾಷೆಯ ಪಾಠಯೋಜನೆ */
+  const SCHOOL_RE = /ಶಾಲೆ|ಶಾಲಾ|विद्यालय|पाठशाला|शाळा|school/i;
+  const isUnitCell = t => /^(ಪಾಠ|ಘಟಕ|ಅಧ್ಯಾಯ|पाठ|घटक|इकाई|अध्याय|प्रकरण|lesson|unit|chapter|topic)[^:：]{0,25}[:：]/i.test(t);
+  const isObjHead = t => t.length < 45 && /^(ನಿರ್ದಿಷ್ಟ|ಕಲಿಕಾ\s*ಉದ್ದೇಶ|विशिष्ट|अधिगम\s*उद्देश्य|उद्देश्य|उद्दिष्ट|specific|learning\s*objective|objective)/i.test(t);
+  const SKIP_OBJ = /^(ಪ್ರಾರಂಭ|ಮುಕ್ತಾಯ|ವಿಷಯ\s*[:：]|ತರಗತಿ\s*[:：]|ದಿನಾಂಕ|प्रारंभ|समाप्ति|समाप्ती|विषय\s*[:：]|कक्षा\s*[:：]|इयत्ता\s*[:：]|दिनांक|start|end\s*date|subject\s*[:：]|class\s*[:：]|date)/i;
+  const SUBJ_CELL = /^(ವಿಷಯ|विषय|subject)\s*[:：]\s*(.+)$/i;
+  function headerCols(cells) {
+    const c = {};
+    for (const [k, v] of cells) {
+      if (v.length > 34) return null;
+      if (/ಅವಲೋಕನ|ಪ್ರತಿಫಲನ|अवलोकन|आत्म|चिंतन|reflect|self/i.test(v)) c.refl = k;
+      else if (/5E|ಹಂತ|चरण|टप्पा|stage|phase|step/i.test(v)) c.stage = k;
+      else if (/ಕಲಿಕಾಂಶ|ಕಲಿಕಾ\s*ಅಂಶ|ಉಪ\s*ಘಟಕ|अधिगम|बिंदु|विषय\s*वस्तु|आशय|अध्ययन\s*घटक|content|learning\s*point|concept/i.test(v)) c.content = k;
+      else if (/ಚಟುವಟಿಕೆ|गतिविधि|क्रिया|कृती|उपक्रम|activit/i.test(v)) c.act = k;
+      else if (/ಕಲಿಕೋಪಕರಣ|ಉಪಕರಣ|ಸಾಮಗ್ರಿ|सामग्री|साहित्य|साधन|material|resource|aid|tlm/i.test(v)) c.mat = k;
+      else if (/ಮೌಲ್ಯಮಾಪನ|मूल्यांकन|मूल्यमापन|evaluat|assess/i.test(v)) c.eval = k;
+    }
+    return c.stage && c.act ? c : null;
+  }
+  const SPLIT_RE = /(?:ಶಿಕ್ಷಕರ\s*ಚಟುವಟಿಕೆ|शिक्षक\s*(?:की\s*)?(?:गतिविधि(?:याँ|यां)?|क्रिया(?:एँ)?)|शिक्षकाची\s*कृती|शिक्षक\s*कृती|teacher'?s?\s*activit(?:y|ies))\s*[:：]\s*([\s\S]*?)\s*(?:ವಿದ್ಯಾರ್ಥಿ(?:ಗಳ)?\s*ಚಟುವಟಿಕೆ|(?:छात्र|विद्यार्थी)(?:ों)?\s*(?:की\s*)?(?:गतिविधि(?:याँ|यां)?|क्रिया(?:एँ)?)|विद्यार्थ्यांची\s*कृती|विद्यार्थी\s*कृती|(?:student|pupil)s?'?s?\s*activit(?:y|ies))\s*[:：]\s*([\s\S]*)$/i;
+  function lessonPlan(sheets) {
+    const units = [];
+    let subjLabel = '';
+    for (const sh of sheets) {
+      let cur = null, mode = null, col = null, sheetUnit = false;
+      for (let r = 1; r <= sh.maxR; r++) {
+        const cells = [];
+        for (let k = 1; k <= sh.maxC; k++) { const v = sh.raw(r, k); if (v) cells.push([k, v]); }
+        if (!cells.length) continue;
+        for (const [, v] of cells) { const m = SUBJ_CELL.exec(v); if (m && !subjLabel) subjLabel = m[2].trim(); }
+        const uc = cells.find(([, v]) => isUnitCell(v));
+        if (uc) {
+          const [lab, ...rest] = uc[1].split(/[:：]/), n = /(\d+)/.exec(lab);
+          cur = { no: n ? +n[1] : units.length + 1, title: rest.join(':').trim() || uc[1], objectives: [], rows: [] };
+          units.push(cur); mode = null; col = null; sheetUnit = true; continue;
+        }
+        if (cells.length <= 2 && isObjHead(cells[0][1])) {
+          if (!cur) { cur = { no: units.length + 1, title: sh.name, objectives: [], rows: [] }; units.push(cur); sheetUnit = true; }
+          mode = 'obj'; continue;
+        }
+        const hc = headerCols(cells);
+        if (hc) {
+          if (!cur || !sheetUnit) { cur = { no: units.length + 1, title: sh.name, objectives: [], rows: [] }; units.push(cur); sheetUnit = true; }
+          col = hc; mode = 'tbl'; continue;
+        }
+        if (!cur) continue;
+        if (mode === 'obj') {
+          for (const [, v] of cells) if (!SKIP_OBJ.test(v) && !SCHOOL_RE.test(v) && !cur.objectives.includes(v)) cur.objectives.push(v);
+        } else if (mode === 'tbl') {
+          const g = k => k ? sh.raw(r, k) : '';
+          const stage = g(col.stage), act = g(col.act);
+          if (!stage && !act) continue;
+          if (SKIP_OBJ.test(cells[0][1]) || (!act && cells.length <= 2) || (SCHOOL_RE.test(stage) && !act)) continue;
+          const m = SPLIT_RE.exec(act);
+          const row = { stage, content: g(col.content) };
+          if (m) { row.teacher = m[1]; row.student = m[2]; } else row.activity = act;
+          Object.assign(row, { materials: g(col.mat), evaluation: g(col.eval), reflection: g(col.refl) });
+          cur.rows.push(row);
+        }
+      }
+    }
+    for (const u of units) {
+      const num = x => +((/^(\d+)/.exec(x) || [])[1] || 99);
+      u.objectives = u.objectives.sort((x, y) => num(x) - num(y)).map(x => x.replace(/^\d+\s*[.)]\s*/, ''));
+    }
+    return { units: units.filter(u => u.rows.length || u.objectives.length), subjLabel };
+  }
+
+  /* ಅಂದಾಜು ಪತ್ರಿಕೆ Excel → ಸೆಮಿಸ್ಟರ್‌ಗಳು */
+  function andaju(sheets) {
+    const out = [];
+    sheets.forEach((sh, si) => {
+      let hr = 0;
+      const isMonth = h => /^(ತಿಂಗಳು|month|महिना|महीना|माह)/i.test(h);
+      for (let r = 1; r <= Math.min(sh.maxR, 15) && !hr; r++) for (let k = 1; k <= sh.maxC; k++) if (isMonth(sh.raw(r, k))) { hr = r; break; }
+      if (!hr) return;
+      const col = {};
+      for (let k = 1; k <= sh.maxC; k++) {
+        const h = sh.raw(hr, k);
+        if (isMonth(h)) col.m = k;
+        else if (/^(ವಿಷಯ|subject|विषय)$/i.test(h)) col.s = k;
+        else if (!col.u && /ಘಟಕ|unit|lesson|chapter|घटक|पाठ|प्रकरण/i.test(h)) col.u = k;
+        else if (/^(ಅವಧಿ|periods?|no\.?\s*of\s*periods|तासिका|कालांश|अवधि)/i.test(h)) col.p = k;
+      }
+      let sem = '', cls = '', year = '';
+      for (let r = 1; r < hr; r++) for (let k = 1; k <= sh.maxC; k++) {
+        const v = sh.raw(r, k); if (!v) continue;
+        if (/ಸೆಮಿಸ್ಟರ|semester|term|सत्र|सेमिस्टर/i.test(v) && !sem) sem = v;
+        if (/ತರಗತಿ|class|std|grade|इयत्ता|कक्षा/i.test(v)) cls = ((/(\d+)/.exec(v) || [])[1]) || cls;
+        if (!year) year = ((/(\d{4}\s*-\s*\d{2,4})/.exec(v) || [])[1]) || '';
+      }
+      const rows = [], seen = {};
+      let lastM = '';
+      for (let r = hr + 1; r <= sh.maxR; r++) {
+        const month = sh.get(r, col.m) || '', subject = col.s ? sh.get(r, col.s) : '', unit = col.u ? sh.raw(r, col.u) : '';
+        const unitM = col.u ? sh.get(r, col.u) : '';
+        const per = col.p ? sh.raw(r, col.p) : '';
+        if (!subject && !unit && !unitM) { if (month && month !== lastM) lastM = month; continue; }
+        const m = month || lastM; lastM = m;
+        const sMerged = col.s && col.u && sh.isMergedChild(r, col.u) && unitM === subject;
+        if (sMerged || (!unit && !unitM && subject)) { rows.push({ month: m, subject: '', event: true, text: subject, key: `${m}|ev|${subject}` }); continue; }
+        const u = unit || unitM;
+        const base = `${m}|${subject}|${u}`; seen[base] = (seen[base] || 0) + 1;
+        rows.push({ month: m, subject, unit: u, periods: /^\d+$/.test(per) ? per : '', key: base + '|' + seen[base] });
+      }
+      out.push({ sem: sem || sh.name, sheet: sh.name, cls, year, rows, idx: si });
+    });
+    return out;
+  }
+  return { read, lessonPlan, andaju };
+})();
+
+/* ============================================================
+   ಅಪ್ಲಿಕೇಶನ್
+   ============================================================ */
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const ICON_DL = '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>';
+const ICON_EYE = '<svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+
+/* RULES:START — ಈ ಭಾಗವನ್ನು worker.js ಕೂಡ ಬಳಸುತ್ತದೆ. ಇಲ್ಲಿ ಬದಲಿಸಿದರೆ worker.js ನಲ್ಲೂ ಬದಲಿಸಬೇಕು */
+/* ---------- ವಿಷಯಗಳು ----------
+   ಪ್ರತಿ ವಿಷಯ: [ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಕಾಣುವ ಹೆಸರು, ಫೈಲ್ ಹೆಸರಿನಲ್ಲಿ ಬರೆಯಬಹುದಾದ ರೂಪಗಳು…]
+   ಕನ್ನಡ / ಇಂಗ್ಲಿಷ್, ದೊಡ್ಡ / ಸಣ್ಣ ಅಕ್ಷರ, ಸ್ಪೇಸ್, ಕಾಗುಣಿತದ ಸಣ್ಣ ವ್ಯತ್ಯಾಸ — ಎಲ್ಲವೂ ಒಂದೇ ವಿಷಯವಾಗಿ ಗುರುತಾಗುತ್ತದೆ.
+   ಹೊಸ ವಿಷಯ ಬೇಕಿದ್ದರೆ ಇಲ್ಲಿ ಒಂದು ಸಾಲು ಸೇರಿಸಿ. */
+const SUBJECT_LIST = {
+  kannada:  ['ಕನ್ನಡ', 'kannada', 'kan', 'ಕನ್ನಡ'],
+  english:  ['ಇಂಗ್ಲೀಷ್', 'english', 'eng', 'ಇಂಗ್ಲೀಷ್', 'ಇಂಗ್ಲಿಷ್', 'ಆಂಗ್ಲ', 'अंग्रेजी', 'इंग्रजी'],
+  hindi:    ['ಹಿಂದಿ', 'hindi', 'hin', 'ಹಿಂದಿ', 'हिंदी', 'हिन्दी'],
+  marathi:  ['ಮರಾಠಿ', 'marathi', 'mar', 'ಮರಾಠಿ', 'मराठी'],
+  sanskrit: ['ಸಂಸ್ಕೃತ', 'sanskrit', 'samskrita', 'ಸಂಸ್ಕೃತ'],
+  urdu:     ['ಉರ್ದು', 'urdu', 'ಉರ್ದು'],
+  ganita:   ['ಗಣಿತ', 'ganita', 'ganitha', 'maths', 'math', 'mathematics', 'ಗಣಿತ'],
+  vijnana:  ['ವಿಜ್ಞಾನ', 'vijnana', 'vignana', 'vijnan', 'vignan', 'vijana', 'science', 'sci', 'ವಿಜ್ಞಾನ'],
+  samaja:   ['ಸಮಾಜ ವಿಜ್ಞಾನ', 'samaja', 'samaj', 'samajavijnana', 'social', 'social science', 'social studies', 'ss', 'sst', 'ಸಮಾಜ', 'ಸಮಾಜ ವಿಜ್ಞಾನ'],
+  parisara: ['ಪರಿಸರ ಅಧ್ಯಯನ', 'parisara', 'parisara adhyayana', 'evs', 'environmental studies', 'ಪರಿಸರ', 'ಪರಿಸರ ಅಧ್ಯಯನ'],
+  dehika:   ['ದೈಹಿಕ ಶಿಕ್ಷಣ', 'dehika', 'pe', 'physical education', 'ದೈಹಿಕ', 'ದೈಹಿಕ ಶಿಕ್ಷಣ'],
+  kala:     ['ಕಲಾ ಶಿಕ್ಷಣ', 'kala', 'art', 'arts', 'ಕಲೆ', 'ಕಲಾ ಶಿಕ್ಷಣ'],
+  computer: ['ಗಣಕಯಂತ್ರ', 'computer', 'ಕಂಪ್ಯೂಟರ್', 'ಗಣಕಯಂತ್ರ']
+};
+const SUBJECTS = Object.fromEntries(Object.entries(SUBJECT_LIST).map(([k, v]) => [k, v[0]]));
+/* ಹೋಲಿಕೆಗಾಗಿ ಹೆಸರಿನ "ಅಸ್ಥಿಪಂಜರ": ಸ್ಪೇಸ್, ಚಿಹ್ನೆ, ಕನ್ನಡ ಸ್ವರಚಿಹ್ನೆ/ಹಲಂತ/ಅನುಸ್ವಾರ ತೆಗೆದು */
+const skel = t => String(t).normalize('NFC').toLowerCase()
+  .replace(/[\s_.,()&'"‌‍]+/g, '').replace(/[ಂಃ಼-್ೕೖೢೣ]/g, '');
+const SUBJ_INDEX = {};
+for (const [k, names] of Object.entries(SUBJECT_LIST)) for (const n of [k, ...names]) SUBJ_INDEX[skel(n)] ??= k;
+const subjCode = raw => SUBJ_INDEX[skel(raw)] || String(raw).normalize('NFC').toLowerCase().replace(/\s+/g, '');
+const MED_RE = /^(en|mr|ur|kn)-(?=(?:lp|ppt|aj|doc)-)/i;
+const medOf = name => ((MED_RE.exec(name.normalize('NFC').trim()) || [])[1] || 'kn').toLowerCase();
+/* ---------- ಫೈಲ್ ಹೆಸರು → ಅರ್ಥ ----------
+   ಹೆಸರನ್ನು "-" ಚಿಹ್ನೆಯಲ್ಲಿ ಭಾಗಿಸಲಾಗುತ್ತದೆ: ಪ್ರಕಾರ - ತರಗತಿ - ವಿಷಯ - ಭಾಗ - ಘಟಕ
+   ವಿಷಯದಲ್ಲಿ ಸ್ಪೇಸ್ ಇದ್ದರೂ ಸರಿ (lp-6-social science-1.xlsx, lp-6-ಸಮಾಜ ವಿಜ್ಞಾನ-1.xlsx) */
+function parseName(name) { const p = parseName0(name); if (p && p.type !== 'bad') p.med = medOf(name); return p; }
+function parseName0(name) {
+  const med = medOf(name);
+  const clean = name.normalize('NFC').trim().replace(MED_RE, '').replace(/(?:\.(?:xlsx|pdf|pptx|json))+(\.(?:xlsx|pdf|pptx|json))$/i, '$1');  // .xlsx.xlsx → .xlsx
+  const m = /^(.+)\.(xlsx|pdf|pptx|json)$/i.exec(clean);
+  if (!m) {
+    if (/^(lp|ppt|aj|doc)-/i.test(clean) && !/\.[a-z0-9]{2,5}$/i.test(clean))
+      return { type: 'bad', reason: `ಹೆಸರಿನ ಕೊನೆಯಲ್ಲಿ <b>.pptx</b> / <b>.pdf</b> / <b>.xlsx</b> ಇಲ್ಲ. GitHub ನಲ್ಲಿ rename ಮಾಡಿ ಕೊನೆಗೆ ಸೇರಿಸಿ, ಉದಾ: <code>${esc(clean)}.pptx</code>` };
+    return null;
+  }
+  const ext = m[2].toLowerCase(), parts = m[1].split('-').map(x => x.trim()).filter(Boolean);
+  const type = (parts.shift() || '').toLowerCase();
+  const isNum = x => /^\d{1,2}$/.test(x);
+  if (type === 'doc') {
+    if (ext === 'json') return null;
+    const doc = (parts.shift() || '').toLowerCase();
+    if (!/^[a-z]+$/.test(doc)) return null;
+    const cls = parts.length && isNum(parts[0]) ? String(+parts.shift()) : '';
+    const part = parts.length && isNum(parts[parts.length - 1]) ? +parts.pop() : '';
+    const raw = parts.join(' ');
+    if (!cls && (raw || part)) return null;
+    return { type, doc, cls, subj: raw ? subjCode(raw) : '', part: raw ? part : '', ext };
+  }
+  if (!['lp', 'ppt', 'aj'].includes(type) || !isNum(parts[0] || '')) return null;
+  const cls = String(+parts.shift());
+  if (type === 'aj') return (ext === 'xlsx' && !parts.length) ? { type, cls, ext } : null;
+  /* ವಿಷಯ → ಸಂಖ್ಯೆಗಳು (ಭಾಗ, ಘಟಕ, ಉಪ-ಭಾಗ) → ಐಚ್ಛಿಕ ಹೆಸರು */
+  let i = 0; const st = [];
+  while (i < parts.length && !isNum(parts[i])) st.push(parts[i++]);
+  const nums = [];
+  while (i < parts.length && isNum(parts[i]) && nums.length < 3) nums.push(+parts[i++]);
+  let title = parts.slice(i).join(' - ');
+  if (!st.length) {
+    const fix = `${type}-${cls}-samaja-${nums[0] || 1}${type === 'ppt' ? '-' + (nums[1] || 'ಘಟಕ') : ''}${title ? '-' + title : ''}.${ext}`;
+    return { type: 'bad', reason: `ವಿಷಯದ ಹೆಸರು ಇಲ್ಲ. ತರಗತಿಯ ನಂತರ ವಿಷಯ ಬರಬೇಕು. ಉದಾ: <code>${esc(fix)}</code> (samaja ಬದಲು ನಿಜವಾದ ವಿಷಯ${type === 'ppt' ? ', "ಘಟಕ" ಬದಲು ಘಟಕ ಸಂಖ್ಯೆ' : ''})` };
+  }
+  let k = st.length;                                   // "samaja-ಗುಪ್ತರು" → ವಿಷಯ samaja, ಹೆಸರು ಗುಪ್ತರು
+  while (k > 1 && !SUBJ_INDEX[skel(st.slice(0, k).join(' '))]) k--;
+  if (!SUBJ_INDEX[skel(st.slice(0, k).join(' '))]) {
+    const ex = SUBJECTS.samaja ? 'samaja' : Object.keys(SUBJECTS)[0];
+    const looksTitle = st.join(' ').length > 12 || /\s/.test(st.join(' '));
+    const fix = type === 'ppt'
+      ? `${type}-${cls}-${ex}-${nums[0] || 1}-${nums[1] || 'ಘಟಕ'}-${[st.join(' '), title].filter(Boolean).join(' ')}.${ext}`
+      : `${type}-${cls}-${ex}-${nums[0] || 1}.${ext}`;
+    return { type: 'bad', reason: looksTitle
+      ? `ವಿಷಯದ ಹೆಸರು ಇಲ್ಲ. ತರಗತಿಯ ನಂತರ ವಿಷಯ ಬರಬೇಕು. ಉದಾ: <code>${esc(fix)}</code> (samaja ಬದಲು ನಿಜವಾದ ವಿಷಯ, "ಘಟಕ" ಬದಲು ಘಟಕ ಸಂಖ್ಯೆ)`
+      : `"${esc(st.join(' '))}" ಎಂಬ ವಿಷಯ ಗೊತ್ತಿಲ್ಲ. ${Object.keys(SUBJECTS).slice(0, 8).join(', ')}… ಅಥವಾ ಕನ್ನಡ ಹೆಸರು ಬಳಸಿ.` };
+  }
+  const subj = subjCode(st.slice(0, k).join(' '));
+  if (k < st.length) title = [st.slice(k).join(' - '), title].filter(Boolean).join(' - ');
+  if (type === 'lp') return (['xlsx', 'pdf', 'json'].includes(ext) && nums.length <= 1 && !title) ? { type, cls, subj, part: nums[0] || 1, ext } : null;
+  if (!['pdf', 'pptx'].includes(ext) || (!nums.length && !title)) return null;
+  const base = { type, cls, subj, ext, title, sub: null };
+  if (nums.length === 3) return { ...base, part: nums[0], unit: nums[1], sub: nums[2] };
+  if (nums.length === 2) return { ...base, part: nums[0], unit: nums[1] };
+  if (nums.length === 1) return title ? { ...base, part: nums[0], unit: null } : { ...base, part: 1, unit: nums[0] };
+  return { ...base, part: 1, unit: null };
+}
+
+/* ---------- ಯಾವ ಫೈಲ್‌ಗೆ ಯಾವ ಖರೀದಿ (ಪ್ಯಾಕ್) ----------
+   ಪ್ಯಾಕ್ ಗುರುತು: ಪ್ರಕಾರ:ಮಾಧ್ಯಮ:ತರಗತಿ:ವಿಷಯ  ಉದಾ: lp:kn:5:ganita  sub:kn:5:ganita  aj:kn:5  doc:kn:5:kriya  cls:kn:5  sch:kn
+   ಈ ಪಟ್ಟಿಯಲ್ಲಿ ಯಾವುದಾದರೂ ಒಂದು ಇದ್ದರೆ ಫೈಲ್ ತೆರೆಯುತ್ತದೆ. "ANY:kn" = ಆ ಮಾಧ್ಯಮದ ಯಾವುದೇ ಒಂದು ಖರೀದಿ */
+function needKeys(p) {
+  if (!p || p.type === 'bad') return [];
+  const m = p.med || 'kn', c = p.cls, s = p.subj, k = ['sch:' + m];
+  if (p.type === 'lp') k.push(`lp:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`);
+  else if (p.type === 'ppt') k.push(`ppt:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`);
+  else if (p.type === 'aj') k.push(`aj:${m}:${c}`, `cls:${m}:${c}`);
+  else if (p.type === 'doc') { if (c) k.push(`doc:${m}:${c}:${p.doc}`, `cls:${m}:${c}`); else k.push(`doc:${m}:all:${p.doc}`, 'ANY:' + m); }
+  return k;
+}
+/* packs = { "lp:kn:5:ganita": "2027-05-31", … } ; today = "2026-11-10" */
+function allowedBy(packs, p, today) {
+  const act = Object.keys(packs || {}).filter(k => String(packs[k]) >= today);
+  return needKeys(p).some(k => k.startsWith('ANY:') ? act.some(a => a.split(':')[1] === k.slice(4)) : act.includes(k));
+}
+/* RULES:END */
+
+/* ಇತರೆ ದಾಖಲೆಗಳ ಹೆಸರುಗಳು: ಹೊಸ ದಾಖಲೆ ಬೇಕಿದ್ದರೆ ಇಲ್ಲಿ ಒಂದು ಸಾಲು ಸೇರಿಸಿ  (ಫೈಲ್ ಹೆಸರು: doc-kriya-6-samaja-1.xlsx) */
+const DOCS = {
+  kriya: 'ಕ್ರಿಯಾ ಯೋಜನೆ', varshika: 'ವಾರ್ಷಿಕ ಯೋಜನೆ', masika: 'ಮಾಸಿಕ ಯೋಜನೆ', velapatti: 'ವೇಳಾಪಟ್ಟಿ',
+  ghataka: 'ಘಟಕ ಪರೀಕ್ಷೆ', neelanakshe: 'ನೀಲನಕ್ಷೆ', parihara: 'ಪರಿಹಾರ ಬೋಧನೆ', setubandha: 'ಸೇತುಬಂಧ',
+  kalikachetarike: 'ಕಲಿಕಾ ಚೇತರಿಕೆ', cce: 'ಸಿಸಿಇ ದಾಖಲೆ', dinachari: 'ಶಿಕ್ಷಕರ ದಿನಚರಿ', worksheet: 'ಅಭ್ಯಾಸ ಹಾಳೆ'
+};
+const docTitle = n => DOCS[n] || n;
+const SUBJ_ORDER = Object.keys(SUBJECTS);
+/* ಮಾಧ್ಯಮಗಳು: ಫೈಲ್ ಹೆಸರಿನ ಮುಂದೆ ಗುರುತು (ಕನ್ನಡಕ್ಕೆ ಏನೂ ಬೇಡ) */
+const MEDIA = { kn: 'ಕನ್ನಡ ಮಾಧ್ಯಮ', en: 'English Medium', mr: 'मराठी माध्यम', ur: 'اردو میڈیم' };
+const medium = () => { const m = store.get('bm_medium', null) || school()?.medium || 'kn'; return MEDIA[m] ? m : 'kn'; };
+const subjName = c => SUBJECTS[c] || c;
+const partName = p => `ಭಾಗ ${p}` + (p == 1 ? ' (ಪ್ರಥಮ ಸೆಮಿಸ್ಟರ್)' : p == 2 ? ' (ದ್ವಿತೀಯ ಸೆಮಿಸ್ಟರ್)' : '');
+const IGNORE = ['index.html', 'readme.md', 'catalog.json', '.gitkeep', '.nojekyll', 'license', '404.html'];
+
+/* ---------- GitHub ನಿಂದ ಫೈಲ್ ಪಟ್ಟಿ ---------- */
+function repoInfo() {
+  const meta = document.querySelector('meta[name=github-repo]')?.content.trim();
+  if (meta && meta.includes('/')) { const [o, r] = meta.split('/'); return { o, r }; }
+  const h = location.hostname;
+  if (h.endsWith('.github.io')) {
+    const o = h.split('.')[0], seg = location.pathname.split('/').filter(Boolean)[0];
+    return { o, r: seg && !seg.includes('.') ? seg : h };
+  }
+  return null;
+}
+async function listRepo(force) {
+  if (PAID) {                                     // ಖಾಸಗಿ repo: Worker ಮೂಲಕ ಪಟ್ಟಿ
+    const key = 'bm_list_worker', cached = store.get(key, null);
+    if (!force && cached && Date.now() - cached.t < 60 * 1000) return cached.files;
+    try {
+      const r = await fetch(CONFIG.worker.replace(/\/$/, '') + '/list' + (force ? '?fresh=1' : ''), { cache: 'no-store' });
+      if (!r.ok) throw new Error(r.status);
+      const files = await r.json();
+      store.set(key, { t: Date.now(), files });
+      return files;
+    } catch (e) { if (cached) return cached.files; throw new Error('LIST'); }
+  }
+  const ri = repoInfo();
+  if (!ri) throw new Error('NOREPO');
+  const key = `bm_list_${ri.o}/${ri.r}`, cached = store.get(key, null);
+  if (!force && cached && Date.now() - cached.t < 60 * 1000) return cached.files;
+  try {
+    const r = await fetch(`https://api.github.com/repos/${ri.o}/${ri.r}/contents/`, { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status);
+    const files = (await r.json()).map(x => ({ name: x.name, type: x.type, size: x.size }));
+    store.set(key, { t: Date.now(), files });
+    return files;
+  } catch (e) {
+    if (cached) return cached.files;
+    throw new Error('LIST');
+  }
+}
+let DB = null;
+function buildDB(files) {
+  const db = { subjects: {}, aj: {}, docs: {}, bad: [], dirs: [], all: [] };
+  for (const f of files) {
+    if (f.type === 'dir') { db.dirs.push(f); continue; }
+    if (IGNORE.includes(f.name.toLowerCase())) continue;
+    const p = parseName(f.name);
+    db.all.push({ ...f, p });
+    if (!p || p.type === 'bad') { db.bad.push({ ...f, reason: p?.reason }); continue; }
+    if (['pdf', 'pptx', 'xlsx'].includes(p.ext) && f.size < 3000) {   // ನಿಜವಾದ ಫೈಲ್ ಬದಲು ಸಣ್ಣ "pointer" ಮಾತ್ರ upload ಆಗಿದೆ
+      db.bad.push({ ...f, small: true, reason: `ಫೈಲ್ ಸರಿಯಾಗಿ upload ಆಗಿಲ್ಲ: GitHub ನಲ್ಲಿ ಕೇವಲ ${f.size} bytes ಇದೆ. ನಿಜವಾದ ಫೈಲ್ ಕಂಪ್ಯೂಟರ್‌ನಲ್ಲಿ ಪೂರ್ಣ download ಆಗಿದೆಯೇ ನೋಡಿ (OneDrive / Google Drive ಫೋಲ್ಡರ್‌ನಲ್ಲಿದ್ದರೆ ಮೊದಲು ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ copy ಮಾಡಿ), ನಂತರ ಅಳಿಸಿ ಮತ್ತೆ upload ಮಾಡಿ.` });
+      continue;
+    }
+    if (p.type === 'aj') { db.aj[p.cls] = f.name; continue; }
+    if (p.type === 'doc') {
+      const list = db.docs[p.doc] ||= [], k = [p.cls, p.subj, p.part].join('|');
+      let e = list.find(x => x.k === k); if (!e) list.push(e = { k, doc: p.doc, cls: p.cls, subj: p.subj, part: p.part, files: {} });
+      e.files[p.ext] = { name: f.name, size: f.size }; continue;
+    }
+    const k = p.cls + '|' + p.subj;
+    const s = db.subjects[k] ||= { cls: p.cls, subj: p.subj, lp: {}, ppt: {} };
+    if (p.type === 'lp') (s.lp[p.part] ||= {})[p.ext] = f.name;
+    else {
+      const list = s.ppt[p.part] ||= [], key = [p.unit ?? '', p.sub ?? '', skel(p.title)].join('|');
+      let it = list.find(x => x.key === key);
+      if (!it) list.push(it = { key, unit: p.unit, sub: p.sub, title: p.title, files: {} });
+      it.files[p.ext] = { name: f.name, size: f.size };
+    }
+  }
+  return db;
+}
+const classes = filter => [...new Set(Object.values(DB.subjects).filter(filter || (() => true)).map(s => s.cls))].sort((a, b) => a - b);
+const subjectsOf = (cls, filter) => Object.values(DB.subjects).filter(s => s.cls === cls && (!filter || filter(s)))
+  .sort((a, b) => (SUBJ_ORDER.indexOf(a.subj) + 1 || 99) - (SUBJ_ORDER.indexOf(b.subj) + 1 || 99));
+
+/* ---------- ಫೈಲ್ ಓದುವಿಕೆ ---------- */
+const cache = {};
+async function getBytes(name) {
+  let r;
+  if (PAID) {
+    const tok = await ACC.token();
+    r = await fetch(CONFIG.worker.replace(/\/$/, '') + '/f/' + encodeURIComponent(name), { headers: { Authorization: 'Bearer ' + tok } }).catch(() => null);
+    if (r && r.status === 403) throw new Error('ಈ ದಾಖಲೆಯನ್ನು ನೀವು ಇನ್ನೂ ಖರೀದಿಸಿಲ್ಲ, ಅಥವಾ ಅವಧಿ ಮುಗಿದಿದೆ.');
+    if (r && r.status === 401) throw new Error('Login ಅವಧಿ ಮುಗಿದಿದೆ. ಪುಟವನ್ನು reload ಮಾಡಿ ಮತ್ತೆ login ಆಗಿ.');
+  } else r = await fetch(encodeURIComponent(name)).catch(() => null);
+  if (!r || !r.ok) throw new Error(`"${name}" ಇನ್ನೂ ವೆಬ್‌ಸೈಟ್‌ಗೆ ಬಂದಿಲ್ಲ. Upload ಮಾಡಿದ 2–3 ನಿಮಿಷದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.`);
+  const b = new Uint8Array(await r.arrayBuffer());
+  const head = new TextDecoder().decode(b.subarray(0, 40));
+  const ext = (/\.([a-z]+)$/i.exec(name) || [])[1]?.toLowerCase();
+  const ok = ext === 'pdf' ? head.includes('%PDF') : ['pptx', 'xlsx'].includes(ext) ? (b[0] === 0x50 && b[1] === 0x4B) : true;
+  if (!ok) throw new Error(head.startsWith('version https://git-lfs')
+    ? `"${name}" GitHub ನಲ್ಲಿ "Git LFS" ಆಗಿ ಉಳಿದಿದೆ, ನಿಜವಾದ ಫೈಲ್ ಅಲ್ಲ. ಅಳಿಸಿ, Add file → Upload files ಮೂಲಕ ಮತ್ತೆ upload ಮಾಡಿ.`
+    : `"${name}" ಸರಿಯಾದ ${ext.toUpperCase()} ಫೈಲ್ ಅಲ್ಲ (${b.length} bytes). ಕಂಪ್ಯೂಟರ್‌ನಲ್ಲಿ ಫೈಲ್ ತೆರೆಯುತ್ತದೆಯೇ ನೋಡಿ, ನಂತರ ಮತ್ತೆ upload ಮಾಡಿ.`);
+  return b;
+}
+/* ಶಿಕ್ಷಕರ ಸ್ವ-ಅವಲೋಕನ Excel ನಲ್ಲಿ ಖಾಲಿ ಇದ್ದರೆ, 5E ಹಂತಕ್ಕೆ ತಕ್ಕ ವಾಕ್ಯ ತಾನಾಗಿಯೇ (ಘಟಕದಿಂದ ಘಟಕಕ್ಕೆ ಬೇರೆ ಬೇರೆ) */
+const AUTO_REFL = {
+  engage: ['ವಿದ್ಯಾರ್ಥಿಗಳು ಪಾಠದ ವಿಷಯದ ಬಗ್ಗೆ ಕುತೂಹಲದಿಂದ ಸ್ಪಂದಿಸಿದರು.', 'ಪೂರ್ವಜ್ಞಾನದ ಪ್ರಶ್ನೆಗಳಿಗೆ ಹೆಚ್ಚಿನ ವಿದ್ಯಾರ್ಥಿಗಳು ಉತ್ಸಾಹದಿಂದ ಉತ್ತರಿಸಿದರು.', 'ಚಿತ್ರ ಮತ್ತು ಉದಾಹರಣೆಗಳಿಂದ ವಿದ್ಯಾರ್ಥಿಗಳಲ್ಲಿ ಪಾಠದ ಬಗ್ಗೆ ಆಸಕ್ತಿ ಮೂಡಿತು.', 'ಹೆಚ್ಚಿನ ಮಕ್ಕಳು ಚರ್ಚೆಯಲ್ಲಿ ಭಾಗವಹಿಸಿ ತಮ್ಮ ಅನುಭವಗಳನ್ನು ಹಂಚಿಕೊಂಡರು.'],
+  explore: ['ಗುಂಪು ಚಟುವಟಿಕೆಯಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿಗಳು ಸಕ್ರಿಯವಾಗಿ ಭಾಗವಹಿಸಿದರು.', 'ವಿದ್ಯಾರ್ಥಿಗಳು ಸ್ವತಃ ಮಾಹಿತಿ ಹುಡುಕುವಲ್ಲಿ ಆಸಕ್ತಿ ತೋರಿದರು; ಕೆಲವರಿಗೆ ಮಾರ್ಗದರ್ಶನ ಬೇಕಾಯಿತು.', 'ಜೋಡಿ ಮತ್ತು ಗುಂಪು ಕಲಿಕೆಯಿಂದ ವಿದ್ಯಾರ್ಥಿಗಳು ಪರಸ್ಪರ ಕಲಿತರು.', 'ಹೆಚ್ಚಿನ ವಿದ್ಯಾರ್ಥಿಗಳು ಚಟುವಟಿಕೆಯನ್ನು ನಿಗದಿತ ಸಮಯದಲ್ಲಿ ಪೂರ್ಣಗೊಳಿಸಿದರು.'],
+  explain: ['ಉದಾಹರಣೆಗಳ ಮೂಲಕ ವಿವರಿಸಿದಾಗ ವಿದ್ಯಾರ್ಥಿಗಳು ಪರಿಕಲ್ಪನೆಗಳನ್ನು ಸುಲಭವಾಗಿ ಅರ್ಥೈಸಿಕೊಂಡರು.', 'ವಿದ್ಯಾರ್ಥಿಗಳು ಸಂದೇಹಗಳನ್ನು ಕೇಳಿ ಸ್ಪಷ್ಟಪಡಿಸಿಕೊಂಡರು.', 'ಕಲಿಕೋಪಕರಣಗಳ ಬಳಕೆಯಿಂದ ವಿಷಯ ಹೆಚ್ಚು ಸ್ಪಷ್ಟವಾಯಿತು.', 'ಹೆಚ್ಚಿನವರು ವಿಷಯ ಗ್ರಹಿಸಿದರು; ಕೆಲವು ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಪುನರ್ ವಿವರಣೆ ಅಗತ್ಯವಾಯಿತು.'],
+  elaborate: ['ವಿದ್ಯಾರ್ಥಿಗಳು ಕಲಿತ ಅಂಶಗಳನ್ನು ದೈನಂದಿನ ಜೀವನಕ್ಕೆ ಹೋಲಿಸಿ ವಿವರಿಸಿದರು.', 'ಸೃಜನಶೀಲ ಚಟುವಟಿಕೆಯಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿಗಳು ಉತ್ಸಾಹದಿಂದ ಪಾಲ್ಗೊಂಡರು.', 'ವಿದ್ಯಾರ್ಥಿಗಳು ಹೊಸ ಉದಾಹರಣೆಗಳನ್ನು ಸ್ವತಃ ನೀಡಲು ಸಾಧ್ಯವಾಯಿತು.', 'ಕಲಿತ ಅಂಶಗಳ ಅನ್ವಯದಲ್ಲಿ ಹೆಚ್ಚಿನ ವಿದ್ಯಾರ್ಥಿಗಳು ಯಶಸ್ವಿಯಾದರು.'],
+  evaluate: ['ಹೆಚ್ಚಿನ ವಿದ್ಯಾರ್ಥಿಗಳು ಉದ್ದೇಶಿತ ಕಲಿಕಾ ಫಲಗಳನ್ನು ತಲುಪಿದ್ದಾರೆ; ಕೆಲವರಿಗೆ ಪರಿಹಾರ ಬೋಧನೆ ಅಗತ್ಯವಿದೆ.', 'ಮೌಲ್ಯಮಾಪನದಲ್ಲಿ ಹೆಚ್ಚಿನ ವಿದ್ಯಾರ್ಥಿಗಳು ಸರಿಯಾಗಿ ಉತ್ತರಿಸಿದರು.', 'ಹಿಂದುಳಿದ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಗುರುತಿಸಿ ಪರಿಹಾರ ಬೋಧನೆಗೆ ಯೋಜಿಸಲಾಯಿತು.', 'ಕಲಿಕೆಯ ಮಟ್ಟ ತೃಪ್ತಿಕರವಾಗಿದೆ; ವಿದ್ಯಾರ್ಥಿಗಳು ಮುಂದಿನ ಪಾಠಕ್ಕೆ ಸಿದ್ಧರಾಗಿದ್ದಾರೆ.'],
+  other: ['ವಿದ್ಯಾರ್ಥಿಗಳು ಚಟುವಟಿಕೆಯಲ್ಲಿ ಆಸಕ್ತಿಯಿಂದ ಭಾಗವಹಿಸಿದರು.', 'ಹೆಚ್ಚಿನ ವಿದ್ಯಾರ್ಥಿಗಳು ಕಲಿಕಾಂಶವನ್ನು ಅರ್ಥೈಸಿಕೊಂಡರು.', 'ತರಗತಿಯಲ್ಲಿ ಉತ್ತಮ ಸ್ಪಂದನೆ ದೊರೆಯಿತು.', 'ಕಲಿಕೆಯ ಗುರಿ ಬಹುತೇಕ ಈಡೇರಿತು.']
+};
+const AUTO_REFL_LANG = {
+  hi: {
+    engage: ['विद्यार्थियों ने पाठ के प्रति जिज्ञासा से प्रतिक्रिया दी।', 'पूर्व ज्ञान के प्रश्नों के उत्तर अधिकांश विद्यार्थियों ने उत्साह से दिए।', 'चित्रों और उदाहरणों से पाठ के प्रति रुचि जागृत हुई।'],
+    explore: ['समूह गतिविधि में विद्यार्थियों ने सक्रिय भागीदारी की।', 'जोड़ी और समूह कार्य से विद्यार्थियों ने एक-दूसरे से सीखा।', 'अधिकांश विद्यार्थियों ने गतिविधि निर्धारित समय में पूरी की।'],
+    explain: ['उदाहरणों द्वारा समझाने पर विद्यार्थियों ने अवधारणा आसानी से समझी।', 'विद्यार्थियों ने प्रश्न पूछकर अपनी शंकाएँ दूर कीं।', 'कुछ विद्यार्थियों को पुनः समझाने की आवश्यकता हुई।'],
+    elaborate: ['विद्यार्थियों ने सीखी बातों को दैनिक जीवन से जोड़ा।', 'रचनात्मक गतिविधि में विद्यार्थियों ने उत्साह से भाग लिया।', 'विद्यार्थी स्वयं नए उदाहरण दे सके।'],
+    evaluate: ['अधिकांश विद्यार्थियों ने अपेक्षित अधिगम परिणाम प्राप्त किए; कुछ को उपचारात्मक शिक्षण की आवश्यकता है।', 'मूल्यांकन में अधिकांश विद्यार्थियों ने सही उत्तर दिए।', 'अधिगम स्तर संतोषजनक रहा।'],
+    other: ['विद्यार्थियों ने रुचि से भाग लिया।', 'अधिकांश विद्यार्थियों ने पाठ समझा।', 'कक्षा में अच्छी प्रतिक्रिया मिली।']
+  },
+  mr: {
+    engage: ['विद्यार्थ्यांनी पाठाविषयी उत्सुकतेने प्रतिसाद दिला.', 'पूर्वज्ञानावरील प्रश्नांना बहुतेक विद्यार्थ्यांनी उत्साहाने उत्तरे दिली.', 'चित्रे व उदाहरणांमुळे पाठाविषयी आवड निर्माण झाली.'],
+    explore: ['गट उपक्रमात विद्यार्थ्यांनी सक्रिय सहभाग घेतला.', 'जोडी व गटकार्यातून विद्यार्थी एकमेकांकडून शिकले.', 'बहुतेक विद्यार्थ्यांनी उपक्रम दिलेल्या वेळेत पूर्ण केला.'],
+    explain: ['उदाहरणांद्वारे स्पष्ट केल्यावर विद्यार्थ्यांना संकल्पना सहज समजली.', 'विद्यार्थ्यांनी प्रश्न विचारून शंका दूर केल्या.', 'काही विद्यार्थ्यांना पुन्हा स्पष्टीकरणाची गरज भासली.'],
+    elaborate: ['विद्यार्थ्यांनी शिकलेल्या गोष्टी दैनंदिन जीवनाशी जोडल्या.', 'सर्जनशील उपक्रमात विद्यार्थ्यांनी उत्साहाने भाग घेतला.', 'विद्यार्थी स्वतः नवीन उदाहरणे देऊ शकले.'],
+    evaluate: ['बहुतेक विद्यार्थ्यांनी अपेक्षित अध्ययन निष्पत्ती साध्य केली; काहींना उपचारात्मक अध्यापनाची गरज आहे.', 'मूल्यमापनात बहुतेक विद्यार्थ्यांनी अचूक उत्तरे दिली.', 'अध्ययनाचा स्तर समाधानकारक आहे.'],
+    other: ['विद्यार्थ्यांनी आवडीने सहभाग घेतला.', 'बहुतेक विद्यार्थ्यांना पाठ समजला.', 'वर्गात चांगला प्रतिसाद मिळाला.']
+  },
+  en: {
+    engage: ['Students responded to the topic with curiosity.', 'Most students answered the prior-knowledge questions enthusiastically.', 'Pictures and examples created interest in the lesson.'],
+    explore: ['Students participated actively in the group activity.', 'Pair and group work helped students learn from each other.', 'Most students completed the activity in the given time.'],
+    explain: ['Students understood the concept easily through examples.', 'Students clarified their doubts by asking questions.', 'A few students needed the explanation again.'],
+    elaborate: ['Students related what they learnt to daily life.', 'Students took part in the creative activity with enthusiasm.', 'Students were able to give new examples on their own.'],
+    evaluate: ['Most students achieved the expected learning outcomes; a few need remedial teaching.', 'Most students answered correctly in the evaluation.', 'The learning level is satisfactory.'],
+    other: ['Students participated with interest.', 'Most students understood the lesson.', 'The class responded well.']
+  }
+};
+function stageKey(st) {
+  const t = String(st || '').toLowerCase();
+  if (/engage|ಆಸಕ್ತಿ|ತೊಡಗಿಸ|रुचि|जुड़|जोड|सहभाग/.test(t)) return 'engage';
+  if (/explore|ಅನ್ವೇಷ|ಶೋಧ|अन्वेषण|खोज|शोध/.test(t)) return 'explore';
+  if (/explain|ವಿವರಣೆ|व्याख्या|स्पष्टीकरण|समझा/.test(t)) return 'explain';
+  if (/elaborate|ವಿಸ್ತರ|विस्तार/.test(t)) return 'elaborate';
+  if (/evaluate|ಮೌಲ್ಯಮಾಪನ|मूल्यांकन|मूल्यमापन/.test(t)) return 'evaluate';
+  return 'other';
+}
+function fillReflections(lp) {
+  lp.units.forEach((u, ui) => (u.rows || []).forEach((r, ri) => {
+    if (String(r.reflection || '').trim()) return;
+    const list = (AUTO_REFL_LANG[lp.lang] || AUTO_REFL)[stageKey(r.stage)];
+    r.reflection = list[((+u.no || ui + 1) + ri) % list.length];
+    r.autoRefl = true;
+  }));
+  return lp;
+}
+async function loadLesson(name) {
+  if (cache[name]) return cache[name];
+  const bytes = await getBytes(name);
+  let lp;
+  if (/\.json$/i.test(name)) { try { lp = JSON.parse(new TextDecoder().decode(bytes)); } catch (e) { throw new Error(`"${name}" ನಲ್ಲಿ JSON ತಪ್ಪಾಗಿದೆ.`); } }
+  else {
+    try { lp = XL.lessonPlan(await XL.read(bytes)); } catch (e) { console.error(e); throw new Error(`"${name}" Excel ಓದಲು ಆಗಲಿಲ್ಲ. ಅದು .xlsx ರೂಪದಲ್ಲಿದೆಯೇ ನೋಡಿ.`); }
+    if (!lp.units.length) throw new Error(`"${name}" ನಲ್ಲಿ "ಪಾಠ / ಘಟಕ :" ಎಂದು ಆರಂಭವಾಗುವ ಸಾಲು ಸಿಗಲಿಲ್ಲ. ಮಾದರಿ Excel ನಂತೆಯೇ ಇರಬೇಕು.`);
+  }
+  {                                               // ಪಾಠಯೋಜನೆಯ ಭಾಷೆ: ವಿಷಯದಿಂದ, ಇಲ್ಲದಿದ್ದರೆ ಅಕ್ಷರಗಳಿಂದ
+    const p = parseName(name), sj = p && p.subj;
+    const txt = lp.units.map(u => u.title + u.objectives.join(' ') + (u.rows || []).map(r => r.content + r.stage).join(' ')).join(' ');
+    const cnt = re => (txt.match(re) || []).length;
+    const kn = cnt(/[\u0C80-\u0CFF]/g), dv = cnt(/[\u0900-\u097F]/g), la = cnt(/[A-Za-z]/g);
+    lp.lang = sj === 'marathi' ? 'mr' : sj === 'hindi' ? 'hi' : sj === 'english' ? 'en'
+      : (dv > kn && dv > la * .5) ? 'hi' : (la > kn * 2 && la > dv) ? 'en' : 'kn';
+    if (lp.lang !== 'kn' && !lp.subjLabel) lp.subjLabel = '';
+  }
+  return (cache[name] = fillReflections(lp));
+}
+async function loadAndaju(name) {
+  if (cache[name]) return cache[name];
+  const sems = XL.andaju(await XL.read(await getBytes(name)));
+  if (!sems.length) throw new Error(`"${name}" ನಲ್ಲಿ "ತಿಂಗಳು" ಕಾಲಂ ಇರುವ ಕೋಷ್ಟಕ ಸಿಗಲಿಲ್ಲ.`);
+  return (cache[name] = sems);
+}
+
+/* ---------- ಶಾಲೆ ---------- */
+const school = () => PAID ? ACC.school() : store.get('bm_school', null);
+function requireSchool() {
+  const sc = school();
+  if (sc?.name) return sc;
+  toast('ಮೊದಲು ಶಾಲೆಯ ವಿವರ ತುಂಬಿ. ಅದು ಎಲ್ಲಾ ದಾಖಲೆಗಳ ಮೇಲೆ ಮುದ್ರಣವಾಗುತ್ತದೆ.', true);
+  location.hash = '#school';
+  return null;
+}
+function renderChip() {
+  const sc = school(), chip = $('chip');
+  chip.classList.toggle('warn', !sc?.name);
+  chip.innerHTML = sc?.name
+    ? `<span class="av">${esc([...sc.name.trim()][0] || 'ಶ')}</span><span>${esc(sc.name)}</span>`
+    : `<span class="av">!</span><span>ಶಾಲೆಯ ವಿವರ ತುಂಬಿ</span>`;
+  chip.onclick = () => { location.hash = '#school'; };
+}
+
+/* ---------- ಸಹಾಯಕಗಳು ---------- */
+let tt;
+function toast(msg, err) {
+  const t = $('toast'); t.textContent = msg; t.classList.toggle('err', !!err); t.hidden = false;
+  clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, err ? 6000 : 2800);
+}
+function saveFile(bytes, name, type = 'application/pdf') {
+  const url = URL.createObjectURL(new Blob([bytes], { type }));
+  const a = document.createElement('a'); a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 8000);
+}
+const fname = (...p) => p.filter(Boolean).join('_').replace(/[\\/:*?"<>|,.!]+/g, '').replace(/\s+/g, '_');
+const mb = n => n < 1048576 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1048576).toFixed(1) + ' MB';
+async function busy(btn, fn) {
+  if (btn.disabled) return;
+  const html = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span>ತಯಾರಾಗುತ್ತಿದೆ…</span>';
+  try { await fn(); } catch (e) { console.error(e); toast(e.message || 'ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.', true); }
+  btn.disabled = false; btn.innerHTML = html;
+}
+const emptyBox = (t, sub = '') => `<div class="empty"><b>${t}</b>${sub ? `<span class="small">${sub}</span>` : ''}</div>`;
+
+/* ---------- ಮುನ್ನೋಟ ---------- */
+const PV = {
+  async open(bytes, title, name) {
+    this.bytes = bytes; this.name = name; this.page = 1;
+    $('pvTitle').textContent = title;
+    this.doc = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+    if (!$('pv').open) $('pv').showModal();
+    await this.render();
+  },
+  async render() {
+    const page = await this.doc.getPage(this.page), dpr = window.devicePixelRatio || 1;
+    const cv = $('pvCanvas'), avail = Math.max(240, cv.parentElement.clientWidth - 32);
+    const base = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(1.6, avail / base.width) * dpr });
+    cv.width = vp.width; cv.height = vp.height; cv.style.width = vp.width / dpr + 'px';
+    await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+    $('pvInfo').textContent = `${this.page} / ${this.doc.numPages}`;
+  }
+};
+$('pvPrev').onclick = () => { if (PV.page > 1) { PV.page--; PV.render(); } };
+$('pvNext').onclick = () => { if (PV.doc && PV.page < PV.doc.numPages) { PV.page++; PV.render(); } };
+$('pvDl').onclick = () => { saveFile(PV.bytes, PV.name); toast('Download ಆಯಿತು.'); };
+$('pvClose').onclick = () => $('pv').close();
+
+/* ---------- ಆಯ್ಕೆ ಪಟ್ಟಿಗಳು ---------- */
+function fillSelect(sel, opts, keep) {
+  const prev = keep ?? sel.value;
+  sel.innerHTML = opts.map(([v, t]) => `<option value="${esc(v)}">${esc(t)}</option>`).join('');
+  if (opts.some(([v]) => String(v) === String(prev))) sel.value = prev;
+  sel.disabled = !opts.length;
+}
+function picker(pfx, filter, partsOf, onPick) {
+  const c = $(pfx + 'Class'), s = $(pfx + 'Subject'), p = $(pfx + 'Part');
+  const last = store.get('bm_pick', {});
+  const fillS = () => fillSelect(s, subjectsOf(c.value, filter).map(x => [x.subj, subjName(x.subj)]), last.s);
+  const fillP = () => {
+    const sub = DB.subjects[c.value + '|' + s.value];
+    fillSelect(p, sub ? partsOf(sub).map(n => [n, partName(n)]) : [], last.p);
+  };
+  fillSelect(c, classes(filter).map(x => [x, x + 'ನೇ ತರಗತಿ']), last.c);
+  fillS(); fillP();
+  const save = () => store.set('bm_pick', { c: c.value, s: s.value, p: p.value });
+  c.onchange = () => { fillS(); fillP(); save(); onPick(); };
+  s.onchange = () => { fillP(); save(); onPick(); };
+  p.onchange = () => { save(); onPick(); };
+  onPick();
+}
+const cur = pfx => ({ sub: DB.subjects[$(pfx + 'Class').value + '|' + $(pfx + 'Subject').value], part: $(pfx + 'Part')?.value });
+
+/* ---------- ಪುಟಗಳು ---------- */
+const TITLES = { home: 'ಮುಖಪುಟ', lesson: 'ಪಾಠಯೋಜನೆ', ppt: 'ಪಾಠಗಳ PPT', andaju: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', school: 'ಶಾಲೆಯ ವಿವರ', files: 'ಫೈಲ್ ನಿರ್ವಹಣೆ', docs: 'ಇತರೆ ದಾಖಲೆಗಳು', admin: 'Admin' };
+function route() {
+  let v = (location.hash || '#home').slice(1);
+  if (!TITLES[v]) v = 'home';
+  if (PAID && (v === 'admin' || v === 'files') && !ACC.isAdmin()) v = 'home';
+  document.querySelectorAll('.view').forEach(s => { s.hidden = s.id !== 'v-' + v; });
+  document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
+  $('pageTitle').textContent = PAID && v === 'school' ? 'ನನ್ನ ಖಾತೆ' : TITLES[v];
+  renderChip();
+  if (DB || v === 'school' || v === 'files' || v === 'admin') VIEWS[v]();
+  window.scrollTo(0, 0);
+}
+
+const VIEWS = {
+  home() {
+    const sc = school();
+    $('homeTop').innerHTML = sc?.name
+      ? `<div class="welcome"><p>ನಮಸ್ಕಾರ${sc.teacher ? ', ' + esc(sc.teacher) : ''}</p><h2>${esc(sc.name)}</h2>
+         <div class="meta">${sc.udise ? `<span>UDISE: ${esc(sc.udise)}</span>` : ''}<span>${esc([sc.place, sc.taluk, sc.dist].filter(Boolean).join(', '))}</span>${sc.year ? `<span>ಶೈಕ್ಷಣಿಕ ವರ್ಷ ${esc(sc.year)}</span>` : ''}${PAID && !ACC.isAdmin() ? `<span>ಸಕ್ರಿಯ ಖರೀದಿ: ${ACC.active().length}</span>` : ''}</div></div>`
+         + (PAID && !ACC.isAdmin() && !ACC.active().length ? `<div class="banner" style="margin-top:14px"><span><b>ಬೇಕಾದಷ್ಟು ಮಾತ್ರ ಖರೀದಿಸಿ.</b> ಪಾಠಯೋಜನೆ ₹${CONFIG.prices.lp}, PPT ₹${CONFIG.prices.ppt}, ಅಂದಾಜು ಪತ್ರಿಕೆ ₹${CONFIG.prices.aj} … ಕೆಳಗಿನ ಪಟ್ಟಿಯಲ್ಲಿ 🔒 ಇರುವುದನ್ನು ತೆರೆದು ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ.</span></div>` : '')
+      : `<div class="banner"><span><b>ಸ್ವಾಗತ!</b> ಮೊದಲು ನಿಮ್ಮ ಶಾಲೆಯ ವಿವರ ತುಂಬಿ. ನಂತರ ಪ್ರತಿ download ಮೇಲೂ ಅದು ತಾನಾಗಿಯೇ ಮುದ್ರಣವಾಗುತ್ತದೆ.</span><a class="btn pri" href="#school">ಶಾಲೆಯ ವಿವರ ತುಂಬಿ</a></div>`;
+    const subs = Object.values(DB.subjects);
+    const lpN = subs.reduce((a, s) => a + Object.keys(s.lp).length, 0);
+    const pptN = subs.reduce((a, s) => a + Object.values(s.ppt).reduce((b, u) => b + Object.keys(u).length, 0), 0);
+    const allCls = [...new Set([...classes(), ...Object.keys(DB.aj)])];
+    $('stats').innerHTML = [[lpN, 'ಪಾಠಯೋಜನೆಗಳು'], [pptN, 'PPT ಗಳು'], [Object.keys(DB.aj).length, 'ಅಂದಾಜು ಪತ್ರಿಕೆಗಳು'], [Object.values(DB.docs).reduce((a, l) => a + l.length, 0), 'ಇತರೆ ದಾಖಲೆಗಳು']]
+      .map(([n, l]) => `<div class="card stat"><b>${n}</b><span>${l}</span></div>`).join('');
+    const sorted = subs.sort((a, b) => a.cls - b.cls || (SUBJ_ORDER.indexOf(a.subj) + 1 || 99) - (SUBJ_ORDER.indexOf(b.subj) + 1 || 99));
+    const rows = sorted.map(s => {
+      const parts = Object.keys(s.lp).sort();
+      const pp = Object.values(s.ppt).reduce((b, u) => b + Object.keys(u).length, 0);
+      const m = medium(), lk = ok => ok ? 'pill' : 'pill warn lk';
+      const lpOk = can({ type: 'lp', med: m, cls: s.cls, subj: s.subj }), ppOk = can({ type: 'ppt', med: m, cls: s.cls, subj: s.subj }), ajOk = can({ type: 'aj', med: m, cls: s.cls });
+      return `<tr><td><b>${esc(s.cls)}ನೇ</b></td><td>${esc(subjName(s.subj))}</td>
+        <td><div class="pills">${parts.length ? parts.map(p => `<span class="${lk(lpOk)}">ಭಾಗ ${p}</span>`).join('') : '<span class="pill off">ಇಲ್ಲ</span>'}</div></td>
+        <td>${pp ? `<span class="${lk(ppOk)}">${pp}</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
+        <td>${DB.aj[s.cls] ? `<span class="${lk(ajOk)}">ಸಿದ್ಧ</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
+        <td style="text-align:right"><button class="btn sm" type="button" data-c="${esc(s.cls)}" data-s="${esc(s.subj)}" data-t="${parts.length ? 'lesson' : 'ppt'}">ತೆರೆಯಿರಿ</button></td></tr>`;
+    });
+    $('homeTop').insertAdjacentHTML('beforeend', DB.bad.length ? `<div class="banner bad" style="margin-top:14px"><span>${DB.bad.length} ಫೈಲ್‌ಗಳಲ್ಲಿ ಸಮಸ್ಯೆ ಇರುವುದರಿಂದ (ತಪ್ಪು ಹೆಸರು ಅಥವಾ ಅಪೂರ್ಣ upload) ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಕಾಣುತ್ತಿಲ್ಲ. ಈಗಷ್ಟೇ ಸರಿಪಡಿಸಿದ್ದರೆ "ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ" ಒತ್ತಿ.</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="homeRefresh">ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button><a class="btn sm" href="#files">ನೋಡಿ</a></span></div>` : '');
+    if ($('homeRefresh')) $('homeRefresh').onclick = () => busy($('homeRefresh'), async () => { await loadDB(true); route(); toast('ಫೈಲ್ ಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ.'); });
+    $('catTable').innerHTML = `<thead><tr><th>ತರಗತಿ</th><th>ವಿಷಯ</th><th>ಪಾಠಯೋಜನೆ</th><th>PPT</th><th>ಅಂದಾಜು ಪತ್ರಿಕೆ</th><th></th></tr></thead><tbody>${rows.join('') || `<tr><td colspan="6">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ದಾಖಲೆ ಸೇರಿಸಿಲ್ಲ', '<a href="#files">ಫೈಲ್ ನಿರ್ವಹಣೆ</a> ಪುಟದಲ್ಲಿ ಫೈಲ್ ಹೆಸರು ಹೇಗಿರಬೇಕು ಎಂದು ನೋಡಿ.')}</td></tr>`}</tbody>`;
+    $('catTable').querySelectorAll('button').forEach(b => b.onclick = () => {
+      store.set('bm_pick', { c: b.dataset.c, s: b.dataset.s, p: '1' });
+      location.hash = '#' + b.dataset.t;
+    });
+  },
+
+  lesson() {
+    picker('lp', s => Object.keys(s.lp).length, s => Object.keys(s.lp).sort(), async () => {
+      const { sub, part } = cur('lp'), box = $('lpUnits');
+      $('lpInfo').textContent = ''; $('lpAll').hidden = true;
+      if (!sub || !sub.lp[part]) { $('lpHead').textContent = 'ಘಟಕಗಳು'; box.innerHTML = emptyBox('ಪಾಠಯೋಜನೆ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ'); return; }
+      const files = sub.lp[part], head = `${subjName(sub.subj)} · ${sub.cls}ನೇ ತರಗತಿ · ಭಾಗ ${part}`;
+      const lpp = parseName(files.xlsx || files.json || files.pdf);
+      if (!can(lpp)) { $('lpHead').textContent = head; box.innerHTML = lockHtml(lpp, `${subjName(sub.subj)} ಪಾಠಯೋಜನೆ · ${sub.cls}ನೇ ತರಗತಿ`); return; }
+      const pdfRow = files.pdf ? `<div class="unit"><span class="no pdf">PDF</span><div><b>ಸಂಪೂರ್ಣ ಪಾಠಯೋಜನೆ (PDF)</b><small>ಮೂಲ PDF ಮೇಲೆ ಶಾಲೆಯ ಹೆಸರು ಸೇರಿಸಿ</small></div>
+        <div class="acts"><button class="btn sm" type="button" data-pdf="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-pdf="d">${ICON_DL}PDF</button></div></div>` : '';
+      const data = files.xlsx || files.json;
+      $('lpHead').textContent = head;
+      box.innerHTML = pdfRow + (data ? emptyBox('ತೆರೆಯಲಾಗುತ್ತಿದೆ…') : '');
+      bindPdfRow(box, files.pdf, sub, part);
+      if (!data) return;
+      try {
+        const lp = await loadLesson(data);
+        if (cur('lp').sub !== sub || cur('lp').part !== part) return;
+        $('lpInfo').textContent = `${lp.units.length} ಘಟಕಗಳು · 5E ಮಾದರಿ`;
+        $('lpAll').hidden = false;
+        box.innerHTML = pdfRow + lp.units.map((u, i) => `<div class="unit"><span class="no">${esc(u.no)}</span>
+          <div><b>${esc(u.title)}</b><small>${u.objectives?.length || 0} ಉದ್ದೇಶಗಳು · ${u.rows?.length || 0} ಹಂತಗಳು</small></div>
+          <div class="acts"><button class="btn sm" type="button" data-a="v" data-i="${i}">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-a="d" data-i="${i}">${ICON_DL}PDF</button></div></div>`).join('');
+        bindPdfRow(box, files.pdf, sub, part);
+        const meta = { cls: sub.cls, subject: subjName(sub.subj), part, lang: lp.lang, subjLabel: lp.subjLabel };
+        box.querySelectorAll('button[data-a]').forEach(b => b.onclick = () => busy(b, () => lessonPdf(meta, [lp.units[+b.dataset.i]], b.dataset.a === 'v')));
+        $('lpAll').onclick = () => busy($('lpAll'), () => lessonPdf(meta, lp.units, false));
+      } catch (e) { box.innerHTML = pdfRow + emptyBox('ತೆರೆಯಲು ಆಗಲಿಲ್ಲ', esc(e.message)); bindPdfRow(box, files.pdf, sub, part); }
+    });
+  },
+
+  ppt() {
+    picker('pp', s => Object.keys(s.ppt).length, s => Object.keys(s.ppt).sort(), async () => {
+      const { sub, part } = cur('pp'), box = $('ppList');
+      if (!sub || !sub.ppt[part]) { box.innerHTML = emptyBox('ಈ ವಿಷಯಕ್ಕೆ PPT ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ'); return; }
+      let units = [];
+      const pp0 = parseName(Object.values(sub.ppt[part][0].files)[0].name), pOk = can(pp0);
+      const lpf = sub.lp[part]?.xlsx || sub.lp[part]?.json;
+      if (lpf && can(parseName(lpf))) { try { units = (await loadLesson(lpf)).units; } catch (e) {} }
+      if (cur('pp').sub !== sub || cur('pp').part !== part) return;
+      const utitle = n => units.find(u => +u.no === +n)?.title;
+      /* ಘಟಕ ಸಂಖ್ಯೆ ಇಲ್ಲದ PPT: ಹೆಸರನ್ನು ಪಾಠದ ಹೆಸರಿನೊಂದಿಗೆ ಹೋಲಿಸಿ ಘಟಕ ಕಂಡುಕೊಳ್ಳುವುದು */
+      const guess = t => {
+        const k = skel(t); if (k.length < 3) return null;
+        const words = String(t).split(/[\s,&\-–]+/).map(skel).filter(w => w.length >= 2 && !['ಮತತ', 'ಹಗ', 'and'].includes(w));
+        let best = null, bestScore = 0;
+        for (const u of units) {
+          const x = skel(u.title); if (!x) continue;
+          const sc = (x.includes(k) || k.includes(x)) ? 1 : words.length ? words.filter(w => x.includes(w)).length / words.length : 0;
+          if (sc > bestScore) { bestScore = sc; best = +u.no; }
+        }
+        return bestScore >= 0.75 ? best : null;
+      };
+      const items = sub.ppt[part].map(it => ({ ...it, u: it.unit ?? guess(it.title) }))
+        .sort((a, b) => (a.u ?? 999) - (b.u ?? 999) || (a.sub ?? 0) - (b.sub ?? 0) || a.title.localeCompare(b.title));
+      let lastU;
+      box.innerHTML = items.map((it, i) => {
+        const f = it.files, kinds = [f.pdf && 'PDF', f.pptx && 'PowerPoint'].filter(Boolean).join(' + ');
+        const ut = it.u != null ? (utitle(it.u) || 'ಘಟಕ ' + it.u) : 'ಇತರೆ PPT';
+        const name = it.title ? (it.sub ? `PPT ${it.sub}: ${it.title}` : it.title) : (it.sub ? `${ut} — PPT ${it.sub}` : ut);
+        const small = [it.title || it.sub ? (it.u != null ? `ಘಟಕ ${it.u}: ${ut}` : '') : '', kinds, mb((f.pdf?.size || 0) + (f.pptx?.size || 0))].filter(Boolean).join(' · ');
+        const badge = it.u == null ? '★' : (it.u === lastU ? '' : it.u); lastU = it.u;
+        return `<div class="unit"><span class="no"${badge === '' ? ' style="visibility:hidden"' : ''}>${badge}</span><div><b>${esc(name)}</b><small>${esc(small)}</small></div>
+          <div class="acts">${!pOk ? '<span class="pill warn lk">ಖರೀದಿಸಿಲ್ಲ</span>' : `<button class="btn sm" type="button" data-i="${i}" data-k="${f.pdf ? 'v' : 'ov'}">${ICON_EYE}ಮುನ್ನೋಟ</button>
+          ${f.pdf ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : ''}
+          ${f.pptx ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pptx">${ICON_DL}PowerPoint</button>` : `<button class="btn sm" type="button" data-i="${i}" data-k="pdf2pptx" title="PDF ಪುಟಗಳನ್ನು ಸ್ಲೈಡ್‌ಗಳಾಗಿ">${ICON_DL}PowerPoint</button>`}`}</div></div>`;
+      }).join('');
+      if (!pOk) box.insertAdjacentHTML('afterbegin', lockHtml(pp0, `${subjName(sub.subj)} PPT ಗಳು · ${sub.cls}ನೇ ತರಗತಿ`));
+      box.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => {
+        const it = items[+b.dataset.i], label = it.title || (it.u != null ? utitle(it.u) || 'ಘಟಕ ' + it.u : 'PPT');
+        if (b.dataset.k === 'ov') return officeView(it.files.pptx.name, label, () => pptFile(sub, part, it, label, 'pptx'));
+        busy(b, () => pptFile(sub, part, it, label, b.dataset.k));
+      });
+    });
+  },
+
+  andaju() {
+    const c = $('ajClass'), list = Object.keys(DB.aj).sort((a, b) => a - b);
+    const last = store.get('bm_pick', {});
+    fillSelect(c, list.map(x => [x, x + 'ನೇ ತರಗತಿ']), last.c);
+    if (!list.length) { $('ajTable').innerHTML = `<tr><td>${emptyBox('ಅಂದಾಜು ಪತ್ರಿಕೆ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ', 'ಫೈಲ್ ಹೆಸರು: <code>aj-6.xlsx</code> (6ನೇ ತರಗತಿಗೆ)')}</td></tr>`; $('ajSem').innerHTML = ''; $('ajSum').innerHTML = ''; return; }
+    c.onchange = () => { store.set('bm_pick', { ...store.get('bm_pick', {}), c: c.value }); loadAj(); };
+    loadAj();
+  },
+
+  school() {
+    const sc = school() || {};
+    const map = { sName: 'name', sUdise: 'udise', sYear: 'year', sPlace: 'place', sTaluk: 'taluk', sDist: 'dist', sTeacher: 'teacher', sHm: 'hm' };
+    $('sMed').value = medium();
+    Object.entries(map).forEach(([id, k]) => { $(id).value = sc[k] ?? (k === 'year' ? '2026-27' : ''); });
+    $('sWm').checked = !!sc.watermark;
+    const locked = PAID && !ACC.isAdmin();
+    ['sName', 'sUdise', 'sPlace', 'sTaluk', 'sDist'].forEach(id => { $(id).disabled = locked; });
+    $('sLockNote').hidden = !locked;
+    renderAccount();
+    if (PAID && ACC.isAdmin() && !ACC.prof()) $('schoolForm').closest('.card').hidden = true;
+    $('schoolForm').onsubmit = async e => {
+      e.preventDefault();
+      const rec = {}; Object.entries(map).forEach(([id, k]) => { rec[k] = $(id).value.trim(); });
+      if (PAID) {
+        rec.watermark = $('sWm').checked; rec.medium = $('sMed').value;
+        try { await ACC.saveOwn(rec); } catch (x) { toast('ಉಳಿಸಲು ಆಗಲಿಲ್ಲ. Internet ನೋಡಿ.', true); return; }
+        if (rec.medium !== medium()) { store.set('bm_medium', rec.medium); store.set('bm_pick', {}); $('medSel').value = rec.medium; await loadDB(false); }
+        renderChip(); toast('ಉಳಿಸಲಾಗಿದೆ.'); return;
+      }
+      if (!rec.name) { toast('ಶಾಲೆಯ ಹೆಸರು ಕಡ್ಡಾಯ.', true); $('sName').focus(); return; }
+      rec.watermark = $('sWm').checked; rec.medium = $('sMed').value;
+      if (rec.medium !== medium()) { store.set('bm_medium', rec.medium); store.set('bm_pick', {}); $('medSel').value = rec.medium; loadDB(false); }
+      store.set('bm_school', rec); renderChip();
+      toast('ಉಳಿಸಲಾಗಿದೆ. ಇನ್ನು ಮುಂದೆ ಎಲ್ಲಾ download ಗಳಲ್ಲಿ ಈ ವಿವರ ಬರುತ್ತದೆ.');
+      setTimeout(() => { location.hash = '#home'; }, 700);
+    };
+  },
+
+  files() { makerInit(); renderFiles(); },
+
+  admin() {
+    $('adSearch').oninput = () => { ADM.q = $('adSearch').value; adminUsers(); };
+    $('adRefresh').onclick = () => busy($('adRefresh'), async () => { await adminLoad(); adminRender(); toast('ನವೀಕರಿಸಲಾಗಿದೆ.'); });
+    $('adOrders').innerHTML = emptyBox('ತೆರೆಯಲಾಗುತ್ತಿದೆ…');
+    adminLoad().then(adminRender).catch(e => { console.error(e); $('adOrders').innerHTML = emptyBox('ತೆರೆಯಲು ಆಗಲಿಲ್ಲ', 'Firestore rules ನಲ್ಲಿ admin ಸಂಖ್ಯೆ ಸರಿಯಾಗಿದೆಯೇ ನೋಡಿ. ' + esc(e.message)); });
+  },
+
+  docs() {
+    const names = Object.keys(DB.docs).sort((a, b) => docTitle(a).localeCompare(docTitle(b)));
+    const box = $('dcList');
+    if (!names.length) { fillSelect($('dcName'), []); fillSelect($('dcClass'), []); box.innerHTML = emptyBox('ಇತರೆ ದಾಖಲೆಗಳು ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ', 'ಉದಾ: ಕ್ರಿಯಾ ಯೋಜನೆ → <code>doc-kriya-6-samaja-1.xlsx</code>. <a href="#files">ಫೈಲ್ ನಿರ್ವಹಣೆ</a> ಪುಟದಲ್ಲಿ ಹೆಸರು ತಯಾರಿಸಿ.'); return; }
+    const last = store.get('bm_doc', {});
+    fillSelect($('dcName'), names.map(n => [n, docTitle(n)]), last.n);
+    const draw = () => {
+      const list = DB.docs[$('dcName').value] || [];
+      const cl = [...new Set(list.map(e => e.cls).filter(Boolean))].sort((a, b) => a - b);
+      fillSelect($('dcClass'), [['', 'ಎಲ್ಲಾ ತರಗತಿಗಳು'], ...cl.map(c => [c, c + 'ನೇ ತರಗತಿ'])], store.get('bm_doc', {}).c ?? store.get('bm_pick', {}).c);
+      const c = $('dcClass').value;
+      const rows = list.filter(e => !c || !e.cls || e.cls === c)
+        .sort((a, b) => (a.cls || 0) - (b.cls || 0) || (SUBJ_ORDER.indexOf(a.subj) - SUBJ_ORDER.indexOf(b.subj)) || (a.part || 0) - (b.part || 0));
+      box.innerHTML = rows.map((e, i) => {
+        const t = [docTitle(e.doc), e.cls ? e.cls + 'ನೇ ತರಗತಿ' : 'ಎಲ್ಲಾ ತರಗತಿಗಳು', e.subj && subjName(e.subj), e.part && 'ಭಾಗ ' + e.part].filter(Boolean).join(' · ');
+        const kinds = [e.files.xlsx && 'Excel', e.files.pdf && 'PDF', e.files.pptx && 'PowerPoint'].filter(Boolean).join(' + ');
+        const size = Object.values(e.files).reduce((a, x) => a + x.size, 0);
+        const canPdf = e.files.pdf || e.files.xlsx;
+        const dp = parseName(Object.values(e.files)[0].name);
+        if (!can(dp)) return `<div class="unit"><span class="no">${e.cls || '★'}</span><div><b>${esc(t)}</b><small>${kinds} · ${e.cls ? '' : 'ಯಾವುದೇ ಖರೀದಿಯೊಂದಿಗೆ ಉಚಿತ · '}🔒 ಖರೀದಿಸಿಲ್ಲ</small></div>
+          <div class="acts">${packOpts(dp).slice(0, 2).map(k => `<button class="btn sm${k.startsWith('doc') ? ' pri' : ''}" type="button" data-pack="${esc(k)}">${k.startsWith('doc') ? 'ಈ ದಾಖಲೆ' : k.startsWith('cls') ? 'ತರಗತಿ ಪ್ಯಾಕ್' : 'ಶಾಲಾ ಪ್ಯಾಕ್'} ₹${packPrice(k)}</button>`).join('')}</div></div>`;
+        return `<div class="unit"><span class="no">${e.cls || '★'}</span><div><b>${esc(t)}</b><small>${kinds} · ${mb(size)}</small></div>
+          <div class="acts">${canPdf ? `<button class="btn sm" type="button" data-i="${i}" data-k="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : `<button class="btn sm" type="button" data-i="${i}" data-k="ov">${ICON_EYE}ಮುನ್ನೋಟ</button>`}
+          ${e.files.pptx ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pptx">${ICON_DL}PowerPoint</button>` : ''}</div></div>`;
+      }).join('') || emptyBox('ಈ ತರಗತಿಗೆ ಈ ದಾಖಲೆ ಇಲ್ಲ');
+      box.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => { const e = rows[+b.dataset.i]; if (b.dataset.k === 'ov') return officeView(e.files.pptx.name, docTitle(e.doc), () => docFile(e, 'pptx')); busy(b, () => docFile(e, b.dataset.k)); });
+    };
+    $('dcName').onchange = () => { store.set('bm_doc', { n: $('dcName').value }); draw(); };
+    $('dcClass').onchange = () => { store.set('bm_doc', { n: $('dcName').value, c: $('dcClass').value }); draw(); };
+    draw();
+  }
+};
+
+/* ---------- ಪಾಠಯೋಜನೆ ---------- */
+let lpFormat = store.get('bm_fmt', 'unit'), lpRefl = store.get('bm_refl', true);
+document.querySelectorAll('#lpRefl button').forEach(b => {
+  b.classList.toggle('on', (b.dataset.r === '1') === lpRefl);
+  b.onclick = () => { lpRefl = b.dataset.r === '1'; store.set('bm_refl', lpRefl); document.querySelectorAll('#lpRefl button').forEach(x => x.classList.toggle('on', x === b)); };
+});
+document.querySelectorAll('#lpFmt button').forEach(b => {
+  b.classList.toggle('on', b.dataset.f === lpFormat);
+  b.onclick = () => { lpFormat = b.dataset.f; store.set('bm_fmt', lpFormat); document.querySelectorAll('#lpFmt button').forEach(x => x.classList.toggle('on', x === b)); };
+});
+async function lessonPdf(meta, units, preview) {
+  const sc = requireSchool(); if (!sc) return;
+  const lp = { class: meta.cls, subject: meta.subject, part: meta.part, reflection: lpRefl, lang: meta.lang, subjLabel: meta.subjLabel };
+  const raw = await (lpFormat === 'unit' ? PM.lessonUnit : PM.lessonPeriod)(lp, units, sc);
+  const out = await PM.stampPdf(raw, sc);
+  const one = units.length === 1;
+  const name = fname('ಪಾಠಯೋಜನೆ', meta.cls + 'ನೇ', meta.subject, 'ಭಾಗ' + meta.part, one ? `ಘಟಕ${units[0].no}` : 'ಎಲ್ಲಾ_ಘಟಕಗಳು', lpFormat === 'unit' ? 'ಘಟಕವಾರು' : 'ಅವಧಿವಾರು') + '.pdf';
+  if (preview) await PV.open(out, one ? `ಘಟಕ ${units[0].no}: ${units[0].title}` : 'ಎಲ್ಲಾ ಘಟಕಗಳು', name);
+  else { saveFile(out, name); toast('Download ಆಯಿತು.'); }
+}
+function bindPdfRow(box, file, sub, part) {
+  if (!file) return;
+  box.querySelectorAll('button[data-pdf]').forEach(b => b.onclick = () => busy(b, async () => {
+    const sc = requireSchool(); if (!sc) return;
+    const out = await PM.stampUploaded(await getBytes(file), sc);
+    const name = fname('ಪಾಠಯೋಜನೆ', sub.cls + 'ನೇ', subjName(sub.subj), 'ಭಾಗ' + part) + '.pdf';
+    if (b.dataset.pdf === 'v') await PV.open(out, 'ಸಂಪೂರ್ಣ ಪಾಠಯೋಜನೆ', name); else { saveFile(out, name); toast('Download ಆಯಿತು.'); }
+  }));
+}
+
+/* ---------- PPT ---------- */
+async function pptFile(sub, part, it, label, kind) {
+  const sc = requireSchool(); if (!sc) return;
+  const f = it.files;
+  const base = fname('PPT', sub.cls + 'ನೇ', subjName(sub.subj), `ಭಾಗ${part}`, it.u != null && `ಘಟಕ${it.u}`, label);
+  if (kind === 'pdf2pptx') {
+    const out = await PM.pdfToPptx(await getBytes(f.pdf.name), sc, (i, n) => toast(`PowerPoint ತಯಾರಾಗುತ್ತಿದೆ… ಸ್ಲೈಡ್ ${i} / ${n}`));
+    saveFile(out, base + '.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+    toast('PowerPoint download ಆಯಿತು.');
+    return;
+  }
+  if (kind === 'pptx') {
+    toast('PowerPoint ತಯಾರಾಗುತ್ತಿದೆ… ದೊಡ್ಡ ಫೈಲ್ ಆಗಿದ್ದರೆ ಸ್ವಲ್ಪ ಸಮಯ ಬೇಕು.');
+    saveFile(await PM.stampPptx(await getBytes(f.pptx.name), sc), base + '.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+    toast('PowerPoint download ಆಯಿತು.');
+    return;
+  }
+  const out = await PM.stampUploaded(await getBytes(f.pdf.name), sc);
+  if (kind === 'v') await PV.open(out, label, base + '.pdf'); else { saveFile(out, base + '.pdf'); toast('Download ಆಯಿತು.'); }
+}
+
+/* PowerPoint ಮುನ್ನೋಟ: Microsoft ನ ಉಚಿತ Office viewer (GitHub Pages ವಿಳಾಸದಲ್ಲಿ ಮಾತ್ರ ಕೆಲಸ ಮಾಡುತ್ತದೆ) */
+let ovDownload = null;
+async function officeView(file, title, onDownload) {
+  let url;
+  if (PAID) {
+    try {
+      const r = await fetch(CONFIG.worker.replace(/\/$/, '') + '/sign/' + encodeURIComponent(file), { headers: { Authorization: 'Bearer ' + await ACC.token() } });
+      if (!r.ok) throw new Error(r.status);
+      url = (await r.json()).url;
+    } catch (e) { toast('ಮುನ್ನೋಟ ತೆರೆಯಲು ಆಗಲಿಲ್ಲ. ನೇರವಾಗಿ PowerPoint download ಮಾಡಿ.', true); return; }
+  } else {
+    if (!location.hostname.endsWith('.github.io')) { toast('PowerPoint ಮುನ್ನೋಟ GitHub ವೆಬ್‌ಸೈಟ್ ವಿಳಾಸದಲ್ಲಿ ಮಾತ್ರ ಕಾಣುತ್ತದೆ.', true); return; }
+    url = new URL(encodeURIComponent(file), location.href).href;
+  }
+  const src = {
+    office: 'https://view.officeapps.live.com/op/embed.aspx?src=' + encodeURIComponent(url),
+    google: 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(url)
+  };
+  $('ovTitle').textContent = title;
+  ovDownload = onDownload;
+  const set = k => { $('ovFrame').src = src[k]; document.querySelectorAll('#ovSrc button').forEach(b => b.classList.toggle('on', b.dataset.s === k)); };
+  document.querySelectorAll('#ovSrc button').forEach(b => b.onclick = () => set(b.dataset.s));
+  set('office');
+  $('ov').showModal();
+}
+$('ovClose').onclick = () => { $('ov').close(); $('ovFrame').src = 'about:blank'; };
+$('ovDl').onclick = () => { if (ovDownload) busy($('ovDl'), ovDownload); };
+
+/* ---------- ಇತರೆ ದಾಖಲೆಗಳು ---------- */
+async function docFile(e, kind) {
+  const sc = requireSchool(); if (!sc) return;
+  const title = docTitle(e.doc), sub = [e.cls && e.cls + 'ನೇ ತರಗತಿ', e.subj && subjName(e.subj), e.part && 'ಭಾಗ ' + e.part].filter(Boolean).join(' · ');
+  const base = fname(title, e.cls && e.cls + 'ನೇ', e.subj && subjName(e.subj), e.part && 'ಭಾಗ' + e.part);
+  if (kind === 'pptx') {
+    saveFile(await PM.stampPptx(await getBytes(e.files.pptx.name), sc), base + '.pptx', 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+    toast('PowerPoint download ಆಯಿತು.'); return;
+  }
+  let out;
+  if (e.files.pdf) out = await PM.stampUploaded(await getBytes(e.files.pdf.name), sc);
+  else {
+    const key = e.files.xlsx.name;
+    let sheets = cache[key];
+    if (!sheets) { try { sheets = cache[key] = await XL.read(await getBytes(key)); } catch (er) { throw new Error(`"${key}" Excel ಓದಲು ಆಗಲಿಲ್ಲ.`); } }
+    out = await PM.stampPdf(await PM.excelDoc(sheets, title, sub), sc);
+  }
+  if (kind === 'v') await PV.open(out, [title, sub].filter(Boolean).join(' · '), base + '.pdf'); else { saveFile(out, base + '.pdf'); toast('Download ಆಯಿತು.'); }
+}
+
+/* ---------- ಅಂದಾಜು ಪತ್ರಿಕೆ ---------- */
+let AJ = null;
+async function loadAj() {
+  const cls = $('ajClass').value, file = DB.aj[cls];
+  const ajp = parseName(file), ok = can(ajp);
+  ['ajView', 'ajBlank', 'ajFilled'].forEach(id => { $(id).hidden = !ok; });
+  if (!ok) {
+    AJ = null; $('ajSem').innerHTML = ''; $('ajSum').innerHTML = ''; fillSelect($('ajSubject'), []);
+    $('ajHead').textContent = `ಅಂದಾಜು ಪತ್ರಿಕೆ · ${cls}ನೇ ತರಗತಿ`;
+    $('ajTable').innerHTML = `<tr><td style="padding:0">${lockHtml(ajp, `${cls}ನೇ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ`)}</td></tr>`;
+    return;
+  }
+  $('ajTable').innerHTML = `<tr><td>${emptyBox('ತೆರೆಯಲಾಗುತ್ತಿದೆ…')}</td></tr>`;
+  try {
+    const sems = await loadAndaju(file);
+    sems.forEach(x => { x.lang = { en: 'en', mr: 'mr' }[medium()] || 'kn'; });
+    if ($('ajClass').value !== cls) return;
+    let si = Math.min(store.get('bm_ajsem', 0), sems.length - 1);
+    $('ajSem').innerHTML = sems.map((s, i) => `<button type="button" data-i="${i}" class="${i === si ? 'on' : ''}">${esc(s.sem)}</button>`).join('');
+    $('ajSem').querySelectorAll('button').forEach(b => b.onclick = () => {
+      si = +b.dataset.i; store.set('bm_ajsem', si);
+      $('ajSem').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b)); draw();
+    });
+    const subjSel = $('ajSubject');
+    const draw = () => {
+      const sem = { ...sems[si], cls: sems[si].cls || cls };
+      const subs = [...new Set(sem.rows.filter(r => !r.event && r.subject).map(r => r.subject))];
+      fillSelect(subjSel, [['', 'ಎಲ್ಲಾ ವಿಷಯಗಳು'], ...subs.map(x => [x, x])], store.get('bm_ajsubj', ''));
+      subjSel.onchange = () => { store.set('bm_ajsubj', subjSel.value); renderAj(); };
+      const renderAj = () => {
+        const key = `bm_aj3_${medium() === 'kn' ? '' : medium() + '_'}${cls}_${sem.sheet}`, state = store.get(key, {});
+        const fs = subjSel.value;
+        const rows = sem.rows.filter(r => !fs || (!r.event && r.subject === fs));
+        let lastM = null, lastS = null;
+        $('ajHead').textContent = `${sem.sem} · ${cls}ನೇ ತರಗತಿ`;
+        $('ajTable').innerHTML = `<thead><tr><th>ತಿಂಗಳು</th><th>ವಿಷಯ</th><th>ಬೋಧಿಸಬೇಕಾದ ಘಟಕಗಳು</th><th>ಅವಧಿ</th><th>ಸ್ಥಿತಿ</th><th>ಸಾಗದಿದ್ದರೆ ಕಾರಣ</th><th>ಕೈಗೊಂಡ ಕ್ರಮಗಳು</th><th>ಮೌಲ್ಯಮಾಪನ</th></tr></thead><tbody>` +
+          rows.map((r, i) => {
+            const newM = r.month !== lastM, m = newM ? r.month : '', sj = (newM || r.subject !== lastS) ? r.subject : '';
+            lastM = r.month; lastS = r.subject;
+            if (r.event) return `<tr class="ev${newM ? ' grp' : ''}"><td class="m">${esc(m)}</td><td colspan="7">${esc(r.text)}</td></tr>`;
+            const t = state[r.key] || {};
+            return `<tr data-k="${esc(r.key)}" class="${newM ? 'grp ' : ''}${t.s || ''}"><td class="m">${esc(m)}</td><td class="sj">${esc(sj)}</td><td>${esc(r.unit)}</td><td class="n">${esc(r.periods)}</td>
+              <td><span class="st"><button type="button" data-v="done" class="${t.s === 'done' ? 'on' : ''}">ಸಾಗಿದೆ</button><button type="button" data-v="not" class="${t.s === 'not' ? 'on' : ''}">ಸಾಗಿಲ್ಲ</button></span></td>
+              <td><input type="text" id="ajr${i}" data-f="reason" value="${esc(t.reason || '')}" aria-label="ಕಾರಣ"></td>
+              <td><input type="text" id="aja${i}" data-f="action" value="${esc(t.action || '')}" aria-label="ಕೈಗೊಂಡ ಕ್ರಮ"></td>
+              <td><input type="text" id="aje${i}" data-f="eval" value="${esc(t.eval || '')}" aria-label="ಮೌಲ್ಯಮಾಪನ"></td></tr>`;
+          }).join('') + '</tbody>';
+        const sum = () => {
+          const st = store.get(key, {}), u = rows.filter(r => !r.event);
+          const d = u.filter(r => st[r.key]?.s === 'done'), n = u.filter(r => st[r.key]?.s === 'not');
+          const per = a => a.reduce((x, r) => x + (+r.periods || 0), 0);
+          $('ajSum').innerHTML = `<span>ಸಾಗಿದೆ: <b>${d.length}</b> / ${u.length}</span><span>ಅವಧಿ: <b>${per(d)}</b> / ${per(u)}</span>${n.length ? `<span>ಸಾಗಿಲ್ಲ: <b>${n.length}</b></span>` : ''}`;
+        };
+        $('ajTable').querySelectorAll('tr[data-k]').forEach(tr => {
+          const k = tr.dataset.k;
+          const upd = fn => { const st = store.get(key, {}); st[k] = st[k] || {}; fn(st[k]); store.set(key, st); sum(); };
+          tr.querySelectorAll('.st button').forEach(b => b.onclick = () => upd(o => {
+            o.s = o.s === b.dataset.v ? '' : b.dataset.v;
+            tr.classList.remove('done', 'not'); if (o.s) tr.classList.add(o.s);
+            tr.querySelectorAll('.st button').forEach(x => x.classList.toggle('on', x.dataset.v === o.s));
+          }));
+          tr.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => upd(o => { o[inp.dataset.f] = inp.value; })));
+        });
+        sum();
+        AJ = { sem, rows, key, subject: fs };
+      };
+      renderAj();
+    };
+    draw();
+  } catch (e) { $('ajTable').innerHTML = `<tr><td>${emptyBox('ತೆರೆಯಲು ಆಗಲಿಲ್ಲ', esc(e.message))}</td></tr>`; }
+}
+async function andajuPdf(blank, preview) {
+  if (!AJ) return;
+  const sc = requireSchool(); if (!sc) return;
+  const raw = await PM.andaju(AJ.sem, AJ.rows, store.get(AJ.key, {}), sc, { blank, subject: AJ.subject });
+  const out = await PM.stampPdf(raw, sc);
+  const name = fname('ಅಂದಾಜು_ಪತ್ರಿಕೆ', AJ.sem.cls + 'ನೇ', AJ.sem.sem, AJ.subject, blank ? 'ಖಾಲಿ' : '') + '.pdf';
+  if (preview) await PV.open(out, 'ಅಂದಾಜು ಪತ್ರಿಕೆ', name); else { saveFile(out, name); toast('Download ಆಯಿತು.'); }
+}
+$('ajView').onclick = () => busy($('ajView'), () => andajuPdf(false, true));
+$('ajBlank').onclick = () => busy($('ajBlank'), () => andajuPdf(true, false));
+$('ajFilled').onclick = () => busy($('ajFilled'), () => andajuPdf(false, false));
+
+/* ---------- ಫೈಲ್ ನಿರ್ವಹಣೆ ---------- */
+let makerReady = false;
+function makerInit() {
+  if (makerReady) return; makerReady = true;
+  fillSelect($('mkClass'), Array.from({ length: 10 }, (_, i) => [i + 1, (i + 1) + 'ನೇ ತರಗತಿ']), 6);
+  fillSelect($('mkSubj'), Object.entries(SUBJECTS).map(([k, v]) => [k, `${v} (${k})`]), 'samaja');
+  const exts = { lp: [['xlsx', 'Excel (.xlsx)'], ['pdf', 'PDF (.pdf)']], ppt: [['pdf', 'PDF (.pdf)'], ['pptx', 'PowerPoint (.pptx)']], aj: [['xlsx', 'Excel (.xlsx)']], doc: [['xlsx', 'Excel (.xlsx)'], ['pdf', 'PDF (.pdf)'], ['pptx', 'PowerPoint (.pptx)']] };
+  fillSelect($('mkDoc'), Object.entries(DOCS).map(([k, v]) => [k, `${v} (${k})`]), 'kriya');
+  fillSelect($('mkDocCls'), [['', 'ಎಲ್ಲಾ ತರಗತಿಗಳಿಗೆ'], ...Array.from({ length: 10 }, (_, i) => [i + 1, (i + 1) + 'ನೇ ತರಗತಿ'])], 6);
+  fillSelect($('mkDocSubj'), [['', 'ಎಲ್ಲಾ ವಿಷಯಗಳಿಗೆ'], ...Object.entries(SUBJECTS).map(([k, v]) => [k, `${v} (${k})`])], 'samaja');
+  const upd = () => {
+    const t = $('mkType').value;
+    if ($('mkExt').dataset.t !== t) { fillSelect($('mkExt'), exts[t]); $('mkExt').dataset.t = t; }
+    const D = t === 'doc';
+    $('mkSubjW').hidden = t === 'aj' || D; $('mkPartW').hidden = t === 'aj' || D; $('mkUnitW').hidden = t !== 'ppt'; $('mkTitleW').hidden = t !== 'ppt'; $('mkClassW').hidden = D;
+    ['mkDocW', 'mkDocClsW', 'mkDocSubjW', 'mkDocPartW'].forEach(id => { $(id).hidden = !D; });
+    if (!$('mkDocCls').value) $('mkDocSubj').value = '';
+    if (!$('mkDocSubj').value) $('mkDocPart').value = '';
+    $('mkDocSubj').disabled = !$('mkDocCls').value; $('mkDocPart').disabled = !$('mkDocSubj').value;
+    const c = $('mkClass').value, s = $('mkSubj').value, p = $('mkPart').value, u = Math.max(1, +$('mkUnit').value || 1), e = $('mkExt').value;
+    const pre = $('mkMed').value === 'kn' ? '' : $('mkMed').value + '-';
+    $('mkOut').textContent = pre + (D ? ['doc', $('mkDoc').value, $('mkDocCls').value, $('mkDocSubj').value, $('mkDocPart').value].filter(Boolean).join('-') + '.' + e
+      : t === 'aj' ? `aj-${c}.${e}` : t === 'lp' ? `lp-${c}-${s}-${p}.${e}` : `ppt-${c}-${s}-${p}-${u}${$('mkTitle').value.trim() ? '-' + $('mkTitle').value.trim().replace(/[-\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ') : ''}.${e}`);
+    $('mkNote').textContent = D ? 'Excel ಆದರೆ ವೆಬ್‌ಸೈಟ್ ಅದನ್ನು ಕೋಷ್ಟಕದ PDF ಆಗಿ ತೋರಿಸುತ್ತದೆ (ಖಾಲಿ ಕಾಲಂಗಳು ಖಾಲಿಯಾಗಿಯೇ ಇರುತ್ತವೆ). Excel ನಲ್ಲಿ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನ ಸಾಲು ಇದ್ದರೆ ಅದು ತಾನಾಗಿಯೇ ಬಿಡಲ್ಪಡುತ್ತದೆ. ಪಟ್ಟಿಯಲ್ಲಿ ಇಲ್ಲದ ದಾಖಲೆ ಬೇಕಿದ್ದರೆ index.html ನ DOCS ಪಟ್ಟಿಯಲ್ಲಿ ಒಂದು ಸಾಲು ಸೇರಿಸಿ.'
+      : t === 'aj' ? 'ಒಂದು ತರಗತಿಗೆ ಒಂದು ಅಂದಾಜು ಪತ್ರಿಕೆ. ಎರಡೂ ಸೆಮಿಸ್ಟರ್‌ಗಳು ಒಂದೇ Excel ನ ಎರಡು sheet ಗಳಲ್ಲಿ ಇರಲಿ.'
+      : t === 'lp' ? 'ಭಾಗ 1 = ಪ್ರಥಮ ಸೆಮಿಸ್ಟರ್, ಭಾಗ 2 = ದ್ವಿತೀಯ ಸೆಮಿಸ್ಟರ್. Excel ಮತ್ತು PDF ಎರಡನ್ನೂ ಹಾಕಬಹುದು.'
+      : 'ಒಂದೇ ಪಾಠಕ್ಕೆ 2–3 PPT ಇದ್ದರೆ ಘಟಕ ಸಂಖ್ಯೆ ಒಂದೇ ಇರಲಿ, ಬೇರೆ ಬೇರೆ "PPT ಯ ಹೆಸರು" ಕೊಡಿ (ಉದಾ: ಶಿಲೆಗಳು, ನೀರು). ಘಟಕ ಸಂಖ್ಯೆ ಆ ಭಾಗದ ಪಾಠಯೋಜನೆಯ ಘಟಕ ಸಂಖ್ಯೆಯೇ ಆಗಿರಲಿ. ಆಗ PPT ಗೆ ಪಾಠದ ಹೆಸರು ತಾನಾಗಿಯೇ ಬರುತ್ತದೆ. 25 MB ಗಿಂತ ದೊಡ್ಡ ಫೈಲ್ upload ಆಗುವುದಿಲ್ಲ.';
+  };
+  ['mkMed', 'mkType', 'mkClass', 'mkSubj', 'mkPart', 'mkUnit', 'mkTitle', 'mkExt', 'mkDoc', 'mkDocCls', 'mkDocSubj', 'mkDocPart'].forEach(id => $(id).addEventListener('input', upd));
+  $('mkCopy').onclick = async () => {
+    const t = $('mkOut').textContent;
+    try { await navigator.clipboard.writeText(t); toast('Copy ಆಯಿತು: ' + t); }
+    catch (e) { const r = document.createRange(); r.selectNodeContents($('mkOut')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('ಹೆಸರು ಆಯ್ಕೆಯಾಗಿದೆ. Ctrl+C ಒತ್ತಿ.'); }
+  };
+  upd();
+}
+function describe(p) {
+  const md = p.med && p.med !== 'kn' ? MEDIA[p.med] + ' · ' : '';
+  return md + describe0(p);
+}
+function describe0(p) {
+  if (p.subj && !SUBJECTS[p.subj]) return `⚠ "${p.subj}" ಎಂಬ ವಿಷಯ ಗೊತ್ತಿಲ್ಲ. ಫೈಲ್ ಹೆಸರಿನಲ್ಲಿ ${Object.keys(SUBJECTS).slice(0, 7).join(', ')}… ಇವುಗಳಲ್ಲಿ ಒಂದನ್ನು ಬಳಸಿ.`;
+  if (p.type === 'doc') return [docTitle(p.doc), p.cls ? p.cls + 'ನೇ' : 'ಎಲ್ಲಾ ತರಗತಿಗಳು', p.subj && subjName(p.subj), p.part && 'ಭಾಗ ' + p.part].filter(Boolean).join(' · ');
+  if (p.type === 'aj') return `ಅಂದಾಜು ಪತ್ರಿಕೆ · ${p.cls}ನೇ ತರಗತಿ`;
+  if (p.type === 'lp') return `ಪಾಠಯೋಜನೆ · ${p.cls}ನೇ · ${subjName(p.subj)} · ಭಾಗ ${p.part}`;
+  return ['PPT', p.cls + 'ನೇ', subjName(p.subj), 'ಭಾಗ ' + p.part, p.unit != null && 'ಘಟಕ ' + p.unit + (p.sub ? '.' + p.sub : ''), p.title && '“' + p.title + '”'].filter(Boolean).join(' · ');
+}
+function renderFiles() {
+  if (!FULL) { $('fTable').innerHTML = ''; $('fSummary').innerHTML = ''; return; }
+  const big = FULL.all.filter(f => f.size > 25 * 1048576);
+  const okN = FULL.all.length - FULL.bad.length;
+  $('fSummary').innerHTML = `<div class="pills"><span class="pill">${okN} ಸರಿಯಾದ ಫೈಲ್</span>${FULL.bad.length ? `<span class="pill bad">${FULL.bad.length} ಹೆಸರು ತಪ್ಪಾಗಿದೆ</span>` : ''}${FULL.dirs.length ? `<span class="pill warn">${FULL.dirs.length} ಫೋಲ್ಡರ್ (ಬಳಕೆಯಾಗುವುದಿಲ್ಲ)</span>` : ''}</div>`;
+  const rows = [
+    ...FULL.bad.map(f => `<tr><td><code>${esc(f.name)}</code></td><td><span class="pill bad">${f.small ? 'upload ಅಪೂರ್ಣ' : 'ಹೆಸರು ತಪ್ಪಾಗಿದೆ'}</span></td><td class="small">${f.reason || 'ಹೆಸರಿನ ರೂಪ ಸರಿಯಿಲ್ಲ.'}${f.small ? '' : ' ಈ ಫೈಲ್ ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಕಾಣುವುದಿಲ್ಲ. GitHub ನಲ್ಲಿ ಅಳಿಸಿ, ಸರಿಯಾದ ಹೆಸರಿನಲ್ಲಿ ಮತ್ತೆ upload ಮಾಡಿ.'}</td></tr>`),
+    ...FULL.dirs.map(f => `<tr><td><code>${esc(f.name)}/</code></td><td><span class="pill warn">ಫೋಲ್ಡರ್</span></td><td class="small">ವೆಬ್‌ಸೈಟ್ ಫೋಲ್ಡರ್‌ಗಳ ಒಳಗೆ ನೋಡುವುದಿಲ್ಲ. ಹಳೆಯ ಆವೃತ್ತಿಯದ್ದಾಗಿದ್ದರೆ ಅಳಿಸಬಹುದು.</td></tr>`),
+    ...FULL.all.filter(f => f.p && f.p.type !== 'bad').sort((a, b) => a.name.localeCompare(b.name)).map(f => (f.p.type === 'lp' && f.p.ext === 'json' && FULL.subjects[f.p.cls + '|' + f.p.subj]?.lp[f.p.part]?.xlsx) ? `<tr><td><code>${esc(f.name)}</code></td><td><span class="pill warn">ಬಳಕೆಯಾಗುತ್ತಿಲ್ಲ</span></td><td class="small">ಇದೇ ಭಾಗದ Excel ಇರುವುದರಿಂದ ಇದು ಬೇಕಿಲ್ಲ. ಅಳಿಸಬಹುದು.</td></tr>` : `<tr><td><code>${esc(f.name)}</code></td><td><span class="pill">ಸರಿ</span></td><td class="small">${esc(describe(f.p))} · ${mb(f.size)}${f.size > 25 * 1048576 ? ' <span class="pill warn">ದೊಡ್ಡದು</span>' : ''}</td></tr>`)
+  ];
+  $('fTable').innerHTML = `<thead><tr><th>ಫೈಲ್</th><th>ಸ್ಥಿತಿ</th><th>ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಎಲ್ಲಿ</th></tr></thead><tbody>${rows.join('') || `<tr><td colspan="3">${emptyBox('ಯಾವುದೇ ದಾಖಲೆ ಫೈಲ್ ಇಲ್ಲ')}</td></tr>`}</tbody>`;
+  void big;
+}
+$('fRefresh').onclick = () => busy($('fRefresh'), async () => { await loadDB(true); renderFiles(); toast('ಫೈಲ್ ಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ.'); });
+
+/* ============================================================
+   ಖಾತೆ, ಖರೀದಿ, ಕಾರ್ಟ್, Admin  (CONFIG.firebase ತುಂಬಿದಾಗ ಮಾತ್ರ)
+   ============================================================ */
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+/* ಖರೀದಿಯ ಅವಧಿ: ಶೈಕ್ಷಣಿಕ ವರ್ಷದ ಕೊನೆ (ಮೇ 31). ಮಾರ್ಚ್ ನಂತರ ಖರೀದಿಸಿದರೆ ಮುಂದಿನ ವರ್ಷದ ಮೇ 31 ರವರೆಗೆ */
+const yearEnd = (d = new Date()) => `${d.getMonth() + 1 >= 3 ? d.getFullYear() + 1 : d.getFullYear()}-05-31`;
+const dmy = iso => iso ? String(iso).slice(0, 10).split('-').reverse().join('-') : '';
+const can = p => !PAID || ACC.can(p);
+
+const PACK_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
+const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF + PowerPoint)', sub: 'ಪಾಠಯೋಜನೆ + PPT', aj: 'ಎರಡೂ ಸೆಮಿಸ್ಟರ್', doc: '', cls: 'ಎಲ್ಲಾ ವಿಷಯ, ಎಲ್ಲಾ ದಾಖಲೆ', sch: 'ಎಲ್ಲಾ ತರಗತಿ, ಎಲ್ಲವೂ' };
+const packPrice = k => CONFIG.prices[k.split(':')[0]] || 0;
+function packLabel(k, short) {
+  const [t, m, c, x] = k.split(':');
+  const head = t === 'doc' ? docTitle(x) : PACK_T[t] + (short || !PACK_D[t] ? '' : ` (${PACK_D[t]})`);
+  return [head, c ? (c === 'all' ? 'ಎಲ್ಲಾ ತರಗತಿ' : c + 'ನೇ ತರಗತಿ') : '', ['lp', 'ppt', 'sub'].includes(t) && subjName(x), !short && MEDIA[m]].filter(Boolean).join(' · ');
+}
+/* ಪ್ಯಾಕ್ a, ಪ್ಯಾಕ್ b ಯನ್ನು ಒಳಗೊಂಡಿದೆಯೇ */
+function covers(a, b) {
+  if (a === b) return true;
+  const [ta, ma, ca, xa] = a.split(':'), [tb, mb, cb, xb] = b.split(':');
+  if (ma !== mb || tb === 'sch') return false;
+  if (ta === 'sch') return true;
+  if (tb === 'doc' && cb === 'all') return true;                    // ಎಲ್ಲಾ ತರಗತಿಯ ದಾಖಲೆ: ಯಾವುದೇ ಖರೀದಿಯೊಂದಿಗೆ ಉಚಿತ
+  if (ta === 'cls') return tb !== 'cls' && ca === cb;
+  if (ta === 'sub') return (tb === 'lp' || tb === 'ppt') && ca === cb && xa === xb;
+  return false;
+}
+
+const ACC = (() => {
+  const V = '10.12.2', B = `https://www.gstatic.com/firebasejs/${V}/`;
+  let fb = null, user = null, prof = null, orders = [], startDone = null;
+  const mob = () => (user?.email || '').split('@')[0];
+  const email = m => `${m}@${LOGIN_DOMAIN}`;
+  const ERR = {
+    'auth/invalid-credential': 'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.', 'auth/wrong-password': 'ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.',
+    'auth/user-not-found': 'ಈ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯಿಂದ ನೋಂದಣಿ ಆಗಿಲ್ಲ. "ಹೊಸ ನೋಂದಣಿ" ಒತ್ತಿ.', 'auth/invalid-login-credentials': 'ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಅಥವಾ ಪಾಸ್‌ವರ್ಡ್ ತಪ್ಪಾಗಿದೆ.',
+    'auth/email-already-in-use': 'ಈ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯಿಂದ ಈಗಾಗಲೇ ನೋಂದಣಿ ಆಗಿದೆ. "ಲಾಗಿನ್" ಒತ್ತಿ.', 'auth/weak-password': 'ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರ ಇರಬೇಕು.',
+    'auth/network-request-failed': 'Internet ಸಂಪರ್ಕ ಇಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.', 'auth/too-many-requests': 'ಹಲವು ಬಾರಿ ತಪ್ಪಾಗಿದೆ. ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಪ್ರಯತ್ನಿಸಿ.',
+    'permission-denied': 'ಅನುಮತಿ ಇಲ್ಲ.'
+  };
+  const msg = e => ERR[e?.code] || e?.message || 'ಏನೋ ತಪ್ಪಾಗಿದೆ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.';
+  const uref = m => fb.doc(fb.db, 'users', m);
+
+  async function loadProfile() {
+    const s = await fb.getDoc(uref(mob()));
+    prof = s.exists() ? s.data() : null;
+    orders = [];
+    if (prof && !isAdmin()) {
+      try { orders = (await fb.getDocs(fb.query(fb.collection(fb.db, 'orders'), fb.where('uid', '==', mob())))).docs.map(d => ({ id: d.id, ...d.data() })); } catch (e) { console.warn(e); }
+    }
+    return prof;
+  }
+  const isAdmin = () => !!user && !!CONFIG.admin && mob() === String(CONFIG.admin).trim();
+  const SCHOOL_KEYS = ['name', 'udise', 'place', 'taluk', 'dist', 'teacher', 'hm', 'year', 'medium', 'watermark'];
+
+  /* ---------- ಲಾಗಿನ್ / ನೋಂದಣಿ ಪರದೆ ---------- */
+  function showAuth(mode) {
+    $('auth').hidden = false; document.body.style.overflow = 'hidden';
+    const tab = t => {
+      $('auLogin').hidden = t !== 'login'; $('auReg').hidden = t === 'login';
+      document.querySelectorAll('#auTabs button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+    };
+    $('auTabs').hidden = mode === 'profile';
+    $('auRegCred').hidden = mode === 'profile';
+    $('auProfNote').hidden = mode !== 'profile';
+    tab(mode === 'login' ? 'login' : 'reg');
+    document.querySelectorAll('#auTabs button').forEach(b => b.onclick = () => { $('auErr').textContent = ''; tab(b.dataset.t); });
+    $('auForgot').href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('ನಮಸ್ಕಾರ, ಬೋಧನಾ ಮಿತ್ರ ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೇನೆ. ನನ್ನ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ: ')}` : '#';
+    $('auPrices').innerHTML = `<h3>ಬೆಲೆ ಪಟ್ಟಿ <small>(ಒಂದು ಶೈಕ್ಷಣಿಕ ವರ್ಷಕ್ಕೆ)</small></h3><div class="plist">` +
+      ['lp', 'ppt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
+  }
+  function hideAuth() { $('auth').hidden = true; document.body.style.overflow = ''; }
+  function bindAuth() {
+    const err = t => { $('auErr').textContent = t; };
+    const mobOk = v => /^[6-9]\d{9}$/.test(v);
+    $('auLogin').onsubmit = async e => {
+      e.preventDefault(); err('');
+      const m = $('auMob').value.replace(/\D/g, ''), pw = $('auPw').value;
+      if (!mobOk(m)) return err('10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಬರೆಯಿರಿ.');
+      const btn = e.submitter || $('auLogin').querySelector('button[type=submit]');
+      await busy(btn, async () => {
+        try { user = (await fb.signInWithEmailAndPassword(fb.auth, email(m), pw)).user; } catch (x) { return err(msg(x)); }
+        await afterLogin();
+      });
+    };
+    $('auReg').onsubmit = async e => {
+      e.preventDefault(); err('');
+      const profileOnly = !!user;
+      const m = profileOnly ? mob() : $('rMob').value.replace(/\D/g, ''), pw = $('rPw').value;
+      const rec = { name: $('rName').value.trim(), udise: $('rUdise').value.trim(), place: $('rPlace').value.trim(), taluk: $('rTaluk').value.trim(), dist: $('rDist').value.trim(), teacher: $('rTeacher').value.trim(), medium: $('rMed').value };
+      if (!profileOnly && !mobOk(m)) return err('10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಬರೆಯಿರಿ.');
+      if (!profileOnly && pw.length < 6) return err('ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರ ಇರಬೇಕು.');
+      if (!rec.teacher) return err('ಶಿಕ್ಷಕರ ಹೆಸರು ಬರೆಯಿರಿ.');
+      if (rec.name.length < 5) return err('ಶಾಲೆಯ ಪೂರ್ಣ ಹೆಸರು ಬರೆಯಿರಿ.');
+      if (!$('rOk').checked) return err('ಶಾಲೆಯ ಹೆಸರು ಸರಿಯಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿ (ಕೆಳಗಿನ ಗುರುತು).');
+      const btn = e.submitter || $('auReg').querySelector('button[type=submit]');
+      await busy(btn, async () => {
+        if (!profileOnly) { try { user = (await fb.createUserWithEmailAndPassword(fb.auth, email(m), pw)).user; } catch (x) { return err(msg(x)); } }
+        try {
+          const ex = await fb.getDoc(uref(m));        // ಹಳೆಯ ಖಾತೆ (ಪಾಸ್‌ವರ್ಡ್ ಮರೆತು ಮತ್ತೆ ನೋಂದಣಿ): ಹಳೆಯ ವಿವರ ಮತ್ತು ಖರೀದಿ ಹಾಗೆಯೇ ಉಳಿಯುತ್ತವೆ
+          if (!ex.exists()) await fb.setDoc(uref(m), { ...rec, mobile: m, year: '2026-27', watermark: false, created: new Date().toISOString() });
+        } catch (x) { return err('ವಿವರ ಉಳಿಸಲು ಆಗಲಿಲ್ಲ: ' + msg(x)); }
+        await afterLogin();
+      });
+    };
+  }
+  async function afterLogin() {
+    await loadProfile();
+    if (!prof && !isAdmin()) { showAuth('profile'); return; }
+    hideAuth();
+    if (startDone) { const f = startDone; startDone = null; f(); }
+  }
+
+  return {
+    async start() {
+      const [app, auth, fs] = await Promise.all([import(B + 'firebase-app.js'), import(B + 'firebase-auth.js'), import(B + 'firebase-firestore.js')]);
+      const a = app.initializeApp(CONFIG.firebase);
+      fb = { ...auth, ...fs, auth: auth.getAuth(a), db: fs.getFirestore(a) };
+      bindAuth();
+      user = await new Promise(res => { const off = auth.onAuthStateChanged(fb.auth, u => { off(); res(u); }); });
+      if (user) { try { await loadProfile(); } catch (e) { console.warn(e); } }
+      if (user && (prof || isAdmin())) return;
+      await new Promise(res => { startDone = res; showAuth(user ? 'profile' : 'login'); });
+    },
+    async logout() { await fb.signOut(fb.auth); store.set('bm_cart', []); location.hash = ''; location.reload(); },
+    token: () => user.getIdToken(),
+    mobile: mob, isAdmin, orders: () => orders, prof: () => prof,
+    school() {
+      if (!prof) return isAdmin() ? { name: 'Admin', medium: 'kn', year: '2026-27' } : null;
+      return Object.fromEntries(SCHOOL_KEYS.map(k => [k, prof[k] ?? '']));
+    },
+    packs: () => prof?.packs || {},
+    active() { const p = prof?.packs || {}, t = today(); return Object.keys(p).filter(k => String(p[k]) >= t); },
+    can: p => isAdmin() || allowedBy(prof?.packs, p, today()),
+    owns(k) { const act = this.active(); return isAdmin() || act.some(a => covers(a, k)) || (k.startsWith('doc:') && k.split(':')[2] === 'all' && act.some(a => a.split(':')[1] === k.split(':')[1])); },
+    pending(k) { return orders.some(o => o.status === 'pending' && o.items.some(a => covers(a, k))); },
+    async saveOwn(rec) {                               // ಶಿಕ್ಷಕರು ಬದಲಿಸಬಹುದಾದವು ಮಾತ್ರ
+      const d = {}; ['teacher', 'hm', 'year', 'medium', 'watermark'].forEach(k => { if (k in rec) d[k] = rec[k]; });
+      await fb.updateDoc(uref(mob()), d); Object.assign(prof, d);
+    },
+    async order(items, total, utr) {
+      const o = { uid: mob(), items, total, utr: utr || '', status: 'pending', at: new Date().toISOString(), school: prof?.name || '', teacher: prof?.teacher || '' };
+      const r = await fb.addDoc(fb.collection(fb.db, 'orders'), o);
+      orders.push({ id: r.id, ...o });
+      return r.id;
+    },
+    async reload() { await loadProfile(); },
+    /* ---- Admin ---- */
+    async users() { return (await fb.getDocs(fb.collection(fb.db, 'users'))).docs.map(d => ({ id: d.id, ...d.data() })); },
+    async allOrders() { return (await fb.getDocs(fb.collection(fb.db, 'orders'))).docs.map(d => ({ id: d.id, ...d.data() })); },
+    async grant(m, keys, exp) { await fb.setDoc(uref(m), { packs: Object.fromEntries(keys.map(k => [k, exp])) }, { merge: true }); },
+    async revoke(m, k) { await fb.updateDoc(uref(m), new fb.FieldPath('packs', k), fb.deleteField()); },
+    async setOrder(id, d) { await fb.updateDoc(fb.doc(fb.db, 'orders', id), d); },
+    async setUser(m, d) { await fb.updateDoc(uref(m), d); }
+  };
+})();
+
+/* ---------- ಕಾರ್ಟ್ ---------- */
+const CART = {
+  get: () => store.get('bm_cart', []),
+  set(l) { store.set('bm_cart', l); this.badge(); },
+  badge() { const n = this.get().length; $('cartN').textContent = n; $('cartN').hidden = !n; },
+  add(k) {
+    if (ACC.owns(k)) return toast('ಇದು ಈಗಾಗಲೇ ನಿಮ್ಮ ಖರೀದಿಯಲ್ಲಿದೆ.');
+    let l = this.get();
+    if (l.some(a => covers(a, k))) return toast('ಇದು ಕಾರ್ಟ್‌ನಲ್ಲಿರುವ ಪ್ಯಾಕ್‌ನಲ್ಲೇ ಸೇರಿದೆ.');
+    l = l.filter(a => !covers(k, a)); l.push(k); this.set(l);
+    toast('ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ: ' + packLabel(k, true));
+  },
+  total: l => l.reduce((a, k) => a + packPrice(k), 0),
+  /* ಉಳಿತಾಯದ ಸೂಚನೆಗಳು */
+  hints(l) {
+    const out = [], seen = new Set();
+    const push = (k, from) => { const cost = this.total(from); if (!seen.has(k) && from.length > 1 && cost >= packPrice(k) && !l.includes(k)) { seen.add(k); out.push({ k, save: cost - packPrice(k) }); } };
+    for (const a of l) {
+      const [t, m, c, x] = a.split(':');
+      if (t === 'lp' || t === 'ppt') push(`sub:${m}:${c}:${x}`, l.filter(b => covers(`sub:${m}:${c}:${x}`, b)));
+      if (c && c !== 'all' && t !== 'cls' && t !== 'sch') push(`cls:${m}:${c}`, l.filter(b => covers(`cls:${m}:${c}`, b)));
+      if (t !== 'sch') push(`sch:${m}`, l.filter(b => covers(`sch:${m}`, b)));
+    }
+    return out.sort((a, b) => packPrice(b.k) - packPrice(a.k)).slice(0, 2);
+  },
+  open() {
+    const l = this.get(), tot = this.total(l), m = ACC.mobile();
+    const box = $('cartBody');
+    if (!l.length) {
+      const pend = ACC.orders().filter(o => o.status === 'pending');
+      box.innerHTML = emptyBox('ಕಾರ್ಟ್ ಖಾಲಿ ಇದೆ', 'ಬೇಕಾದ ಪಾಠಯೋಜನೆ / PPT / ಅಂದಾಜು ಪತ್ರಿಕೆ ಪುಟದಲ್ಲಿ "ಕಾರ್ಟ್‌ಗೆ" ಒತ್ತಿ.') +
+        (pend.length ? `<div class="banner" style="margin:0 18px 18px"><span>${pend.length} ಆರ್ಡರ್ ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ. ಹಣ ಬಂದಿರುವುದನ್ನು ನೋಡಿದ ನಂತರ ತೆರೆಯುತ್ತದೆ.</span></div>` : '');
+      $('cart').showModal(); return;
+    }
+    const hints = this.hints(l);
+    const tn = `BM ${m}`;
+    const upi = CONFIG.upi ? `upi://pay?pa=${encodeURIComponent(CONFIG.upi)}&pn=${encodeURIComponent(CONFIG.upiName)}&am=${tot}&cu=INR&tn=${encodeURIComponent(tn)}` : '';
+    box.innerHTML = `<div class="cl">${l.map((k, i) => `<div class="ci"><span><b>${esc(packLabel(k, true))}</b><small>${esc(PACK_D[k.split(':')[0]] || '')}${PACK_D[k.split(':')[0]] ? ' · ' : ''}${esc(MEDIA[k.split(':')[1]])}</small></span><b>₹${packPrice(k)}</b><button class="x" type="button" data-rm="${i}" aria-label="ತೆಗೆಯಿರಿ">✕</button></div>`).join('')}</div>
+      ${hints.map(h => `<div class="hint"><span>💡 <b>${esc(packLabel(h.k, true))}</b> (₹${packPrice(h.k)}) ತೆಗೆದುಕೊಂಡರೆ ಇವೆಲ್ಲವೂ ಮತ್ತು ಇನ್ನೂ ಹೆಚ್ಚು ಸಿಗುತ್ತದೆ${h.save > 0 ? `, ₹${h.save} ಉಳಿತಾಯ` : ''}.</span><button class="btn sm" type="button" data-up="${esc(h.k)}">ಬದಲಿಸಿ</button></div>`).join('')}
+      <div class="ctot"><span>ಒಟ್ಟು <small>(${dmy(yearEnd())} ರವರೆಗೆ)</small></span><b>₹${tot}</b></div>
+      <div class="pay">
+        <div class="step"><span class="sn">1</span><div><b>₹${tot} ಅನ್ನು UPI ಮೂಲಕ ಕಳುಹಿಸಿ</b>
+          ${CONFIG.upi ? `<div class="upi"><div id="qr" class="qr"></div><div><div class="small muted">UPI ID</div><code id="upiId">${esc(CONFIG.upi)}</code> <button class="btn sm" type="button" id="upiCopy">copy</button>
+          <p class="small muted" style="margin:8px 0">PhonePe / Google Pay / Paytm ನಲ್ಲಿ QR scan ಮಾಡಿ, ಅಥವಾ ಮೊಬೈಲ್‌ನಲ್ಲಿದ್ದರೆ ಕೆಳಗಿನ ಬಟನ್ ಒತ್ತಿ.</p>
+          <a class="btn sm pri" href="${upi}">UPI ಆಪ್ ತೆರೆಯಿರಿ</a></div></div>` : '<p class="small muted">UPI ವಿವರ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ.</p>'}</div></div>
+        <div class="step"><span class="sn">2</span><div><b>UPI ವಹಿವಾಟು ಸಂಖ್ಯೆ (UTR)</b> <span class="small muted">ಐಚ್ಛಿಕ, ಬೇಗ ಪರಿಶೀಲಿಸಲು ಸಹಾಯವಾಗುತ್ತದೆ</span>
+          <input type="text" id="utr" inputmode="numeric" maxlength="22" placeholder="12 ಅಂಕಿ" style="display:block;margin-top:6px;width:min(260px,100%)"></div></div>
+        <div class="step"><span class="sn">3</span><div><b>ಆರ್ಡರ್ ಕಳುಹಿಸಿ</b><p class="small muted" style="margin:2px 0 8px">${CONFIG.whatsapp ? 'WhatsApp ತೆರೆಯುತ್ತದೆ. ಅಲ್ಲಿ payment screenshot ಸೇರಿಸಿ ಕಳುಹಿಸಿ. ' : ''}ಹಣ ಬಂದಿರುವುದನ್ನು ಪರಿಶೀಲಿಸಿದ ತಕ್ಷಣ ದಾಖಲೆಗಳು ತೆರೆಯುತ್ತವೆ.</p>
+          <button class="btn pri" type="button" id="cartSend">ಹಣ ಕಳುಹಿಸಿದ್ದೇನೆ — ಆರ್ಡರ್ ಕಳುಹಿಸಿ</button></div></div>
+      </div>`;
+    box.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { const x = this.get(); x.splice(+b.dataset.rm, 1); this.set(x); this.open(); });
+    box.querySelectorAll('[data-up]').forEach(b => b.onclick = () => { this.add(b.dataset.up); this.open(); });
+    if ($('upiCopy')) $('upiCopy').onclick = async () => { try { await navigator.clipboard.writeText(CONFIG.upi); toast('UPI ID copy ಆಯಿತು.'); } catch (e) {} };
+    if (CONFIG.upi) qrSvg(upi).then(svg => { if ($('qr')) $('qr').innerHTML = svg; }).catch(() => { if ($('qr')) $('qr').hidden = true; });
+    $('cartSend').onclick = () => busy($('cartSend'), async () => {
+      const utr = $('utr').value.trim();
+      const id = await ACC.order(l, tot, utr);
+      const sc = school() || {};
+      const text = `ಬೋಧನಾ ಮಿತ್ರ ಆರ್ಡರ್ #${id.slice(-6).toUpperCase()}\nಮೊಬೈಲ್: ${m}\nಶಾಲೆ: ${sc.name || ''}\nಶಿಕ್ಷಕರು: ${sc.teacher || ''}\n\n${l.map(k => `• ${packLabel(k)} — ₹${packPrice(k)}`).join('\n')}\n\nಒಟ್ಟು: ₹${tot}${utr ? '\nUTR: ' + utr : ''}\n\n(payment screenshot ಸೇರಿಸಿದ್ದೇನೆ)`;
+      this.set([]);
+      if (CONFIG.whatsapp) window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
+      $('cartBody').innerHTML = emptyBox('ಆರ್ಡರ್ ಕಳುಹಿಸಲಾಗಿದೆ ✓', `ಆರ್ಡರ್ ಸಂಖ್ಯೆ #${esc(id.slice(-6).toUpperCase())}. ಪರಿಶೀಲನೆಯ ನಂತರ ದಾಖಲೆಗಳು ತೆರೆಯುತ್ತವೆ. "ನನ್ನ ಖಾತೆ" ಪುಟದಲ್ಲಿ ಸ್ಥಿತಿ ನೋಡಬಹುದು.`);
+      route();
+    });
+    $('cart').showModal();
+  }
+};
+let qrLib = null;
+async function qrSvg(text) {
+  qrLib ||= new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; s.onload = () => res(window.qrcode); s.onerror = rej; document.head.appendChild(s); });
+  const q = (await qrLib)(0, 'M'); q.addData(text); q.make();
+  return q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+}
+
+/* ---------- 🔒 ಖರೀದಿಸದ ದಾಖಲೆ ---------- */
+function packOpts(p) {
+  const m = p.med || 'kn', c = p.cls, s = p.subj;
+  if (p.type === 'lp') return [`lp:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`, `sch:${m}`];
+  if (p.type === 'ppt') return [`ppt:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`, `sch:${m}`];
+  if (p.type === 'aj') return [`aj:${m}:${c}`, `cls:${m}:${c}`, `sch:${m}`];
+  if (p.type === 'doc') return c ? [`doc:${m}:${c}:${p.doc}`, `cls:${m}:${c}`, `sch:${m}`] : [`doc:${m}:all:${p.doc}`, `sch:${m}`];
+  return [];
+}
+function optBtn(k) {
+  const t = k.split(':')[0];
+  const lab = { lp: 'ಈ ವಿಷಯದ ಪಾಠಯೋಜನೆ', ppt: 'ಈ ವಿಷಯದ ಎಲ್ಲಾ PPT', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಈ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಈ ದಾಖಲೆ ಮಾತ್ರ', cls: k.split(':')[2] + 'ನೇ ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' }[t];
+  const state = ACC.pending(k) ? 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ' : CART.get().some(a => covers(a, k)) ? 'ಕಾರ್ಟ್‌ನಲ್ಲಿದೆ ✓' : '';
+  return `<button class="opt${t === 'sub' || t === 'cls' ? ' best' : ''}" type="button" data-pack="${esc(k)}"${state ? ' data-in="1"' : ''}><span><b>${esc(lab)}</b><small>${esc(PACK_D[t] || 'ಒಂದು ತರಗತಿ')}</small></span><em>${state || '₹' + packPrice(k)}</em></button>`;
+}
+function lockHtml(p, title) {
+  if (!PAID) return '';
+  const pend = packOpts(p).some(k => ACC.pending(k));
+  return `<div class="lock"><div class="lk-h"><span class="lk-i"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><div><b>${esc(title)}</b>
+    <small>${pend ? 'ನಿಮ್ಮ ಆರ್ಡರ್ ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ. ಹಣ ಬಂದಿರುವುದನ್ನು ನೋಡಿದ ತಕ್ಷಣ ಇಲ್ಲಿ ತೆರೆಯುತ್ತದೆ.' : `ಖರೀದಿಸಿದ ನಂತರ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ download ಮಾಡಬಹುದು. ${dmy(yearEnd())} ರವರೆಗೆ.`}</small></div></div>
+    <div class="lk-opts">${packOpts(p).map(optBtn).join('')}</div></div>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-pack]'); if (!b) return;
+  if (b.dataset.in) { if (!ACC.pending(b.dataset.pack)) CART.open(); return; }
+  CART.add(b.dataset.pack);
+  document.querySelectorAll('[data-pack]').forEach(x => {
+    if (x.classList.contains('opt')) x.outerHTML = optBtn(x.dataset.pack);
+    else if (CART.get().some(a => covers(a, x.dataset.pack))) { x.textContent = 'ಕಾರ್ಟ್‌ನಲ್ಲಿದೆ ✓'; x.dataset.in = '1'; }
+  });
+});
+
+/* ---------- ನನ್ನ ಖಾತೆ ---------- */
+function renderAccount() {
+  const box = $('acct'); if (!PAID) { box.hidden = true; return; }
+  box.hidden = false;
+  const p = ACC.packs(), t = today();
+  const keys = Object.keys(p).sort((a, b) => String(p[b]).localeCompare(String(p[a])));
+  const ord = ACC.orders().slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const ST = { pending: ['warn', 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ'], done: ['', 'ಸಕ್ರಿಯ'], rejected: ['bad', 'ತಿರಸ್ಕರಿಸಲಾಗಿದೆ'] };
+  $('acctBody').innerHTML = `<p class="muted small" style="margin:0 0 12px">ಮೊಬೈಲ್: <b>${esc(ACC.mobile())}</b>${ACC.isAdmin() ? ' · <span class="pill">Admin</span>' : ''}</p>
+    <h3 class="h3">ನನ್ನ ಖರೀದಿಗಳು</h3>
+    ${keys.length ? `<div class="tw"><table class="list"><thead><tr><th>ದಾಖಲೆ</th><th>ಅವಧಿ</th><th></th></tr></thead><tbody>${keys.map(k => `<tr><td>${esc(packLabel(k))}</td><td>${dmy(p[k])} ರವರೆಗೆ</td><td>${String(p[k]) >= t ? '<span class="pill">ಸಕ್ರಿಯ</span>' : '<span class="pill off">ಅವಧಿ ಮುಗಿದಿದೆ</span>'}</td></tr>`).join('')}</tbody></table></div>`
+      : `<p class="muted small">${ACC.isAdmin() ? 'Admin ಆಗಿ ನಿಮಗೆ ಎಲ್ಲವೂ ತೆರೆದಿದೆ.' : 'ಇನ್ನೂ ಏನೂ ಖರೀದಿಸಿಲ್ಲ. ಪಾಠಯೋಜನೆ / PPT / ಅಂದಾಜು ಪತ್ರಿಕೆ ಪುಟಗಳಲ್ಲಿ ಬೇಕಾದದ್ದನ್ನು ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ.'}</p>`}
+    ${ord.length ? `<h3 class="h3" style="margin-top:18px">ಆರ್ಡರ್‌ಗಳು</h3><div class="tw"><table class="list"><thead><tr><th>ದಿನಾಂಕ</th><th>ದಾಖಲೆಗಳು</th><th>ಮೊತ್ತ</th><th>ಸ್ಥಿತಿ</th></tr></thead><tbody>${ord.map(o => `<tr><td>${dmy(o.at)}</td><td class="small">${o.items.map(k => esc(packLabel(k, true))).join('<br>')}</td><td>₹${o.total}</td><td><span class="pill ${ST[o.status]?.[0] || ''}">${ST[o.status]?.[1] || esc(o.status)}</span></td></tr>`).join('')}</tbody></table></div>` : ''}`;
+  $('acctLogout').onclick = () => busy($('acctLogout'), () => ACC.logout());
+  $('acctReload').onclick = () => busy($('acctReload'), async () => { await ACC.reload(); route(); toast('ನವೀಕರಿಸಲಾಗಿದೆ.'); });
+}
+
+/* ---------- Admin ---------- */
+const ADM = { users: [], orders: [], q: '' };
+async function adminLoad() {
+  [ADM.users, ADM.orders] = await Promise.all([ACC.users(), ACC.allOrders()]);
+}
+function adminRender() {
+  const ord = ADM.orders.slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  const pend = ord.filter(o => o.status === 'pending'), done = ord.filter(o => o.status === 'done');
+  const mon = today().slice(0, 7), sum = l => l.reduce((a, o) => a + (+o.total || 0), 0);
+  $('adStats').innerHTML = [[ADM.users.length, 'ನೋಂದಾಯಿತ ಶಿಕ್ಷಕರು'], [pend.length, 'ಬಾಕಿ ಆರ್ಡರ್‌ಗಳು'], ['₹' + sum(done.filter(o => String(o.doneAt || o.at).startsWith(mon))), 'ಈ ತಿಂಗಳ ಆದಾಯ'], ['₹' + sum(done), 'ಒಟ್ಟು ಆದಾಯ']]
+    .map(([n, l]) => `<div class="card stat"><b>${n}</b><span>${l}</span></div>`).join('');
+  const uName = m => ADM.users.find(u => u.id === m);
+  $('adOrders').innerHTML = pend.map(o => {
+    const u = uName(o.uid) || {};
+    return `<div class="unit ord"><span class="no">₹</span><div><b>₹${o.total} · ${esc(u.name || o.school || '')}</b>
+      <small>${esc(o.uid)} · ${esc(u.teacher || o.teacher || '')} · ${dmy(o.at)}${o.utr ? ' · UTR ' + esc(o.utr) : ''}</small>
+      <small class="items">${o.items.map(k => esc(packLabel(k)) + ' — ₹' + packPrice(k)).join('<br>')}</small></div>
+      <div class="acts"><button class="btn sm pri" type="button" data-ok="${esc(o.id)}">✓ ಸಕ್ರಿಯಗೊಳಿಸಿ</button><button class="btn sm" type="button" data-no="${esc(o.id)}">✗ ತಿರಸ್ಕರಿಸಿ</button></div></div>`;
+  }).join('') || emptyBox('ಬಾಕಿ ಆರ್ಡರ್ ಇಲ್ಲ');
+  $('adOrders').querySelectorAll('[data-ok]').forEach(b => b.onclick = () => busy(b, async () => {
+    const o = ADM.orders.find(x => x.id === b.dataset.ok), exp = yearEnd();
+    await ACC.grant(o.uid, o.items, exp);
+    await ACC.setOrder(o.id, { status: 'done', doneAt: new Date().toISOString(), exp });
+    o.status = 'done'; o.doneAt = new Date().toISOString();
+    const u = ADM.users.find(x => x.id === o.uid); if (u) { u.packs = { ...(u.packs || {}), ...Object.fromEntries(o.items.map(k => [k, exp])) }; }
+    adminRender();
+    toast('ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಶಿಕ್ಷಕರಿಗೆ ಈಗ ತೆರೆಯುತ್ತದೆ.');
+    const wa = `https://wa.me/91${o.uid}?text=${encodeURIComponent(`ನಮಸ್ಕಾರ, ನಿಮ್ಮ ಬೋಧನಾ ಮಿತ್ರ ಆರ್ಡರ್ (₹${o.total}) ಸಕ್ರಿಯವಾಗಿದೆ. ${dmy(exp)} ರವರೆಗೆ download ಮಾಡಬಹುದು. ಧನ್ಯವಾದಗಳು.`)}`;
+    $('adOrders').insertAdjacentHTML('afterbegin', `<div class="banner" style="margin:12px 18px"><span>ಶಿಕ್ಷಕರಿಗೆ WhatsApp ನಲ್ಲಿ ತಿಳಿಸಬೇಕೇ?</span><a class="btn sm pri" target="_blank" rel="noopener" href="${wa}">WhatsApp ಸಂದೇಶ</a></div>`);
+  }));
+  $('adOrders').querySelectorAll('[data-no]').forEach(b => b.onclick = () => busy(b, async () => {
+    const o = ADM.orders.find(x => x.id === b.dataset.no);
+    await ACC.setOrder(o.id, { status: 'rejected', doneAt: new Date().toISOString() }); o.status = 'rejected'; adminRender();
+  }));
+  $('adDone').innerHTML = `<thead><tr><th>ದಿನಾಂಕ</th><th>ಶಾಲೆ</th><th>ಮೊಬೈಲ್</th><th>ದಾಖಲೆಗಳು</th><th>ಮೊತ್ತ</th></tr></thead><tbody>` +
+    (done.slice(0, 30).map(o => `<tr><td>${dmy(o.doneAt || o.at)}</td><td>${esc(uName(o.uid)?.name || o.school)}</td><td>${esc(o.uid)}</td><td class="small">${o.items.map(k => esc(packLabel(k, true))).join('<br>')}</td><td>₹${o.total}</td></tr>`).join('') || `<tr><td colspan="5">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ಮಾರಾಟ ಆಗಿಲ್ಲ')}</td></tr>`) + '</tbody>';
+  adminUsers();
+}
+function adminUsers() {
+  const q = skel(ADM.q || '');
+  const list = ADM.users.filter(u => !q || skel([u.id, u.name, u.teacher, u.udise, u.place, u.taluk].join(' ')).includes(q))
+    .sort((a, b) => String(b.created).localeCompare(String(a.created)));
+  const t = today();
+  $('adUsers').innerHTML = `<thead><tr><th>ಮೊಬೈಲ್</th><th>ಶಾಲೆ</th><th>ಶಿಕ್ಷಕರು</th><th>ಸಕ್ರಿಯ ಖರೀದಿ</th><th></th></tr></thead><tbody>` +
+    (list.slice(0, 200).map(u => `<tr><td>${esc(u.id)}</td><td>${esc(u.name)}<div class="small muted">${esc([u.place, u.taluk, u.dist].filter(Boolean).join(', '))}</div></td><td>${esc(u.teacher)}</td>
+      <td>${Object.keys(u.packs || {}).filter(k => String(u.packs[k]) >= t).length}</td><td style="text-align:right"><button class="btn sm" type="button" data-u="${esc(u.id)}">ತೆರೆಯಿರಿ</button></td></tr>`).join('')
+      || `<tr><td colspan="5">${emptyBox('ಯಾರೂ ಸಿಗಲಿಲ್ಲ')}</td></tr>`) + '</tbody>';
+  $('adUsers').querySelectorAll('[data-u]').forEach(b => b.onclick = () => adminUser(b.dataset.u));
+}
+function adminUser(id) {
+  const u = ADM.users.find(x => x.id === id); if (!u) return;
+  const F = [['name', 'ಶಾಲೆಯ ಹೆಸರು'], ['udise', 'UDISE'], ['place', 'ಸ್ಥಳ'], ['taluk', 'ತಾಲ್ಲೂಕು'], ['dist', 'ಜಿಲ್ಲೆ'], ['teacher', 'ಶಿಕ್ಷಕರು'], ['hm', 'ಮುಖ್ಯ ಶಿಕ್ಷಕರು']];
+  $('udTitle').textContent = `${u.name || ''} · ${u.id}`;
+  const draw = () => {
+    const p = u.packs || {}, t = today();
+    $('udPacks').innerHTML = Object.keys(p).sort().map(k => `<div class="ci"><span><b>${esc(packLabel(k, true))}</b><small>${esc(MEDIA[k.split(':')[1]] || '')} · ${dmy(p[k])} ರವರೆಗೆ${String(p[k]) < t ? ' (ಮುಗಿದಿದೆ)' : ''}</small></span><b></b><button class="x" type="button" data-rv="${esc(k)}" aria-label="ತೆಗೆಯಿರಿ">✕</button></div>`).join('') || '<p class="muted small" style="margin:0">ಯಾವುದೇ ಖರೀದಿ ಇಲ್ಲ.</p>';
+    $('udPacks').querySelectorAll('[data-rv]').forEach(b => b.onclick = () => busy(b, async () => { await ACC.revoke(u.id, b.dataset.rv); delete u.packs[b.dataset.rv]; draw(); adminUsers(); }));
+  };
+  $('udForm').innerHTML = F.map(([k, l]) => `<label class="f">${l}<input type="text" data-k="${k}" value="${esc(u[k] || '')}"></label>`).join('') + `<div><button class="btn sm pri" type="submit">ವಿವರ ಉಳಿಸಿ</button></div>`;
+  $('udForm').onsubmit = e => { e.preventDefault(); busy(e.submitter, async () => {
+    const d = {}; $('udForm').querySelectorAll('input[data-k]').forEach(i => { d[i.dataset.k] = i.value.trim(); });
+    await ACC.setUser(u.id, d); Object.assign(u, d); adminUsers(); toast('ಉಳಿಸಲಾಗಿದೆ.');
+  }); };
+  /* ಕೈಯಾರೆ ಪ್ಯಾಕ್ ಸೇರಿಸುವುದು */
+  fillSelect($('upType'), Object.entries(PACK_T).map(([k, v]) => [k, `${v} · ₹${CONFIG.prices[k]}`]), 'sub');
+  fillSelect($('upMed'), Object.entries(MEDIA), u.medium || 'kn');
+  fillSelect($('upCls'), Array.from({ length: 10 }, (_, i) => [i + 1, (i + 1) + 'ನೇ']), 6);
+  fillSelect($('upSubj'), Object.entries(SUBJECTS), 'samaja');
+  fillSelect($('upDoc'), Object.entries(DOCS), 'kriya');
+  $('upExp').value = yearEnd();
+  const vis = () => { const t = $('upType').value; $('upClsW').hidden = t === 'sch'; $('upSubjW').hidden = !['lp', 'ppt', 'sub'].includes(t); $('upDocW').hidden = t !== 'doc'; };
+  $('upType').onchange = vis; vis();
+  $('upAdd').onclick = () => busy($('upAdd'), async () => {
+    const t = $('upType').value, m = $('upMed').value, c = $('upCls').value;
+    const k = t === 'sch' ? `sch:${m}` : t === 'cls' ? `cls:${m}:${c}` : t === 'aj' ? `aj:${m}:${c}` : t === 'doc' ? `doc:${m}:${c}:${$('upDoc').value}` : `${t}:${m}:${c}:${$('upSubj').value}`;
+    const exp = $('upExp').value || yearEnd();
+    await ACC.grant(u.id, [k], exp); u.packs = { ...(u.packs || {}), [k]: exp }; draw(); adminUsers(); toast('ಸೇರಿಸಲಾಗಿದೆ: ' + packLabel(k, true));
+  });
+  draw();
+  $('ud').showModal();
+}
+$('udClose').onclick = () => $('ud').close();
+$('cartClose').onclick = () => $('cart').close();
+$('cartBtn').onclick = () => CART.open();
+
+/* ---------- ಆರಂಭ ---------- */
+let FULL = null;
+async function loadDB(force) {
+  try {
+    const files = await listRepo(force), m = medium();
+    FULL = buildDB(files);
+    DB = buildDB(files.filter(f => f.type === 'dir' || medOf(f.name) === m));
+    DB.bad = []; DB.dirs = [];
+    for (const f of FULL.bad) if (medOf(f.name) === m) DB.bad.push(f);
+    $('globalMsg').innerHTML = '';
+  } catch (e) {
+    DB = buildDB([]); FULL = DB;
+    $('globalMsg').innerHTML = e.message === 'NOREPO'
+      ? `<div class="banner bad"><span>ಈ ವೆಬ್‌ಸೈಟ್ GitHub Pages ವಿಳಾಸದಲ್ಲಿ (ಉದಾ: <code>withyou00.github.io/mitra</code>) ತೆರೆದಾಗ ಮಾತ್ರ ದಾಖಲೆಗಳನ್ನು ಓದುತ್ತದೆ.</span></div>`
+      : `<div class="banner bad"><span>GitHub ನಿಂದ ಫೈಲ್ ಪಟ್ಟಿ ಪಡೆಯಲು ಆಗಲಿಲ್ಲ. Internet ಸಂಪರ್ಕ ನೋಡಿ, ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ತೆರೆಯಿರಿ.</span><button class="btn sm" type="button" onclick="location.reload()">ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ</button></div>`;
+  }
+}
+function initMedium() {
+  const sel = $('medSel');
+  sel.innerHTML = Object.entries(MEDIA).map(([k, v]) => `<option value="${k}">${v}</option>`).join('');
+  sel.value = medium();
+  sel.onchange = async () => { store.set('bm_medium', sel.value); store.set('bm_pick', {}); await loadDB(false); route(); toast(MEDIA[sel.value] + ' ದಾಖಲೆಗಳು'); };
+}
+window.addEventListener('hashchange', route);
+window.addEventListener('resize', () => { if ($('pv').open) { clearTimeout(window._rz); window._rz = setTimeout(() => PV.render(), 200); } });
+(async () => {
+  if (PAID) {
+    try { await ACC.start(); }
+    catch (e) { console.error(e); document.body.innerHTML = `<div class="empty" style="padding:60px 20px"><b>ವೆಬ್‌ಸೈಟ್ ತೆರೆಯಲು ಆಗಲಿಲ್ಲ</b><span class="small">Internet ಸಂಪರ್ಕ ನೋಡಿ, ನಂತರ ಪುಟವನ್ನು reload ಮಾಡಿ.</span></div>`; return; }
+    $('cartBtn').hidden = ACC.isAdmin(); CART.badge();
+    $('navAdmin').hidden = !ACC.isAdmin(); $('navFiles').hidden = !ACC.isAdmin();
+    $('navSchool').textContent = 'ನನ್ನ ಖಾತೆ';
+    $('sideNote').textContent = 'ಅಂದಾಜು ಪತ್ರಿಕೆಯ ಪ್ರಗತಿ (ಸಾಗಿದೆ / ಸಾಗಿಲ್ಲ) ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.';
+    if (!store.get('bm_medium', null) && school()?.medium) store.set('bm_medium', school().medium);
+  }
+  initMedium();
+  route();
+  try { await Promise.all([document.fonts.load('700 16px "Anek Kannada"'), document.fonts.load('400 12px "Anek Kannada"'), document.fonts.load('600 12px "Anek Kannada"')]); } catch (e) {}
+  await loadDB(false);
+  route();
+})();
+</script>
+</body>
+</html>
