@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ಬೋಧನಾ ಮಿತ್ರ</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#10261f">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ಬೋಧನಾ ಮಿತ್ರ">
 <!-- GitHub repo: ಖಾಲಿ ಬಿಟ್ಟರೆ ವೆಬ್‌ಸೈಟ್ ವಿಳಾಸದಿಂದ ತಾನೇ ಕಂಡುಕೊಳ್ಳುತ್ತದೆ (ಉದಾ: withyou00/mitra) -->
 <meta name="github-repo" content="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -203,6 +209,10 @@ dialog::backdrop{background:rgba(8,20,15,.55)}
 }
 /* ಖಾತೆ, ಕಾರ್ಟ್, 🔒 */
 input[type=password],input[type=date]{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;min-width:0;width:100%}
+.inst{margin:0 8px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15);color:#fff}
+.inst:hover{color:#fff;border-color:var(--amber)}
+.inst2{justify-self:start}
+@media (max-width:900px){.inst{order:2;margin:0 0 0 auto;padding:5px 10px}}
 .barr{display:flex;gap:10px;align-items:center;min-width:0}
 @media (max-width:620px){.barin{flex-wrap:wrap;row-gap:10px}.barr{flex:1 1 100%}.barr select{flex:0 1 auto;max-width:42%}.chip{flex:1 1 auto;min-width:0;max-width:none}}
 .cartb{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel);cursor:pointer;flex:none;box-shadow:var(--shadow)}
@@ -284,6 +294,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
       <a href="#admin" data-v="admin" id="navAdmin" hidden><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Admin</a>
       <a href="#files" data-v="files" id="navFiles"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M12 11v5M9.5 13.5h5"/></svg>ಫೈಲ್ ನಿರ್ವಹಣೆ</a>
     </nav>
+    <button class="btn sm inst" type="button" data-install hidden><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>App ಆಗಿ ಸೇರಿಸಿ</button>
     <p class="note" id="sideNote">ಶಾಲೆಯ ವಿವರ ಮತ್ತು ಅಂದಾಜು ಪತ್ರಿಕೆಯ ಪ್ರಗತಿ ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.</p>
   </aside>
 
@@ -514,6 +525,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
   <div class="auth-in">
     <div class="auth-card">
       <div class="brand dark"><span class="mk"><svg viewBox="0 0 24 24"><path d="M2 5.5C4.5 4 8 4 12 6c4-2 7.5-2 10-.5V19c-2.5-1.5-6-1.5-10 .5-4-2-7.5-2-10-.5z"/><path d="M12 6v13.5"/></svg></span><span><b>ಬೋಧನಾ ಮಿತ್ರ</b><small>ಶಿಕ್ಷಕರ ದಾಖಲೆ ಭಂಡಾರ</small></span></div>
+      <button class="btn sm inst2" type="button" data-install hidden><svg viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>ಮೊಬೈಲ್‌ನಲ್ಲಿ App ಆಗಿ ಸೇರಿಸಿ</button>
       <div class="seg" id="auTabs"><button type="button" data-t="login" class="on">ಲಾಗಿನ್</button><button type="button" data-t="reg">ಹೊಸ ನೋಂದಣಿ</button></div>
       <p class="auerr" id="auErr" role="alert"></p>
       <form class="form" id="auLogin" novalidate>
@@ -2456,6 +2468,21 @@ function initMedium() {
   sel.value = medium();
   sel.onchange = async () => { store.set('bm_medium', sel.value); store.set('bm_pick', {}); await loadDB(false); route(); toast(MEDIA[sel.value] + ' ದಾಖಲೆಗಳು'); };
 }
+/* ---------- App (PWA) ---------- */
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+let installEv = null;
+const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const showInstall = on => document.querySelectorAll('[data-install]').forEach(b => { b.hidden = !on; });
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEv = e; showInstall(true); });
+window.addEventListener('appinstalled', () => { installEv = null; showInstall(false); toast('App ಸೇರಿಸಲಾಗಿದೆ. ಮುಖಪರದೆಯಲ್ಲಿ "ಬೋಧನಾ ಮಿತ್ರ" ನೋಡಿ.'); });
+if (isIOS && !standalone()) showInstall(true);
+document.querySelectorAll('[data-install]').forEach(b => b.onclick = async () => {
+  if (installEv) { installEv.prompt(); const r = await installEv.userChoice; if (r.outcome === 'accepted') showInstall(false); installEv = null; }
+  else if (isIOS) toast('Safari ಯ ಕೆಳಗಿನ ⬆️ (Share) ಒತ್ತಿ → "Add to Home Screen".');
+  else toast('Chrome ನ ಮೇಲಿನ ⋮ ಮೆನು → "Add to Home screen" / "Install app".');
+});
+
 window.addEventListener('hashchange', route);
 window.addEventListener('resize', () => { if ($('pv').open) { clearTimeout(window._rz); window._rz = setTimeout(() => PV.render(), 200); } });
 (async () => {
