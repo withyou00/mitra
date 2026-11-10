@@ -368,7 +368,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
       <section id="v-school" class="view" hidden>
         <div class="card pad">
           <form class="form" id="schoolForm" novalidate>
-            <div><h2 style="font-size:17px">ಶಾಲೆಯ ವಿವರ</h2><p class="muted small" style="margin:4px 0 0">ಇಲ್ಲಿ ತುಂಬಿದ ವಿವರಗಳು ಎಲ್ಲಾ download ಗಳ ಮೇಲೆ ಮುದ್ರಣವಾಗುತ್ತವೆ.</p></div>
+            <div><h2 style="font-size:17px">ಶಾಲೆಯ ವಿವರ</h2><p class="muted small" id="sIntro" style="margin:4px 0 0">ಇಲ್ಲಿ ತುಂಬಿದ ವಿವರಗಳು ಎಲ್ಲಾ download ಗಳ ಮೇಲೆ ಮುದ್ರಣವಾಗುತ್ತವೆ.</p></div>
             <p class="banner" id="sLockNote" hidden style="margin:0"><span>ಶಾಲೆಯ ಹೆಸರು, UDISE ಮತ್ತು ವಿಳಾಸ ನೋಂದಣಿಯಲ್ಲಿ ಉಳಿದಿವೆ. ತಪ್ಪಿದ್ದರೆ ಸರಿಪಡಿಸಲು admin ಅವರನ್ನು ಸಂಪರ್ಕಿಸಿ.</span></p>
             <label class="f">ಶಾಲೆಯ ಹೆಸರು *<input type="text" id="sName" placeholder="ಸರ್ಕಾರಿ ಹಿರಿಯ ಪ್ರಾಥಮಿಕ ಶಾಲೆ, ..."></label>
             <div class="row">
@@ -511,6 +511,8 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <label class="f">ಮೊಬೈಲ್ ಸಂಖ್ಯೆ *<input type="tel" id="rMob" inputmode="numeric" maxlength="10" autocomplete="username"></label>
           <label class="f">ಪಾಸ್‌ವರ್ಡ್ * <small>(ಕನಿಷ್ಠ 6)</small><input type="password" id="rPw" autocomplete="new-password"></label>
         </div>
+        <p class="banner" id="auAdmNote" hidden style="margin:0"><span><b>Admin ಖಾತೆ.</b> ಶಾಲೆಯ ವಿವರ ಬೇಕಿಲ್ಲ. ಪಾಸ್‌ವರ್ಡ್ ಹಾಕಿ "ನೋಂದಣಿ ಮಾಡಿ" ಒತ್ತಿ.</span></p>
+        <div id="auRegSchool" class="form">
         <label class="f">ಶಿಕ್ಷಕರ ಹೆಸರು *<input type="text" id="rTeacher"></label>
         <label class="f">ಶಾಲೆಯ ಪೂರ್ಣ ಹೆಸರು * <small>(ಎಲ್ಲಾ download ಗಳಲ್ಲಿ ಮುದ್ರಣವಾಗುತ್ತದೆ)</small><input type="text" id="rName" placeholder="ಸರ್ಕಾರಿ ಹಿರಿಯ ಪ್ರಾಥಮಿಕ ಶಾಲೆ, ..."></label>
         <div class="row">
@@ -523,6 +525,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
         </div>
         <label class="f">ಮಾಧ್ಯಮ<select id="rMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option></select></label>
         <label class="check"><input type="checkbox" id="rOk"> ಶಾಲೆಯ ಹೆಸರು ಸರಿಯಾಗಿದೆ. ನೋಂದಣಿ ನಂತರ ಬದಲಿಸಲು ಆಗುವುದಿಲ್ಲ ಎಂದು ತಿಳಿದಿದೆ.</label>
+        </div>
         <button class="btn pri" type="submit">ನೋಂದಣಿ ಮಾಡಿ</button>
       </form>
     </div>
@@ -1675,11 +1678,12 @@ const VIEWS = {
     ['sName', 'sUdise', 'sPlace', 'sTaluk', 'sDist'].forEach(id => { $(id).disabled = locked; });
     $('sLockNote').hidden = !locked;
     renderAccount();
-    if (PAID && ACC.isAdmin() && !ACC.prof()) $('schoolForm').closest('.card').hidden = true;
+    if (PAID && ACC.isAdmin()) $('sLockNote').hidden = true;
+    if (PAID && ACC.isAdmin()) $('sIntro').textContent = 'Admin: ಇಲ್ಲಿ ಹಾಕಿದ ಶಾಲೆಯ ಹೆಸರು ನಿಮ್ಮ download ಗಳ ಮೇಲೆ ಬರುತ್ತದೆ. ಬೇರೆ ಶಾಲೆಗೆ ಬೇಕಾದಾಗ ಬದಲಿಸಿ ಉಳಿಸಿ. ಈ ವಿವರ ಈ ಸಾಧನದಲ್ಲಿ ಮಾತ್ರ ಉಳಿಯುತ್ತದೆ.';
     $('schoolForm').onsubmit = async e => {
       e.preventDefault();
       const rec = {}; Object.entries(map).forEach(([id, k]) => { rec[k] = $(id).value.trim(); });
-      if (PAID) {
+      if (PAID && !ACC.isAdmin()) {
         rec.watermark = $('sWm').checked; rec.medium = $('sMed').value;
         try { await ACC.saveOwn(rec); } catch (x) { toast('ಉಳಿಸಲು ಆಗಲಿಲ್ಲ. Internet ನೋಡಿ.', true); return; }
         if (rec.medium !== medium()) { store.set('bm_medium', rec.medium); store.set('bm_pick', {}); $('medSel').value = rec.medium; await loadDB(false); }
@@ -2048,6 +2052,8 @@ const ACC = (() => {
     $('auProfNote').hidden = mode !== 'profile';
     tab(mode === 'login' ? 'login' : 'reg');
     document.querySelectorAll('#auTabs button').forEach(b => b.onclick = () => { $('auErr').textContent = ''; tab(b.dataset.t); });
+    const adm = () => { const a = !!CONFIG.admin && $('rMob').value.replace(/\D/g, '') === String(CONFIG.admin).trim(); $('auRegSchool').hidden = a; $('auAdmNote').hidden = !a; };
+    $('rMob').oninput = adm; adm();
     $('auForgot').href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('ನಮಸ್ಕಾರ, ಬೋಧನಾ ಮಿತ್ರ ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೇನೆ. ನನ್ನ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ: ')}` : '#';
     $('auPrices').innerHTML = `<h3>ಬೆಲೆ ಪಟ್ಟಿ <small>(ಒಂದು ಶೈಕ್ಷಣಿಕ ವರ್ಷಕ್ಕೆ)</small></h3><div class="plist">` +
       ['lp', 'ppt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
@@ -2073,6 +2079,13 @@ const ACC = (() => {
       const rec = { name: $('rName').value.trim(), udise: $('rUdise').value.trim(), place: $('rPlace').value.trim(), taluk: $('rTaluk').value.trim(), dist: $('rDist').value.trim(), teacher: $('rTeacher').value.trim(), medium: $('rMed').value };
       if (!profileOnly && !mobOk(m)) return err('10 ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ ಬರೆಯಿರಿ.');
       if (!profileOnly && pw.length < 6) return err('ಪಾಸ್‌ವರ್ಡ್ ಕನಿಷ್ಠ 6 ಅಕ್ಷರ ಇರಬೇಕು.');
+      if (!profileOnly && CONFIG.admin && m === String(CONFIG.admin).trim()) {      // Admin: ಶಾಲೆಯ ವಿವರ ಬೇಕಿಲ್ಲ
+        const btn = e.submitter || $('auReg').querySelector('button[type=submit]');
+        return busy(btn, async () => {
+          try { user = (await fb.createUserWithEmailAndPassword(fb.auth, email(m), pw)).user; } catch (x) { return err(msg(x)); }
+          await afterLogin();
+        });
+      }
       if (!rec.teacher) return err('ಶಿಕ್ಷಕರ ಹೆಸರು ಬರೆಯಿರಿ.');
       if (rec.name.length < 5) return err('ಶಾಲೆಯ ಪೂರ್ಣ ಹೆಸರು ಬರೆಯಿರಿ.');
       if (!$('rOk').checked) return err('ಶಾಲೆಯ ಹೆಸರು ಸರಿಯಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿ (ಕೆಳಗಿನ ಗುರುತು).');
@@ -2109,7 +2122,8 @@ const ACC = (() => {
     token: () => user.getIdToken(),
     mobile: mob, isAdmin, orders: () => orders, prof: () => prof,
     school() {
-      if (!prof) return isAdmin() ? { name: 'Admin', medium: 'kn', year: '2026-27' } : null;
+      if (isAdmin()) return store.get('bm_school', null);      // Admin: ಯಾವ ಶಾಲೆಯ ಹೆಸರು ಬೇಕಾದರೂ, ಈ ಸಾಧನದಲ್ಲಿ
+      if (!prof) return null;
       return Object.fromEntries(SCHOOL_KEYS.map(k => [k, prof[k] ?? '']));
     },
     packs: () => prof?.packs || {},
