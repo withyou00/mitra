@@ -397,7 +397,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
               <label class="f">ಶಿಕ್ಷಕರ ಹೆಸರು<input type="text" id="sTeacher"></label>
               <label class="f">ಮುಖ್ಯ ಶಿಕ್ಷಕರ ಹೆಸರು<input type="text" id="sHm"></label>
             </div>
-            <label class="f">ಮಾಧ್ಯಮ<select id="sMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option></select></label>
+            <label class="f">ಮಾಧ್ಯಮ<select id="sMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option><option value="bi">ದ್ವಿಭಾಷಾ ಮಾಧ್ಯಮ</option></select></label>
             <label class="check"><input type="checkbox" id="sWm"> ಪಾಠಯೋಜನೆ ಪುಟಗಳ ಮಧ್ಯದಲ್ಲಿ ಮಸುಕಾದ watermark</label>
             <div><button class="btn pri" type="submit">ಉಳಿಸಿ</button></div>
           </form>
@@ -445,7 +445,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
         <div class="card pad maker">
           <div><h2 style="font-size:17px">ಫೈಲ್ ಹೆಸರು ತಯಾರಕ</h2><p class="muted small" style="margin:4px 0 0">ಆಯ್ಕೆ ಮಾಡಿ, ಕೆಳಗೆ ಬರುವ ಹೆಸರನ್ನೇ ನಿಮ್ಮ ಫೈಲ್‌ಗೆ ಇಟ್ಟು GitHub ಗೆ upload ಮಾಡಿ. ವೆಬ್‌ಸೈಟ್ ತಾನಾಗಿಯೇ ಅದನ್ನು ಸರಿಯಾದ ಜಾಗದಲ್ಲಿ ತೋರಿಸುತ್ತದೆ.</p></div>
           <div class="opts">
-            <label class="field">ಮಾಧ್ಯಮ<select id="mkMed"><option value="kn">ಕನ್ನಡ (ಗುರುತು ಇಲ್ಲ)</option><option value="en">English (en-)</option><option value="mr">ಮರಾಠಿ (mr-)</option><option value="ur">ಉರ್ದು (ur-)</option></select></label>
+            <label class="field">ಮಾಧ್ಯಮ<select id="mkMed"><option value="kn">ಕನ್ನಡ (ಗುರುತು ಇಲ್ಲ)</option><option value="en">English (en-)</option><option value="mr">ಮರಾಠಿ (mr-)</option><option value="ur">ಉರ್ದು (ur-)</option><option value="bi">ದ್ವಿಭಾಷಾ (bi-)</option></select></label>
             <label class="field">ದಾಖಲೆ<select id="mkType"><option value="lp">ಪಾಠಯೋಜನೆ</option><option value="ppt">PPT</option><option value="aj">ಅಂದಾಜು ಪತ್ರಿಕೆ</option><option value="doc">ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)</option></select></label>
             <label class="field" id="mkDocW" hidden>ದಾಖಲೆಯ ಹೆಸರು<select id="mkDoc"></select></label>
             <label class="field" id="mkClassW">ತರಗತಿ<select id="mkClass"></select></label>
@@ -552,7 +552,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <label class="f">ತಾಲ್ಲೂಕು<input type="text" id="rTaluk"></label>
           <label class="f">ಜಿಲ್ಲೆ<input type="text" id="rDist"></label>
         </div>
-        <label class="f">ಮಾಧ್ಯಮ<select id="rMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option></select></label>
+        <label class="f">ಮಾಧ್ಯಮ<select id="rMed"><option value="kn">ಕನ್ನಡ ಮಾಧ್ಯಮ</option><option value="en">English Medium</option><option value="mr">मराठी माध्यम</option><option value="ur">اردو میڈیم</option><option value="bi">ದ್ವಿಭಾಷಾ ಮಾಧ್ಯಮ</option></select></label>
         <label class="check"><input type="checkbox" id="rOk"> ಶಾಲೆಯ ಹೆಸರು ಸರಿಯಾಗಿದೆ. ನೋಂದಣಿ ನಂತರ ಬದಲಿಸಲು ಆಗುವುದಿಲ್ಲ ಎಂದು ತಿಳಿದಿದೆ.</label>
         </div>
         <button class="btn pri" type="submit">ನೋಂದಣಿ ಮಾಡಿ</button>
@@ -597,6 +597,10 @@ const LANG = {
     cols: ['5E टप्पा', 'अध्ययन घटक', 'उपक्रम', 'शैक्षणिक साहित्य', 'मूल्यमापन', 'शिक्षकाचे स्व-अवलोकन', 'दिनांक'],
     content: 'अध्ययन घटक', activity: 'कृती', teacher: 'शिक्षकाची कृती', student: 'विद्यार्थ्यांची कृती',
     period: 'तासिका', date: 'दिनांक', part: 'भाग', tsig: 'शिक्षकाची स्वाक्षरी', hsig: 'मुख्याध्यापकांची स्वाक्षरी', ord: c => c + 'वी' },
+  bi: { unit: 'ಪಾಠ / ಘಟಕ (Lesson / Unit)', subject: 'ವಿಷಯ (Subject)', cls: 'ತರಗತಿ (Class)', start: 'ಪ್ರಾರಂಭ ದಿನಾಂಕ (Start date)', end: 'ಮುಕ್ತಾಯ ದಿನಾಂಕ (End date)', obj: 'ನಿರ್ದಿಷ್ಟ ಉದ್ದೇಶಗಳು (Specific Objectives)',
+    cols: ['5E ಹಂತ (Stage)', 'ಕಲಿಕಾಂಶಗಳು (Learning Points)', 'ಚಟುವಟಿಕೆಗಳು (Activities)', 'ಕಲಿಕೋಪಕರಣಗಳು (Teaching Aids)', 'ಮೌಲ್ಯಮಾಪನ (Evaluation)', 'ಶಿಕ್ಷಕರ ಸ್ವ-ಅವಲೋಕನ (Reflection)', 'ದಿನಾಂಕ (Date)'],
+    content: 'ಕಲಿಕಾಂಶ (Learning points)', activity: 'ಚಟುವಟಿಕೆ (Activity)', teacher: 'ಶಿಕ್ಷಕರ ಚಟುವಟಿಕೆ (Teacher)', student: 'ವಿದ್ಯಾರ್ಥಿ ಚಟುವಟಿಕೆ (Students)',
+    period: 'ಅವಧಿ (Period)', date: 'ದಿನಾಂಕ (Date)', part: 'ಭಾಗ', tsig: 'ಶಿಕ್ಷಕರ ಸಹಿ (Teacher)', hsig: 'ಮುಖ್ಯ ಶಿಕ್ಷಕರ ಸಹಿ (Head Teacher)', ord: c => c + 'ನೇ' },
   ur: { unit: 'سبق / اکائی', subject: 'مضمون', cls: 'جماعت', start: 'آغاز کی تاریخ', end: 'تکمیل کی تاریخ', obj: 'مقررہ مقاصد',
     cols: ['مرحلہ 5E', 'سیکھنے کے نتائج', 'سرگرمیاں', 'تدریسی مواد', 'تشخیص', 'استاد کا خود جائزہ', 'تاریخ'],
     content: 'سیکھنے کے نتائج', activity: 'سرگرمی', teacher: 'استاد کی سرگرمی', student: 'طلبہ کی سرگرمی',
@@ -1223,7 +1227,7 @@ const skel = t => String(t).normalize('NFC').toLowerCase()
 const SUBJ_INDEX = {};
 for (const [k, names] of Object.entries(SUBJECT_LIST)) for (const n of [k, ...names]) SUBJ_INDEX[skel(n)] ??= k;
 const subjCode = raw => SUBJ_INDEX[skel(raw)] || String(raw).normalize('NFC').toLowerCase().replace(/\s+/g, '');
-const MED_RE = /^(en|mr|ur|kn)-(?=(?:lp|ppt|aj|doc)-)/i;
+const MED_RE = /^(en|mr|ur|bi|kn)-(?=(?:lp|ppt|aj|doc)-)/i;
 const medOf = name => ((MED_RE.exec(name.normalize('NFC').trim()) || [])[1] || 'kn').toLowerCase();
 /* ---------- ಫೈಲ್ ಹೆಸರು → ಅರ್ಥ ----------
    ಹೆಸರನ್ನು "-" ಚಿಹ್ನೆಯಲ್ಲಿ ಭಾಗಿಸಲಾಗುತ್ತದೆ: ಪ್ರಕಾರ - ತರಗತಿ - ವಿಷಯ - ಭಾಗ - ಘಟಕ
@@ -1315,7 +1319,7 @@ const DOCS = {
 const docTitle = n => DOCS[n] || n;
 const SUBJ_ORDER = Object.keys(SUBJECTS);
 /* ಮಾಧ್ಯಮಗಳು: ಫೈಲ್ ಹೆಸರಿನ ಮುಂದೆ ಗುರುತು (ಕನ್ನಡಕ್ಕೆ ಏನೂ ಬೇಡ) */
-const MEDIA = { kn: 'ಕನ್ನಡ ಮಾಧ್ಯಮ', en: 'English Medium', mr: 'मराठी माध्यम', ur: 'اردو میڈیم' };
+const MEDIA = { kn: 'ಕನ್ನಡ ಮಾಧ್ಯಮ', en: 'English Medium', mr: 'मराठी माध्यम', ur: 'اردو میڈیم', bi: 'ದ್ವಿಭಾಷಾ ಮಾಧ್ಯಮ' };
 const medium = () => { const m = store.get('bm_medium', null) || school()?.medium || 'kn'; return MEDIA[m] ? m : 'kn'; };
 const subjName = c => SUBJECTS[c] || c;
 const partName = p => `ಭಾಗ ${p}` + (p == 1 ? ' (ಪ್ರಥಮ ಸೆಮಿಸ್ಟರ್)' : p == 2 ? ' (ದ್ವಿತೀಯ ಸೆಮಿಸ್ಟರ್)' : '');
@@ -1492,6 +1496,7 @@ async function loadLesson(name) {
     lp.lang = sj === 'marathi' ? 'mr' : sj === 'hindi' ? 'hi' : sj === 'english' ? 'en' : sj === 'urdu' ? 'ur'
       : (ar > kn && ar > dv && ar > la * .5) ? 'ur'
       : (dv > kn && dv > la * .5) ? (p && p.med === 'mr' ? 'mr' : 'hi') : (la > kn * 2 && la > dv) ? 'en' : 'kn';
+    if (p && p.med === 'bi' && (lp.lang === 'kn' || lp.lang === 'en')) lp.lang = 'bi';     // ದ್ವಿಭಾಷಾ: ಕನ್ನಡ + English ಶೀರ್ಷಿಕೆಗಳು
     if (lp.lang === 'ur') { try { await Promise.all([document.fonts.load('400 12px "Noto Naskh Arabic"'), document.fonts.load('700 12px "Noto Naskh Arabic"')]); } catch (e) {} }
     if (lp.lang !== 'kn' && !lp.subjLabel) lp.subjLabel = '';
   }
