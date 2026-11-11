@@ -14,7 +14,7 @@
 <meta name="github-repo" content="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Kannada:wght@400;500;600;700;800&family=Anek+Devanagari:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anek+Kannada:wght@400;500;600;700;800&family=Anek+Devanagari:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -597,6 +597,11 @@ const LANG = {
     cols: ['5E टप्पा', 'अध्ययन घटक', 'उपक्रम', 'शैक्षणिक साहित्य', 'मूल्यमापन', 'शिक्षकाचे स्व-अवलोकन', 'दिनांक'],
     content: 'अध्ययन घटक', activity: 'कृती', teacher: 'शिक्षकाची कृती', student: 'विद्यार्थ्यांची कृती',
     period: 'तासिका', date: 'दिनांक', part: 'भाग', tsig: 'शिक्षकाची स्वाक्षरी', hsig: 'मुख्याध्यापकांची स्वाक्षरी', ord: c => c + 'वी' },
+  ur: { unit: 'سبق / اکائی', subject: 'مضمون', cls: 'جماعت', start: 'آغاز کی تاریخ', end: 'تکمیل کی تاریخ', obj: 'مقررہ مقاصد',
+    cols: ['مرحلہ 5E', 'سیکھنے کے نتائج', 'سرگرمیاں', 'تدریسی مواد', 'تشخیص', 'استاد کا خود جائزہ', 'تاریخ'],
+    content: 'سیکھنے کے نتائج', activity: 'سرگرمی', teacher: 'استاد کی سرگرمی', student: 'طلبہ کی سرگرمی',
+    period: 'پیریڈ', date: 'تاریخ', part: 'حصہ', tsig: 'استاد کے دستخط', hsig: 'صدر مدرس کے دستخط',
+    ord: c => ({ 1: 'پہلی', 2: 'دوسری', 3: 'تیسری', 4: 'چوتھی', 5: 'پانچویں', 6: 'چھٹی', 7: 'ساتویں', 8: 'آٹھویں', 9: 'نویں', 10: 'دسویں' }[c] || c) },
   en: { unit: 'Lesson / Unit', subject: 'Subject', cls: 'Class', start: 'Start date', end: 'End date', obj: 'Specific Objectives',
     cols: ['5E Stage', 'Learning Points', 'Activities', 'Teaching Aids', 'Evaluation', "Teacher's Reflection", 'Date'],
     content: 'Learning points', activity: 'Activity', teacher: "Teacher's activity", student: "Students' activity",
@@ -609,13 +614,16 @@ const AJ_LANG = {
     cols: ['ತಿಂಗಳು', 'ವಿಷಯ', 'ಬೋಧಿಸಬೇಕಾದ ಘಟಕಗಳು', 'ಅವಧಿ', 'ಸಾಗಿದೆ', 'ಸಾಗಿಲ್ಲ', 'ಸಾಗದಿದ್ದರೆ ಕಾರಣ', 'ಕೈಗೊಂಡ ಕ್ರಮಗಳು', 'ಮೌಲ್ಯಮಾಪನ'] },
   en: { title: 'Annual Teaching Plan', sem: 'Semester', all: 'All subjects', teacher: 'Teacher', done: 'Units completed',
     cols: ['Month', 'Subject', 'Units to be taught', 'Periods', 'Done', 'Not done', 'Reason if not done', 'Action taken', 'Evaluation'] },
+  ur: { title: 'سالانہ تدریسی منصوبہ', sem: 'سمسٹر', all: 'تمام مضامین', teacher: 'استاد', done: 'مکمل اکائیاں',
+    cols: ['مہینہ', 'مضمون', 'پڑھائی جانے والی اکائیاں', 'پیریڈ', 'مکمل', 'نامکمل', 'نامکمل ہونے کی وجہ', 'کیے گئے اقدامات', 'تشخیص'] },
   mr: { title: 'अंदाजपत्रक', sem: 'सत्र', all: 'सर्व विषय', teacher: 'शिक्षक', done: 'पूर्ण घटक',
     cols: ['महिना', 'विषय', 'शिकवायचे घटक', 'तासिका', 'पूर्ण', 'अपूर्ण', 'अपूर्ण असल्यास कारण', 'केलेली कार्यवाही', 'मूल्यमापन'] }
 };
 
 const PM = (() => {
   const { PDFDocument, rgb } = PDFLib;
-  const F = '"Anek Kannada","Anek Devanagari","Noto Sans Kannada","Noto Sans Devanagari","Tunga","Nirmala UI",sans-serif';
+  const F = '"Anek Kannada","Anek Devanagari","Noto Naskh Arabic","Noto Sans Kannada","Noto Sans Devanagari","Tunga","Nirmala UI","Segoe UI",sans-serif';
+  const isRtl = t => { t = s(t); const a = (t.match(/[\u0600-\u06FF]/g) || []).length; return a > 20 && a > (t.match(/[\u0C80-\u0CFF\u0900-\u097FA-Za-z]/g) || []).length; };
   const GREEN = '#17583f';
   const toPng = c => new Promise((res, rej) => c.toBlob(b => b ? b.arrayBuffer().then(a => res(new Uint8Array(a))) : rej(new Error('canvas')), 'image/png'));
   const s = v => v == null ? '' : String(v);
@@ -634,14 +642,21 @@ const PM = (() => {
   }
 
   class Flow {
-    constructor({ w = 595, h = 842, top = 84, bottom = 44, side = 34 } = {}) {
-      Object.assign(this, { W: w, H: h, top, bottom, left: side, right: side, S: 2.4, pages: [] });
+    constructor({ w = 595, h = 842, top = 84, bottom = 44, side = 34, rtl = false } = {}) {
+      Object.assign(this, { W: w, H: h, top, bottom, left: side, right: side, S: 2.4, pages: [], rtl });
       this.newPage();
     }
     get cw() { return this.W - this.left - this.right; }
     newPage() {
       const c = document.createElement('canvas'); c.width = this.W * this.S; c.height = this.H * this.S;
       const ctx = c.getContext('2d'); ctx.scale(this.S, this.S);
+      if (this.rtl) {                       // ಉರ್ದು: ಪುಟವನ್ನು ಬಲದಿಂದ ಎಡಕ್ಕೆ (ಕನ್ನಡಿ ಬಿಂಬ), ಅಕ್ಷರಗಳು RTL
+        const W = this.W, o = { ft: ctx.fillText.bind(ctx), fr: ctx.fillRect.bind(ctx), sr: ctx.strokeRect.bind(ctx), mt: ctx.moveTo.bind(ctx), lt: ctx.lineTo.bind(ctx) };
+        ctx.fillText = (t, x, y) => { ctx.save(); ctx.direction = 'rtl'; ctx.textAlign = 'right'; o.ft(t, W - x, y); ctx.restore(); };
+        ctx.fillRect = (x, y, w, h) => o.fr(W - x - w, y, w, h);
+        ctx.strokeRect = (x, y, w, h) => o.sr(W - x - w, y, w, h);
+        ctx.moveTo = (x, y) => o.mt(W - x, y); ctx.lineTo = (x, y) => o.lt(W - x, y);
+      }
       ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, this.W, this.H); ctx.textBaseline = 'alphabetic';
       this.ctx = ctx; this.pages.push(c); this.y = this.top;
     }
@@ -754,7 +769,7 @@ const PM = (() => {
 
   /* ಘಟಕವಾರು: ನಿಮ್ಮ Excel ಮಾದರಿಯಂತೆಯೇ (A4 ಅಡ್ಡ) */
   async function lessonUnit(lp, units, school) {
-    const L = langOf(lp), f = new Flow({ w: 842, h: 595, top: 70, bottom: 30, side: 26 });
+    const L = langOf(lp), f = new Flow({ w: 842, h: 595, top: 70, bottom: 30, side: 26, rtl: lp.lang === 'ur' });
     units.forEach((u, i) => {
       if (i) f.newPage();
       f.text(`${L.unit} ${u.no} : ${u.title}`, { size: 13, weight: 700, color: GREEN, gap: 0 });
@@ -774,7 +789,7 @@ const PM = (() => {
 
   /* ಅವಧಿವಾರು: ಪ್ರತಿ 5E ಹಂತ = ಒಂದು ಅವಧಿ (A4 ಉದ್ದ) */
   async function lessonPeriod(lp, units, school) {
-    const L = langOf(lp), f = new Flow();
+    const L = langOf(lp), f = new Flow({ rtl: lp.lang === 'ur' });
     units.forEach((u, i) => {
       if (i) f.newPage();
       f.text(`${L.unit} ${u.no} : ${u.title}`, { size: 14, weight: 700, color: GREEN, gap: 2 });
@@ -862,7 +877,7 @@ const PM = (() => {
   /* ಅಂದಾಜು ಪತ್ರಿಕೆ (ನಿಮ್ಮ Excel ಮಾದರಿ) */
   async function andaju(sheet, rows, state, school, { blank, subject }) {
     const A = AJ_LANG[sheet.lang] || AJ_LANG.kn, L = LANG[sheet.lang] || LANG.kn;
-    const f = new Flow({ w: 842, h: 595, top: 74, bottom: 34, side: 26 });
+    const f = new Flow({ w: 842, h: 595, top: 74, bottom: 34, side: 26, rtl: sheet.lang === 'ur' });
     f.text(`${A.title} ${school.year || ''}`, { size: 14, weight: 700, color: GREEN, gap: 0 });
     f.infoRow([[A.sem, sheet.sem], [L.cls, clsTxt(sheet.cls, L)], [L.subject, subject || A.all], [A.teacher, school.teacher || '']], 9.5);
     let lastM = null, lastS = null;
@@ -938,7 +953,7 @@ const PM = (() => {
       let hr = 0;
       for (let r = 1; r <= sh.maxR && !hr; r++) if (rowVals(r).filter(Boolean).length >= minHead) hr = r;
       const land = used.length >= 5;
-      if (!f) f = new Flow(land ? { w: 842, h: 595, top: 74, bottom: 34, side: 26 } : { top: 84 }); else f.newPage();
+      if (!f) { const rtl = isRtl(Array.from({ length: Math.min(sh.maxR, 40) }, (_, r) => rowVals(r + 1).join(' ')).join(' ')); f = new Flow(land ? { w: 842, h: 595, top: 74, bottom: 34, side: 26, rtl } : { top: 84, rtl }); } else f.newPage();
       f.text(title, { size: 14, weight: 700, color: GREEN, gap: 0 });
       if (sub) f.text(sub, { size: 10, color: '#333', gap: 4 });
       const len = used.map(k => { let t = 0, n = 0; for (let r = hr || 1; r <= sh.maxR; r++) { const v = sh.raw(r, k); if (v && rowVals(r).filter(Boolean).length > 1) { t += Math.min(v.length, 60); n++; } } return Math.max(4, Math.min(40, n ? t / n : 4)); });
@@ -1053,25 +1068,26 @@ const XL = (() => {
      ಘಟಕದ ಆರಂಭ: "ಪಾಠ / ಘಟಕ : ಹೆಸರು" ಅಥವಾ "ಘಟಕ 12 : ಹೆಸರು" (ಯಾವ ಕಾಲಂನಲ್ಲಾದರೂ)
      5E ಕೋಷ್ಟಕದ ಕಾಲಂಗಳನ್ನು ಶೀರ್ಷಿಕೆಯ ಹೆಸರಿನಿಂದ ಗುರುತಿಸಲಾಗುತ್ತದೆ, ಸ್ಥಾನದಿಂದಲ್ಲ */
   /* ಕನ್ನಡ, ಹಿಂದಿ, ಮರಾಠಿ, ಇಂಗ್ಲಿಷ್ — ಎಲ್ಲಾ ಭಾಷೆಯ ಪಾಠಯೋಜನೆ */
-  const SCHOOL_RE = /ಶಾಲೆ|ಶಾಲಾ|विद्यालय|पाठशाला|शाळा|school/i;
-  const isUnitCell = t => /^(ಪಾಠ|ಘಟಕ|ಅಧ್ಯಾಯ|पाठ|घटक|इकाई|अध्याय|प्रकरण|lesson|unit|chapter|topic)[^:：]{0,25}[:：]/i.test(t);
-  const isObjHead = t => t.length < 45 && /^(ನಿರ್ದಿಷ್ಟ|ಕಲಿಕಾ\s*ಉದ್ದೇಶ|विशिष्ट|अधिगम\s*उद्देश्य|उद्देश्य|उद्दिष्ट|specific|learning\s*objective|objective)/i.test(t);
-  const SKIP_OBJ = /^(ಪ್ರಾರಂಭ|ಮುಕ್ತಾಯ|ವಿಷಯ\s*[:：]|ತರಗತಿ\s*[:：]|ದಿನಾಂಕ|प्रारंभ|समाप्ति|समाप्ती|विषय\s*[:：]|कक्षा\s*[:：]|इयत्ता\s*[:：]|दिनांक|start|end\s*date|subject\s*[:：]|class\s*[:：]|date)/i;
-  const SUBJ_CELL = /^(ವಿಷಯ|विषय|subject)\s*[:：]\s*(.+)$/i;
+  const SCHOOL_RE = /ಶಾಲೆ|ಶಾಲಾ|विद्यालय|पाठशाला|शाळा|school|اسکول|مدرسہ/i;
+  const isUnitCell = t => /^(ಪಾಠ|ಘಟಕ|ಅಧ್ಯಾಯ|पाठ|घटक|इकाई|अध्याय|प्रकरण|lesson|unit|chapter|topic|سبق|اکائی|باب)[^:：]{0,25}[:：]/i.test(t);
+  const isObjHead = t => t.length < 45 && /^(ನಿರ್ದಿಷ್ಟ|ಕಲಿಕಾ\s*ಉದ್ದೇಶ|विशिष्ट|अधिगम\s*उद्देश्य|उद्देश्य|उद्दिष्ट|specific|learning\s*objective|objective|مقررہ\s*مقاصد|مخصوص\s*مقاصد|تعلیمی\s*مقاصد|مقاصد)/i.test(t);
+  const SKIP_OBJ = /^(ಪ್ರಾರಂಭ|ಮುಕ್ತಾಯ|ವಿಷಯ\s*[:：]|ತರಗತಿ\s*[:：]|ದಿನಾಂಕ|प्रारंभ|समाप्ति|समाप्ती|विषय\s*[:：]|कक्षा\s*[:：]|इयत्ता\s*[:：]|दिनांक|start|end\s*date|subject\s*[:：]|class\s*[:：]|date|آغاز|تکمیل|مضمون\s*[:：]|جماعت\s*[:：]|تاریخ)/i;
+  const SUBJ_CELL = /^(ವಿಷಯ|विषय|subject|مضمون)\s*[:：]\s*(.+)$/i;
+  const urDigits = t => String(t ?? '').replace(/[\u06F0-\u06F9\u0660-\u0669]/g, d => String((d.charCodeAt(0) & 0xF)));
   function headerCols(cells) {
     const c = {};
     for (const [k, v] of cells) {
       if (v.length > 34) return null;
-      if (/ಅವಲೋಕನ|ಪ್ರತಿಫಲನ|अवलोकन|आत्म|चिंतन|reflect|self/i.test(v)) c.refl = k;
-      else if (/5E|ಹಂತ|चरण|टप्पा|stage|phase|step/i.test(v)) c.stage = k;
-      else if (/ಕಲಿಕಾಂಶ|ಕಲಿಕಾ\s*ಅಂಶ|ಉಪ\s*ಘಟಕ|अधिगम|बिंदु|विषय\s*वस्तु|आशय|अध्ययन\s*घटक|content|learning\s*point|concept/i.test(v)) c.content = k;
-      else if (/ಚಟುವಟಿಕೆ|गतिविधि|क्रिया|कृती|उपक्रम|activit/i.test(v)) c.act = k;
-      else if (/ಕಲಿಕೋಪಕರಣ|ಉಪಕರಣ|ಸಾಮಗ್ರಿ|सामग्री|साहित्य|साधन|material|resource|aid|tlm/i.test(v)) c.mat = k;
-      else if (/ಮೌಲ್ಯಮಾಪನ|मूल्यांकन|मूल्यमापन|evaluat|assess/i.test(v)) c.eval = k;
+      if (/ಅವಲೋಕನ|ಪ್ರತಿಫಲನ|अवलोकन|आत्म|चिंतन|reflect|self|خود|احتساب|عکاس/i.test(v)) c.refl = k;
+      else if (/5E|ಹಂತ|चरण|टप्पा|stage|phase|step|مرحلہ/i.test(v)) c.stage = k;
+      else if (/ಕಲಿಕಾಂಶ|ಕಲಿಕಾ\s*ಅಂಶ|ಉಪ\s*ಘಟಕ|अधिगम|बिंदु|विषय\s*वस्तु|आशय|अध्ययन\s*घटक|content|learning\s*point|concept|سیکھنے|نکات|نتائج/i.test(v)) c.content = k;
+      else if (/ಚಟುವಟಿಕೆ|गतिविधि|क्रिया|कृती|उपक्रम|activit|سرگرمی/i.test(v)) c.act = k;
+      else if (/ಕಲಿಕೋಪಕರಣ|ಉಪಕರಣ|ಸಾಮಗ್ರಿ|सामग्री|साहित्य|साधन|material|resource|aid|tlm|مواد|وسائل|اشیاء/i.test(v)) c.mat = k;
+      else if (/ಮೌಲ್ಯಮಾಪನ|मूल्यांकन|मूल्यमापन|evaluat|assess|تشخیص|جانچ|قدر\s*پیمائی/i.test(v)) c.eval = k;
     }
     return c.stage && c.act ? c : null;
   }
-  const SPLIT_RE = /(?:ಶಿಕ್ಷಕರ\s*ಚಟುವಟಿಕೆ|शिक्षक\s*(?:की\s*)?(?:गतिविधि(?:याँ|यां)?|क्रिया(?:एँ)?)|शिक्षकाची\s*कृती|शिक्षक\s*कृती|teacher'?s?\s*activit(?:y|ies))\s*[:：]\s*([\s\S]*?)\s*(?:ವಿದ್ಯಾರ್ಥಿ(?:ಗಳ)?\s*ಚಟುವಟಿಕೆ|(?:छात्र|विद्यार्थी)(?:ों)?\s*(?:की\s*)?(?:गतिविधि(?:याँ|यां)?|क्रिया(?:एँ)?)|विद्यार्थ्यांची\s*कृती|विद्यार्थी\s*कृती|(?:student|pupil)s?'?s?\s*activit(?:y|ies))\s*[:：]\s*([\s\S]*)$/i;
+  const SPLIT_RE = /(?:استاد\s*کی\s*سرگرمی(?:اں)?|ಶಿಕ್ಷಕರ\s*ಚಟುವಟಿಕೆ|शिक्षक\s*(?:की\s*)?(?:गतिविधि(?:याँ|यां)?|क्रिया(?:एँ)?)|शिक्षकाची\s*कृती|शिक्षक\s*कृती|teacher'?s?\s*activit(?:y|ies))\s*[:：]\s*([\s\S]*?)\s*(?:(?:طلبہ|طلباء|طالب\s*علموں|بچوں)\s*کی\s*سرگرمی(?:اں)?|ವಿದ್ಯಾರ್ಥಿ(?:ಗಳ)?\s*ಚಟುವಟಿಕೆ|(?:छात्र|विद्यार्थी)(?:ों)?\s*(?:की\s*)?(?:गतिविधि(?:याँ|यां)?|क्रिया(?:एँ)?)|विद्यार्थ्यांची\s*कृती|विद्यार्थी\s*कृती|(?:student|pupil)s?'?s?\s*activit(?:y|ies))\s*[:：]\s*([\s\S]*)$/i;
   function lessonPlan(sheets) {
     const units = [];
     let subjLabel = '';
@@ -1084,8 +1100,11 @@ const XL = (() => {
         for (const [, v] of cells) { const m = SUBJ_CELL.exec(v); if (m && !subjLabel) subjLabel = m[2].trim(); }
         const uc = cells.find(([, v]) => isUnitCell(v));
         if (uc) {
-          const [lab, ...rest] = uc[1].split(/[:：]/), n = /(\d+)/.exec(lab);
-          cur = { no: n ? +n[1] : units.length + 1, title: rest.join(':').trim() || uc[1], objectives: [], rows: [] };
+          const [lab, ...rest] = urDigits(uc[1]).split(/[:：]/);
+          let n = /(\d+)/.exec(lab), title = rest.join(':').trim();
+          const tm = !n && /^([^\d\s:]{2,12})\s*(\d+)\s*[-–—.:)]\s*(.+)$/.exec(title);     // "ಪಾಠ 13 – ಹೆಸರು" / "سبق 13 – نام"
+          if (tm) { n = [, tm[2]]; title = tm[3].trim(); }
+          cur = { no: n ? +n[1] : units.length + 1, title: title || uc[1], objectives: [], rows: [] };
           units.push(cur); mode = null; col = null; sheetUnit = true; continue;
         }
         if (cells.length <= 2 && isObjHead(cells[0][1])) {
@@ -1125,22 +1144,22 @@ const XL = (() => {
     const out = [];
     sheets.forEach((sh, si) => {
       let hr = 0;
-      const isMonth = h => /^(ತಿಂಗಳು|month|महिना|महीना|माह)/i.test(h);
+      const isMonth = h => /^(ತಿಂಗಳು|month|महिना|महीना|माह|مہینہ|ماہ)/i.test(h);
       for (let r = 1; r <= Math.min(sh.maxR, 15) && !hr; r++) for (let k = 1; k <= sh.maxC; k++) if (isMonth(sh.raw(r, k))) { hr = r; break; }
       if (!hr) return;
       const col = {};
       for (let k = 1; k <= sh.maxC; k++) {
         const h = sh.raw(hr, k);
         if (isMonth(h)) col.m = k;
-        else if (/^(ವಿಷಯ|subject|विषय)$/i.test(h)) col.s = k;
-        else if (!col.u && /ಘಟಕ|unit|lesson|chapter|घटक|पाठ|प्रकरण/i.test(h)) col.u = k;
-        else if (/^(ಅವಧಿ|periods?|no\.?\s*of\s*periods|तासिका|कालांश|अवधि)/i.test(h)) col.p = k;
+        else if (/^(ವಿಷಯ|subject|विषय|مضمون)$/i.test(h)) col.s = k;
+        else if (!col.u && /ಘಟಕ|unit|lesson|chapter|घटक|पाठ|प्रकरण|اکائی|سبق|باب/i.test(h)) col.u = k;
+        else if (/^(ಅವಧಿ|periods?|no\.?\s*of\s*periods|तासिका|कालांश|अवधि|پیریڈ|گھنٹے|اوقات)/i.test(h)) col.p = k;
       }
       let sem = '', cls = '', year = '';
       for (let r = 1; r < hr; r++) for (let k = 1; k <= sh.maxC; k++) {
         const v = sh.raw(r, k); if (!v) continue;
-        if (/ಸೆಮಿಸ್ಟರ|semester|term|सत्र|सेमिस्टर/i.test(v) && !sem) sem = v;
-        if (/ತರಗತಿ|class|std|grade|इयत्ता|कक्षा/i.test(v)) cls = ((/(\d+)/.exec(v) || [])[1]) || cls;
+        if (/ಸೆಮಿಸ್ಟರ|semester|term|सत्र|सेमिस्टर|سمسٹر/i.test(v) && !sem) sem = v;
+        if (/ತರಗತಿ|class|std|grade|इयत्ता|कक्षा|جماعت/i.test(v)) cls = ((/(\d+)/.exec(v) || [])[1]) || cls;
         if (!year) year = ((/(\d{4}\s*-\s*\d{2,4})/.exec(v) || [])[1]) || '';
       }
       const rows = [], seen = {};
@@ -1421,6 +1440,14 @@ const AUTO_REFL_LANG = {
     evaluate: ['बहुतेक विद्यार्थ्यांनी अपेक्षित अध्ययन निष्पत्ती साध्य केली; काहींना उपचारात्मक अध्यापनाची गरज आहे.', 'मूल्यमापनात बहुतेक विद्यार्थ्यांनी अचूक उत्तरे दिली.', 'अध्ययनाचा स्तर समाधानकारक आहे.'],
     other: ['विद्यार्थ्यांनी आवडीने सहभाग घेतला.', 'बहुतेक विद्यार्थ्यांना पाठ समजला.', 'वर्गात चांगला प्रतिसाद मिळाला.']
   },
+  ur: {
+    engage: ['طلبہ نے سبق کے موضوع میں تجسس کے ساتھ دلچسپی لی۔', 'پیشگی معلومات کے سوالات کے جوابات زیادہ تر طلبہ نے جوش سے دیے۔', 'تصاویر اور مثالوں سے سبق میں دلچسپی پیدا ہوئی۔'],
+    explore: ['گروہی سرگرمی میں طلبہ نے فعال طور پر حصہ لیا۔', 'جوڑی اور گروہی کام سے طلبہ نے ایک دوسرے سے سیکھا۔', 'زیادہ تر طلبہ نے سرگرمی مقررہ وقت میں مکمل کی۔'],
+    explain: ['مثالوں کے ذریعے سمجھانے پر طلبہ نے تصور آسانی سے سمجھ لیا۔', 'طلبہ نے سوالات پوچھ کر اپنے شکوک دور کیے۔', 'چند طلبہ کو دوبارہ سمجھانے کی ضرورت پیش آئی۔'],
+    elaborate: ['طلبہ نے سیکھی ہوئی باتوں کو روزمرہ زندگی سے جوڑا۔', 'تخلیقی سرگرمی میں طلبہ نے جوش و خروش سے حصہ لیا۔', 'طلبہ خود نئی مثالیں دینے کے قابل ہوئے۔'],
+    evaluate: ['زیادہ تر طلبہ نے متوقع اکتسابی نتائج حاصل کیے؛ چند کو تدارکی تدریس کی ضرورت ہے۔', 'تشخیص میں زیادہ تر طلبہ نے درست جوابات دیے۔', 'اکتسابی سطح تسلی بخش رہی۔'],
+    other: ['طلبہ نے دلچسپی سے حصہ لیا۔', 'زیادہ تر طلبہ نے سبق سمجھ لیا۔', 'جماعت میں اچھا ردعمل ملا۔']
+  },
   en: {
     engage: ['Students responded to the topic with curiosity.', 'Most students answered the prior-knowledge questions enthusiastically.', 'Pictures and examples created interest in the lesson.'],
     explore: ['Students participated actively in the group activity.', 'Pair and group work helped students learn from each other.', 'Most students completed the activity in the given time.'],
@@ -1432,11 +1459,11 @@ const AUTO_REFL_LANG = {
 };
 function stageKey(st) {
   const t = String(st || '').toLowerCase();
-  if (/engage|ಆಸಕ್ತಿ|ತೊಡಗಿಸ|रुचि|जुड़|जोड|सहभाग/.test(t)) return 'engage';
-  if (/explore|ಅನ್ವೇಷ|ಶೋಧ|अन्वेषण|खोज|शोध/.test(t)) return 'explore';
-  if (/explain|ವಿವರಣೆ|व्याख्या|स्पष्टीकरण|समझा/.test(t)) return 'explain';
-  if (/elaborate|ವಿಸ್ತರ|विस्तार/.test(t)) return 'elaborate';
-  if (/evaluate|ಮೌಲ್ಯಮಾಪನ|मूल्यांकन|मूल्यमापन/.test(t)) return 'evaluate';
+  if (/engage|ಆಸಕ್ತಿ|ತೊಡಗಿಸ|रुचि|जुड़|जोड|सहभाग|مشغول|دلچسپ|شمولیت|راغب/.test(t)) return 'engage';
+  if (/explore|ಅನ್ವೇಷ|ಶೋಧ|अन्वेषण|खोज|शोध|تلاش|دریافت|کھوج/.test(t)) return 'explore';
+  if (/explain|ವಿವರಣೆ|व्याख्या|स्पष्टीकरण|समझा|وضاحت|تشریح/.test(t)) return 'explain';
+  if (/elaborate|ವಿಸ್ತರ|विस्तार|توسیع|تفصیل|اطلاق/.test(t)) return 'elaborate';
+  if (/evaluate|ಮೌಲ್ಯಮಾಪನ|मूल्यांकन|मूल्यमापन|تشخیص|جانچ/.test(t)) return 'evaluate';
   return 'other';
 }
 function fillReflections(lp) {
@@ -1461,9 +1488,11 @@ async function loadLesson(name) {
     const p = parseName(name), sj = p && p.subj;
     const txt = lp.units.map(u => u.title + u.objectives.join(' ') + (u.rows || []).map(r => r.content + r.stage).join(' ')).join(' ');
     const cnt = re => (txt.match(re) || []).length;
-    const kn = cnt(/[\u0C80-\u0CFF]/g), dv = cnt(/[\u0900-\u097F]/g), la = cnt(/[A-Za-z]/g);
-    lp.lang = sj === 'marathi' ? 'mr' : sj === 'hindi' ? 'hi' : sj === 'english' ? 'en'
-      : (dv > kn && dv > la * .5) ? 'hi' : (la > kn * 2 && la > dv) ? 'en' : 'kn';
+    const kn = cnt(/[\u0C80-\u0CFF]/g), dv = cnt(/[\u0900-\u097F]/g), la = cnt(/[A-Za-z]/g), ar = cnt(/[\u0600-\u06FF]/g);
+    lp.lang = sj === 'marathi' ? 'mr' : sj === 'hindi' ? 'hi' : sj === 'english' ? 'en' : sj === 'urdu' ? 'ur'
+      : (ar > kn && ar > dv && ar > la * .5) ? 'ur'
+      : (dv > kn && dv > la * .5) ? (p && p.med === 'mr' ? 'mr' : 'hi') : (la > kn * 2 && la > dv) ? 'en' : 'kn';
+    if (lp.lang === 'ur') { try { await Promise.all([document.fonts.load('400 12px "Noto Naskh Arabic"'), document.fonts.load('700 12px "Noto Naskh Arabic"')]); } catch (e) {} }
     if (lp.lang !== 'kn' && !lp.subjLabel) lp.subjLabel = '';
   }
   return (cache[name] = fillReflections(lp));
@@ -1883,7 +1912,7 @@ async function loadAj() {
   $('ajTable').innerHTML = `<tr><td>${emptyBox('ತೆರೆಯಲಾಗುತ್ತಿದೆ…')}</td></tr>`;
   try {
     const sems = await loadAndaju(file);
-    sems.forEach(x => { x.lang = { en: 'en', mr: 'mr' }[medium()] || 'kn'; });
+    sems.forEach(x => { x.lang = { en: 'en', mr: 'mr', ur: 'ur' }[medium()] || 'kn'; });
     if ($('ajClass').value !== cls) return;
     let si = Math.min(store.get('bm_ajsem', 0), sems.length - 1);
     $('ajSem').innerHTML = sems.map((s, i) => `<button type="button" data-i="${i}" class="${i === si ? 'on' : ''}">${esc(s.sem)}</button>`).join('');
