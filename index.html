@@ -88,7 +88,7 @@ h1,h2,h3{margin:0;line-height:1.3;text-wrap:balance}
 .welcome h2{font-size:clamp(21px,3vw,28px);font-weight:700}
 .welcome .meta{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13.5px;opacity:.92}
 
-.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
 @media (max-width:900px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .stat{padding:16px 18px;display:grid;gap:2px}
 .stat b{font-size:28px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
@@ -287,6 +287,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
       <a href="#home" data-v="home"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>ಮುಖಪುಟ</a>
       <a href="#lesson" data-v="lesson"><svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"/><path d="M8 9h8M8 13h6"/></svg>ಪಾಠಯೋಜನೆ</a>
       <a href="#ppt" data-v="ppt"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M12 16v4M8 20h8"/></svg>PPT</a>
+      <a href="#notes" data-v="notes"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 12h7M9 16h7"/></svg>ನೋಟ್ಸ್</a>
       <a href="#andaju" data-v="andaju"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 10h16M8 14l2 2 4-4"/></svg>ಅಂದಾಜು ಪತ್ರಿಕೆ</a>
       <a href="#docs" data-v="docs"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>ಇತರೆ ದಾಖಲೆಗಳು</a>
       <a href="#school" data-v="school"><svg viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg><span id="navSchool">ಶಾಲೆಯ ವಿವರ</span></a>
@@ -348,6 +349,16 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <label class="field">ಭಾಗ / ಸೆಮಿಸ್ಟರ್<select id="ppPart"></select></label>
         </div>
         <div class="card"><div class="units" id="ppList"></div></div>
+      </section>
+
+      <!-- ===== ನೋಟ್ಸ್ ===== -->
+      <section id="v-notes" class="view" hidden>
+        <div class="card toolbar">
+          <label class="field">ತರಗತಿ<select id="ntClass"></select></label>
+          <label class="field">ವಿಷಯ<select id="ntSubject"></select></label>
+          <label class="field">ಭಾಗ / ಸೆಮಿಸ್ಟರ್<select id="ntPart"></select></label>
+        </div>
+        <div class="card"><div class="units" id="ntList"></div></div>
       </section>
 
       <!-- ===== ಅಂದಾಜು ಪತ್ರಿಕೆ ===== -->
@@ -446,7 +457,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <div><h2 style="font-size:17px">ಫೈಲ್ ಹೆಸರು ತಯಾರಕ</h2><p class="muted small" style="margin:4px 0 0">ಆಯ್ಕೆ ಮಾಡಿ, ಕೆಳಗೆ ಬರುವ ಹೆಸರನ್ನೇ ನಿಮ್ಮ ಫೈಲ್‌ಗೆ ಇಟ್ಟು GitHub ಗೆ upload ಮಾಡಿ. ವೆಬ್‌ಸೈಟ್ ತಾನಾಗಿಯೇ ಅದನ್ನು ಸರಿಯಾದ ಜಾಗದಲ್ಲಿ ತೋರಿಸುತ್ತದೆ.</p></div>
           <div class="opts">
             <label class="field">ಮಾಧ್ಯಮ<select id="mkMed"><option value="kn">ಕನ್ನಡ (ಗುರುತು ಇಲ್ಲ)</option><option value="en">English (en-)</option><option value="mr">ಮರಾಠಿ (mr-)</option><option value="ur">ಉರ್ದು (ur-)</option><option value="bi">ದ್ವಿಭಾಷಾ (bi-)</option></select></label>
-            <label class="field">ದಾಖಲೆ<select id="mkType"><option value="lp">ಪಾಠಯೋಜನೆ</option><option value="ppt">PPT</option><option value="aj">ಅಂದಾಜು ಪತ್ರಿಕೆ</option><option value="doc">ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)</option></select></label>
+            <label class="field">ದಾಖಲೆ<select id="mkType"><option value="lp">ಪಾಠಯೋಜನೆ</option><option value="ppt">PPT</option><option value="nt">ನೋಟ್ಸ್</option><option value="aj">ಅಂದಾಜು ಪತ್ರಿಕೆ</option><option value="doc">ಇತರೆ ದಾಖಲೆ (ಕ್ರಿಯಾ ಯೋಜನೆ…)</option></select></label>
             <label class="field" id="mkDocW" hidden>ದಾಖಲೆಯ ಹೆಸರು<select id="mkDoc"></select></label>
             <label class="field" id="mkClassW">ತರಗತಿ<select id="mkClass"></select></label>
             <label class="field" id="mkDocClsW" hidden>ತರಗತಿ<select id="mkDocCls"></select></label>
@@ -575,7 +586,7 @@ const CONFIG = {
   upi: '9902090911@ybl',             // ಹಣ ಬರಬೇಕಾದ UPI ID, ಉದಾ: '98xxxxxxxx@ybl'
   upiName: 'ಬೋಧನಾ ಮಿತ್ರ',
   whatsapp: '919902090911',        // ಆರ್ಡರ್ ಬರಬೇಕಾದ WhatsApp ಸಂಖ್ಯೆ, 91 ಸೇರಿಸಿ, ಉದಾ: '9198xxxxxxxx'
-  prices: { lp: 99, ppt: 150, aj: 50, doc: 50, sub: 200, cls: 500, sch: 1500 }
+  prices: { lp: 99, ppt: 150, nt: 99, aj: 50, doc: 50, sub: 200, cls: 500, sch: 1500 }
 };
 const PAID = !!CONFIG.firebase.apiKey;
 const LOGIN_DOMAIN = 'bodhana-mitra.in';     // ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು login ಗುರುತಾಗಿ ಬಳಸಲು (ಬದಲಿಸಬೇಡಿ)
@@ -1234,7 +1245,7 @@ const skel = t => String(t).normalize('NFC').toLowerCase()
 const SUBJ_INDEX = {};
 for (const [k, names] of Object.entries(SUBJECT_LIST)) for (const n of [k, ...names]) SUBJ_INDEX[skel(n)] ??= k;
 const subjCode = raw => SUBJ_INDEX[skel(raw)] || String(raw).normalize('NFC').toLowerCase().replace(/\s+/g, '');
-const MED_RE = /^(en|mr|ur|bi|kn)-(?=(?:lp|ppt|aj|doc)-)/i;
+const MED_RE = /^(en|mr|ur|bi|kn)-(?=(?:lp|ppt|nt|aj|doc)-)/i;
 const medOf = name => ((MED_RE.exec(name.normalize('NFC').trim()) || [])[1] || 'kn').toLowerCase();
 /* ---------- ಫೈಲ್ ಹೆಸರು → ಅರ್ಥ ----------
    ಹೆಸರನ್ನು "-" ಚಿಹ್ನೆಯಲ್ಲಿ ಭಾಗಿಸಲಾಗುತ್ತದೆ: ಪ್ರಕಾರ - ತರಗತಿ - ವಿಷಯ - ಭಾಗ - ಘಟಕ
@@ -1245,7 +1256,7 @@ function parseName0(name) {
   const clean = name.normalize('NFC').trim().replace(MED_RE, '').replace(/(?:\.(?:xlsx|pdf|pptx|json))+(\.(?:xlsx|pdf|pptx|json))$/i, '$1');  // .xlsx.xlsx → .xlsx
   const m = /^(.+)\.(xlsx|pdf|pptx|json)$/i.exec(clean);
   if (!m) {
-    if (/^(lp|ppt|aj|doc)-/i.test(clean) && !/\.[a-z0-9]{2,5}$/i.test(clean))
+    if (/^(lp|ppt|nt|aj|doc)-/i.test(clean) && !/\.[a-z0-9]{2,5}$/i.test(clean))
       return { type: 'bad', reason: `ಹೆಸರಿನ ಕೊನೆಯಲ್ಲಿ <b>.pptx</b> / <b>.pdf</b> / <b>.xlsx</b> ಇಲ್ಲ. GitHub ನಲ್ಲಿ rename ಮಾಡಿ ಕೊನೆಗೆ ಸೇರಿಸಿ, ಉದಾ: <code>${esc(clean)}.pptx</code>` };
     return null;
   }
@@ -1262,7 +1273,7 @@ function parseName0(name) {
     if (!cls && (raw || part)) return null;
     return { type, doc, cls, subj: raw ? subjCode(raw) : '', part: raw ? part : '', ext };
   }
-  if (!['lp', 'ppt', 'aj'].includes(type) || !isNum(parts[0] || '')) return null;
+  if (!['lp', 'ppt', 'nt', 'aj'].includes(type) || !isNum(parts[0] || '')) return null;
   const cls = String(+parts.shift());
   if (type === 'aj') return (ext === 'xlsx' && !parts.length) ? { type, cls, ext } : null;
   /* ವಿಷಯ → ಸಂಖ್ಯೆಗಳು (ಭಾಗ, ಘಟಕ, ಉಪ-ಭಾಗ) → ಐಚ್ಛಿಕ ಹೆಸರು */
@@ -1272,7 +1283,7 @@ function parseName0(name) {
   while (i < parts.length && isNum(parts[i]) && nums.length < 3) nums.push(+parts[i++]);
   let title = parts.slice(i).join(' - ');
   if (!st.length) {
-    const fix = `${type}-${cls}-samaja-${nums[0] || 1}${type === 'ppt' ? '-' + (nums[1] || 'ಘಟಕ') : ''}${title ? '-' + title : ''}.${ext}`;
+    const fix = `${type}-${cls}-samaja-${nums[0] || 1}${type !== 'lp' ? '-' + (nums[1] || 'ಘಟಕ') : ''}${title ? '-' + title : ''}.${ext}`;
     return { type: 'bad', reason: `ವಿಷಯದ ಹೆಸರು ಇಲ್ಲ. ತರಗತಿಯ ನಂತರ ವಿಷಯ ಬರಬೇಕು. ಉದಾ: <code>${esc(fix)}</code> (samaja ಬದಲು ನಿಜವಾದ ವಿಷಯ${type === 'ppt' ? ', "ಘಟಕ" ಬದಲು ಘಟಕ ಸಂಖ್ಯೆ' : ''})` };
   }
   let k = st.length;                                   // "samaja-ಗುಪ್ತರು" → ವಿಷಯ samaja, ಹೆಸರು ಗುಪ್ತರು
@@ -1280,7 +1291,7 @@ function parseName0(name) {
   if (!SUBJ_INDEX[skel(st.slice(0, k).join(' '))]) {
     const ex = SUBJECTS.samaja ? 'samaja' : Object.keys(SUBJECTS)[0];
     const looksTitle = st.join(' ').length > 12 || /\s/.test(st.join(' '));
-    const fix = type === 'ppt'
+    const fix = type !== 'lp'
       ? `${type}-${cls}-${ex}-${nums[0] || 1}-${nums[1] || 'ಘಟಕ'}-${[st.join(' '), title].filter(Boolean).join(' ')}.${ext}`
       : `${type}-${cls}-${ex}-${nums[0] || 1}.${ext}`;
     return { type: 'bad', reason: looksTitle
@@ -1290,7 +1301,7 @@ function parseName0(name) {
   const subj = subjCode(st.slice(0, k).join(' '));
   if (k < st.length) title = [st.slice(k).join(' - '), title].filter(Boolean).join(' - ');
   if (type === 'lp') return (['xlsx', 'pdf', 'json'].includes(ext) && nums.length <= 1 && !title) ? { type, cls, subj, part: nums[0] || 1, ext } : null;
-  if (!['pdf', 'pptx'].includes(ext) || (!nums.length && !title)) return null;
+  if (!['pdf', 'pptx'].includes(ext) || (type === 'nt' && ext !== 'pdf') || (!nums.length && !title)) return null;
   const base = { type, cls, subj, ext, title, sub: null };
   if (nums.length === 3) return { ...base, part: nums[0], unit: nums[1], sub: nums[2] };
   if (nums.length === 2) return { ...base, part: nums[0], unit: nums[1] };
@@ -1306,6 +1317,7 @@ function needKeys(p) {
   const m = p.med || 'kn', c = p.cls, s = p.subj, k = ['sch:' + m];
   if (p.type === 'lp') k.push(`lp:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`);
   else if (p.type === 'ppt') k.push(`ppt:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`);
+  else if (p.type === 'nt') k.push(`nt:${m}:${c}:${s}`, `cls:${m}:${c}`);
   else if (p.type === 'aj') k.push(`aj:${m}:${c}`, `cls:${m}:${c}`);
   else if (p.type === 'doc') { if (c) k.push(`doc:${m}:${c}:${p.doc}`, `cls:${m}:${c}`); else k.push(`doc:${m}:all:${p.doc}`, 'ANY:' + m); }
   return k;
@@ -1390,10 +1402,10 @@ function buildDB(files) {
       e.files[p.ext] = { name: f.name, size: f.size }; continue;
     }
     const k = p.cls + '|' + p.subj;
-    const s = db.subjects[k] ||= { cls: p.cls, subj: p.subj, lp: {}, ppt: {} };
+    const s = db.subjects[k] ||= { cls: p.cls, subj: p.subj, lp: {}, ppt: {}, nt: {} };
     if (p.type === 'lp') (s.lp[p.part] ||= {})[p.ext] = f.name;
     else {
-      const list = s.ppt[p.part] ||= [], key = [p.unit ?? '', p.sub ?? '', skel(p.title)].join('|');
+      const list = s[p.type][p.part] ||= [], key = [p.unit ?? '', p.sub ?? '', skel(p.title)].join('|');
       let it = list.find(x => x.key === key);
       if (!it) list.push(it = { key, unit: p.unit, sub: p.sub, title: p.title, files: {} });
       it.files[p.ext] = { name: f.name, size: f.size };
@@ -1606,7 +1618,7 @@ function picker(pfx, filter, partsOf, onPick) {
 const cur = pfx => ({ sub: DB.subjects[$(pfx + 'Class').value + '|' + $(pfx + 'Subject').value], part: $(pfx + 'Part')?.value });
 
 /* ---------- ಪುಟಗಳು ---------- */
-const TITLES = { home: 'ಮುಖಪುಟ', lesson: 'ಪಾಠಯೋಜನೆ', ppt: 'ಪಾಠಗಳ PPT', andaju: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', school: 'ಶಾಲೆಯ ವಿವರ', files: 'ಫೈಲ್ ನಿರ್ವಹಣೆ', docs: 'ಇತರೆ ದಾಖಲೆಗಳು', admin: 'Admin' };
+const TITLES = { home: 'ಮುಖಪುಟ', lesson: 'ಪಾಠಯೋಜನೆ', ppt: 'ಪಾಠಗಳ PPT', notes: 'ಪಾಠಗಳ ನೋಟ್ಸ್', andaju: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', school: 'ಶಾಲೆಯ ವಿವರ', files: 'ಫೈಲ್ ನಿರ್ವಹಣೆ', docs: 'ಇತರೆ ದಾಖಲೆಗಳು', admin: 'Admin' };
 function route() {
   let v = (location.hash || '#home').slice(1);
   if (!TITLES[v]) v = 'home';
@@ -1631,23 +1643,26 @@ const VIEWS = {
     const lpN = subs.reduce((a, s) => a + Object.keys(s.lp).length, 0);
     const pptN = subs.reduce((a, s) => a + Object.values(s.ppt).reduce((b, u) => b + Object.keys(u).length, 0), 0);
     const allCls = [...new Set([...classes(), ...Object.keys(DB.aj)])];
-    $('stats').innerHTML = [[lpN, 'ಪಾಠಯೋಜನೆಗಳು'], [pptN, 'PPT ಗಳು'], [Object.keys(DB.aj).length, 'ಅಂದಾಜು ಪತ್ರಿಕೆಗಳು'], [Object.values(DB.docs).reduce((a, l) => a + l.length, 0), 'ಇತರೆ ದಾಖಲೆಗಳು']]
+    const ntN = subs.reduce((a, s) => a + Object.values(s.nt).reduce((b, u) => b + u.length, 0), 0);
+    $('stats').innerHTML = [[lpN, 'ಪಾಠಯೋಜನೆಗಳು'], [pptN, 'PPT ಗಳು'], [ntN, 'ನೋಟ್ಸ್'], [Object.keys(DB.aj).length, 'ಅಂದಾಜು ಪತ್ರಿಕೆಗಳು'], [Object.values(DB.docs).reduce((a, l) => a + l.length, 0), 'ಇತರೆ ದಾಖಲೆಗಳು']]
       .map(([n, l]) => `<div class="card stat"><b>${n}</b><span>${l}</span></div>`).join('');
     const sorted = subs.sort((a, b) => a.cls - b.cls || (SUBJ_ORDER.indexOf(a.subj) + 1 || 99) - (SUBJ_ORDER.indexOf(b.subj) + 1 || 99));
     const rows = sorted.map(s => {
       const parts = Object.keys(s.lp).sort();
       const pp = Object.values(s.ppt).reduce((b, u) => b + Object.keys(u).length, 0);
       const m = medium(), lk = ok => ok ? 'pill' : 'pill warn lk';
+      const nt = Object.values(s.nt).reduce((b, u) => b + u.length, 0), ntOk = can({ type: 'nt', med: m, cls: s.cls, subj: s.subj });
       const lpOk = can({ type: 'lp', med: m, cls: s.cls, subj: s.subj }), ppOk = can({ type: 'ppt', med: m, cls: s.cls, subj: s.subj }), ajOk = can({ type: 'aj', med: m, cls: s.cls });
       return `<tr><td><b>${esc(s.cls)}ನೇ</b></td><td>${esc(subjName(s.subj))}</td>
         <td><div class="pills">${parts.length ? parts.map(p => `<span class="${lk(lpOk)}">ಭಾಗ ${p}</span>`).join('') : '<span class="pill off">ಇಲ್ಲ</span>'}</div></td>
         <td>${pp ? `<span class="${lk(ppOk)}">${pp}</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
+        <td>${nt ? `<span class="${lk(ntOk)}">${nt}</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
         <td>${DB.aj[s.cls] ? `<span class="${lk(ajOk)}">ಸಿದ್ಧ</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
-        <td style="text-align:right"><button class="btn sm" type="button" data-c="${esc(s.cls)}" data-s="${esc(s.subj)}" data-t="${parts.length ? 'lesson' : 'ppt'}">ತೆರೆಯಿರಿ</button></td></tr>`;
+        <td style="text-align:right"><button class="btn sm" type="button" data-c="${esc(s.cls)}" data-s="${esc(s.subj)}" data-t="${parts.length ? 'lesson' : pp ? 'ppt' : 'notes'}">ತೆರೆಯಿರಿ</button></td></tr>`;
     });
     $('homeTop').insertAdjacentHTML('beforeend', DB.bad.length ? `<div class="banner bad" style="margin-top:14px"><span>${DB.bad.length} ಫೈಲ್‌ಗಳಲ್ಲಿ ಸಮಸ್ಯೆ ಇರುವುದರಿಂದ (ತಪ್ಪು ಹೆಸರು ಅಥವಾ ಅಪೂರ್ಣ upload) ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಕಾಣುತ್ತಿಲ್ಲ. ಈಗಷ್ಟೇ ಸರಿಪಡಿಸಿದ್ದರೆ "ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ" ಒತ್ತಿ.</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="homeRefresh">ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button><a class="btn sm" href="#files">ನೋಡಿ</a></span></div>` : '');
     if ($('homeRefresh')) $('homeRefresh').onclick = () => busy($('homeRefresh'), async () => { await loadDB(true); route(); toast('ಫೈಲ್ ಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ.'); });
-    $('catTable').innerHTML = `<thead><tr><th>ತರಗತಿ</th><th>ವಿಷಯ</th><th>ಪಾಠಯೋಜನೆ</th><th>PPT</th><th>ಅಂದಾಜು ಪತ್ರಿಕೆ</th><th></th></tr></thead><tbody>${rows.join('') || `<tr><td colspan="6">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ದಾಖಲೆ ಸೇರಿಸಿಲ್ಲ', '<a href="#files">ಫೈಲ್ ನಿರ್ವಹಣೆ</a> ಪುಟದಲ್ಲಿ ಫೈಲ್ ಹೆಸರು ಹೇಗಿರಬೇಕು ಎಂದು ನೋಡಿ.')}</td></tr>`}</tbody>`;
+    $('catTable').innerHTML = `<thead><tr><th>ತರಗತಿ</th><th>ವಿಷಯ</th><th>ಪಾಠಯೋಜನೆ</th><th>PPT</th><th>ನೋಟ್ಸ್</th><th>ಅಂದಾಜು ಪತ್ರಿಕೆ</th><th></th></tr></thead><tbody>${rows.join('') || `<tr><td colspan="7">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ದಾಖಲೆ ಸೇರಿಸಿಲ್ಲ', '<a href="#files">ಫೈಲ್ ನಿರ್ವಹಣೆ</a> ಪುಟದಲ್ಲಿ ಫೈಲ್ ಹೆಸರು ಹೇಗಿರಬೇಕು ಎಂದು ನೋಡಿ.')}</td></tr>`}</tbody>`;
     $('catTable').querySelectorAll('button').forEach(b => b.onclick = () => {
       store.set('bm_pick', { c: b.dataset.c, s: b.dataset.s, p: '1' });
       location.hash = '#' + b.dataset.t;
@@ -1727,6 +1742,30 @@ const VIEWS = {
         if (b.dataset.k === 'ov') return officeView(it.files.pptx.name, label, () => pptFile(sub, part, it, label, 'pptx'));
         busy(b, () => pptFile(sub, part, it, label, b.dataset.k));
       });
+    });
+  },
+
+  notes() {
+    picker('nt', s => Object.keys(s.nt).length, s => Object.keys(s.nt).sort(), async () => {
+      const { sub, part } = cur('nt'), box = $('ntList');
+      if (!sub || !sub.nt[part]) { box.innerHTML = emptyBox('ಈ ವಿಷಯಕ್ಕೆ ನೋಟ್ಸ್ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ', 'ಫೈಲ್ ಹೆಸರು: <code>nt-8-english-1-1.pdf</code> (8ನೇ ತರಗತಿ, ಇಂಗ್ಲಿಷ್, ಭಾಗ 1, ಪಾಠ 1)'); return; }
+      const np = parseName(sub.nt[part][0].files.pdf.name), ok = can(np);
+      let units = [];
+      const lpf = sub.lp[part]?.xlsx || sub.lp[part]?.json;
+      if (lpf && can(parseName(lpf))) { try { units = (await loadLesson(lpf)).units; } catch (e) {} }
+      if (cur('nt').sub !== sub || cur('nt').part !== part) return;
+      const items = sub.nt[part].map(it => ({ ...it, u: it.unit }))
+        .sort((a, b) => (a.u ?? 999) - (b.u ?? 999) || (a.sub ?? 0) - (b.sub ?? 0) || a.title.localeCompare(b.title));
+      const name = it => it.title || units.find(u => +u.no === +it.u)?.title || (it.u != null ? 'ಪಾಠ ' + it.u : 'ನೋಟ್ಸ್');
+      box.innerHTML = items.map((it, i) => `<div class="unit"><span class="no">${it.u ?? '★'}</span><div><b>${esc(name(it))}</b><small>PDF · ${mb(it.files.pdf.size)}</small></div>
+        <div class="acts">${ok ? `<button class="btn sm" type="button" data-i="${i}" data-k="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : '<span class="pill warn lk">ಖರೀದಿಸಿಲ್ಲ</span>'}</div></div>`).join('');
+      if (!ok) box.insertAdjacentHTML('afterbegin', lockHtml(np, `${subjName(sub.subj)} ನೋಟ್ಸ್ · ${sub.cls}ನೇ ತರಗತಿ`));
+      box.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => busy(b, async () => {
+        const it = items[+b.dataset.i], sc = requireSchool(); if (!sc) return;
+        const label = name(it), base = fname('ನೋಟ್ಸ್', sub.cls + 'ನೇ', subjName(sub.subj), `ಭಾಗ${part}`, it.u != null && `ಪಾಠ${it.u}`, it.title);
+        const out = await PM.stampUploaded(await getBytes(it.files.pdf.name), sc);
+        if (b.dataset.k === 'v') await PV.open(out, label, base + '.pdf'); else { saveFile(out, base + '.pdf'); toast('Download ಆಯಿತು.'); }
+      }));
     });
   },
 
@@ -1999,7 +2038,7 @@ function makerInit() {
   if (makerReady) return; makerReady = true;
   fillSelect($('mkClass'), Array.from({ length: 10 }, (_, i) => [i + 1, (i + 1) + 'ನೇ ತರಗತಿ']), 6);
   fillSelect($('mkSubj'), Object.entries(SUBJECTS).map(([k, v]) => [k, `${v} (${k})`]), 'samaja');
-  const exts = { lp: [['xlsx', 'Excel (.xlsx)'], ['pdf', 'PDF (.pdf)']], ppt: [['pdf', 'PDF (.pdf)'], ['pptx', 'PowerPoint (.pptx)']], aj: [['xlsx', 'Excel (.xlsx)']], doc: [['xlsx', 'Excel (.xlsx)'], ['pdf', 'PDF (.pdf)'], ['pptx', 'PowerPoint (.pptx)']] };
+  const exts = { lp: [['xlsx', 'Excel (.xlsx)'], ['pdf', 'PDF (.pdf)']], ppt: [['pdf', 'PDF (.pdf)'], ['pptx', 'PowerPoint (.pptx)']], nt: [['pdf', 'PDF (.pdf)']], aj: [['xlsx', 'Excel (.xlsx)']], doc: [['xlsx', 'Excel (.xlsx)'], ['pdf', 'PDF (.pdf)'], ['pptx', 'PowerPoint (.pptx)']] };
   fillSelect($('mkDoc'), Object.entries(DOCS).map(([k, v]) => [k, `${v} (${k})`]), 'kriya');
   fillSelect($('mkDocCls'), [['', 'ಎಲ್ಲಾ ತರಗತಿಗಳಿಗೆ'], ...Array.from({ length: 10 }, (_, i) => [i + 1, (i + 1) + 'ನೇ ತರಗತಿ'])], 6);
   fillSelect($('mkDocSubj'), [['', 'ಎಲ್ಲಾ ವಿಷಯಗಳಿಗೆ'], ...Object.entries(SUBJECTS).map(([k, v]) => [k, `${v} (${k})`])], 'samaja');
@@ -2007,7 +2046,7 @@ function makerInit() {
     const t = $('mkType').value;
     if ($('mkExt').dataset.t !== t) { fillSelect($('mkExt'), exts[t]); $('mkExt').dataset.t = t; }
     const D = t === 'doc';
-    $('mkSubjW').hidden = t === 'aj' || D; $('mkPartW').hidden = t === 'aj' || D; $('mkUnitW').hidden = t !== 'ppt'; $('mkTitleW').hidden = t !== 'ppt'; $('mkClassW').hidden = D;
+    $('mkSubjW').hidden = t === 'aj' || D; $('mkPartW').hidden = t === 'aj' || D; $('mkUnitW').hidden = t !== 'ppt' && t !== 'nt'; $('mkTitleW').hidden = t !== 'ppt' && t !== 'nt'; $('mkClassW').hidden = D;
     ['mkDocW', 'mkDocClsW', 'mkDocSubjW', 'mkDocPartW'].forEach(id => { $(id).hidden = !D; });
     if (!$('mkDocCls').value) $('mkDocSubj').value = '';
     if (!$('mkDocSubj').value) $('mkDocPart').value = '';
@@ -2015,10 +2054,11 @@ function makerInit() {
     const c = $('mkClass').value, s = $('mkSubj').value, p = $('mkPart').value, u = Math.max(1, +$('mkUnit').value || 1), e = $('mkExt').value;
     const pre = $('mkMed').value === 'kn' ? '' : $('mkMed').value + '-';
     $('mkOut').textContent = pre + (D ? ['doc', $('mkDoc').value, $('mkDocCls').value, $('mkDocSubj').value, $('mkDocPart').value].filter(Boolean).join('-') + '.' + e
-      : t === 'aj' ? `aj-${c}.${e}` : t === 'lp' ? `lp-${c}-${s}-${p}.${e}` : `ppt-${c}-${s}-${p}-${u}${$('mkTitle').value.trim() ? '-' + $('mkTitle').value.trim().replace(/[-\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ') : ''}.${e}`);
+      : t === 'aj' ? `aj-${c}.${e}` : t === 'lp' ? `lp-${c}-${s}-${p}.${e}` : `${t}-${c}-${s}-${p}-${u}${$('mkTitle').value.trim() ? '-' + $('mkTitle').value.trim().replace(/[-\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ') : ''}.${e}`);
     $('mkNote').textContent = D ? 'Excel ಆದರೆ ವೆಬ್‌ಸೈಟ್ ಅದನ್ನು ಕೋಷ್ಟಕದ PDF ಆಗಿ ತೋರಿಸುತ್ತದೆ (ಖಾಲಿ ಕಾಲಂಗಳು ಖಾಲಿಯಾಗಿಯೇ ಇರುತ್ತವೆ). Excel ನಲ್ಲಿ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನ ಸಾಲು ಇದ್ದರೆ ಅದು ತಾನಾಗಿಯೇ ಬಿಡಲ್ಪಡುತ್ತದೆ. ಪಟ್ಟಿಯಲ್ಲಿ ಇಲ್ಲದ ದಾಖಲೆ ಬೇಕಿದ್ದರೆ index.html ನ DOCS ಪಟ್ಟಿಯಲ್ಲಿ ಒಂದು ಸಾಲು ಸೇರಿಸಿ.'
       : t === 'aj' ? 'ಒಂದು ತರಗತಿಗೆ ಒಂದು ಅಂದಾಜು ಪತ್ರಿಕೆ. ಎರಡೂ ಸೆಮಿಸ್ಟರ್‌ಗಳು ಒಂದೇ Excel ನ ಎರಡು sheet ಗಳಲ್ಲಿ ಇರಲಿ.'
       : t === 'lp' ? 'ಭಾಗ 1 = ಪ್ರಥಮ ಸೆಮಿಸ್ಟರ್, ಭಾಗ 2 = ದ್ವಿತೀಯ ಸೆಮಿಸ್ಟರ್. Excel ಮತ್ತು PDF ಎರಡನ್ನೂ ಹಾಕಬಹುದು.'
+      : t === 'nt' ? 'ಒಂದು ಪಾಠಕ್ಕೆ ಒಂದು PDF. ಘಟಕ ಸಂಖ್ಯೆ = ಪಾಠದ ಸಂಖ್ಯೆ. ಹೆಸರು ಐಚ್ಛಿಕ (ಕೊಡದಿದ್ದರೆ ಪಾಠಯೋಜನೆಯಿಂದ ಪಾಠದ ಹೆಸರು ಬರುತ್ತದೆ).'
       : 'ಒಂದೇ ಪಾಠಕ್ಕೆ 2–3 PPT ಇದ್ದರೆ ಘಟಕ ಸಂಖ್ಯೆ ಒಂದೇ ಇರಲಿ, ಬೇರೆ ಬೇರೆ "PPT ಯ ಹೆಸರು" ಕೊಡಿ (ಉದಾ: ಶಿಲೆಗಳು, ನೀರು). ಘಟಕ ಸಂಖ್ಯೆ ಆ ಭಾಗದ ಪಾಠಯೋಜನೆಯ ಘಟಕ ಸಂಖ್ಯೆಯೇ ಆಗಿರಲಿ. ಆಗ PPT ಗೆ ಪಾಠದ ಹೆಸರು ತಾನಾಗಿಯೇ ಬರುತ್ತದೆ. 25 MB ಗಿಂತ ದೊಡ್ಡ ಫೈಲ್ upload ಆಗುವುದಿಲ್ಲ.';
   };
   ['mkMed', 'mkType', 'mkClass', 'mkSubj', 'mkPart', 'mkUnit', 'mkTitle', 'mkExt', 'mkDoc', 'mkDocCls', 'mkDocSubj', 'mkDocPart'].forEach(id => $(id).addEventListener('input', upd));
@@ -2038,7 +2078,7 @@ function describe0(p) {
   if (p.type === 'doc') return [docTitle(p.doc), p.cls ? p.cls + 'ನೇ' : 'ಎಲ್ಲಾ ತರಗತಿಗಳು', p.subj && subjName(p.subj), p.part && 'ಭಾಗ ' + p.part].filter(Boolean).join(' · ');
   if (p.type === 'aj') return `ಅಂದಾಜು ಪತ್ರಿಕೆ · ${p.cls}ನೇ ತರಗತಿ`;
   if (p.type === 'lp') return `ಪಾಠಯೋಜನೆ · ${p.cls}ನೇ · ${subjName(p.subj)} · ಭಾಗ ${p.part}`;
-  return ['PPT', p.cls + 'ನೇ', subjName(p.subj), 'ಭಾಗ ' + p.part, p.unit != null && 'ಘಟಕ ' + p.unit + (p.sub ? '.' + p.sub : ''), p.title && '“' + p.title + '”'].filter(Boolean).join(' · ');
+  return [p.type === 'nt' ? 'ನೋಟ್ಸ್' : 'PPT', p.cls + 'ನೇ', subjName(p.subj), 'ಭಾಗ ' + p.part, p.unit != null && 'ಘಟಕ ' + p.unit + (p.sub ? '.' + p.sub : ''), p.title && '“' + p.title + '”'].filter(Boolean).join(' · ');
 }
 function renderFiles() {
   if (!FULL) { $('fTable').innerHTML = ''; $('fSummary').innerHTML = ''; return; }
@@ -2064,8 +2104,8 @@ const yearEnd = (d = new Date()) => `${d.getMonth() + 1 >= 3 ? d.getFullYear() +
 const dmy = iso => iso ? String(iso).slice(0, 10).split('-').reverse().join('-') : '';
 const can = p => !PAID || ACC.can(p);
 
-const PACK_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
-const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF + PowerPoint)', sub: 'ಪಾಠಯೋಜನೆ + PPT', aj: 'ಎರಡೂ ಸೆಮಿಸ್ಟರ್', doc: '', cls: 'ಎಲ್ಲಾ ವಿಷಯ, ಎಲ್ಲಾ ದಾಖಲೆ', sch: 'ಎಲ್ಲಾ ತರಗತಿ, ಎಲ್ಲವೂ' };
+const PACK_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್ಸ್', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
+const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF + PowerPoint)', nt: 'ಎಲ್ಲಾ ಪಾಠಗಳ ನೋಟ್ಸ್ (PDF)', sub: 'ಪಾಠಯೋಜನೆ + PPT', aj: 'ಎರಡೂ ಸೆಮಿಸ್ಟರ್', doc: '', cls: 'ಎಲ್ಲಾ ವಿಷಯ, ಎಲ್ಲಾ ದಾಖಲೆ', sch: 'ಎಲ್ಲಾ ತರಗತಿ, ಎಲ್ಲವೂ' };
 /* ದಾಖಲೆವಾರು ಬೆಲೆ (Admin → ದರಪಟ್ಟಿ ಯಲ್ಲಿ ಬದಲಿಸಿದ್ದು). ಇಲ್ಲದಿದ್ದರೆ "ಇತರೆ ದಾಖಲೆ" ಬೆಲೆ */
 const DOC_PRICE = {};
 const packPrice = k => { const [t, , , x] = k.split(':'); return (t === 'doc' && DOC_PRICE[x] != null ? +DOC_PRICE[x] : +CONFIG.prices[t]) || 0; };
@@ -2082,7 +2122,7 @@ function applySettings(st) {
 function packLabel(k, short) {
   const [t, m, c, x] = k.split(':');
   const head = t === 'doc' ? docTitle(x) : PACK_T[t] + (short || !PACK_D[t] ? '' : ` (${PACK_D[t]})`);
-  return [head, c ? (c === 'all' ? 'ಎಲ್ಲಾ ತರಗತಿ' : c + 'ನೇ ತರಗತಿ') : '', ['lp', 'ppt', 'sub'].includes(t) && subjName(x), !short && MEDIA[m]].filter(Boolean).join(' · ');
+  return [head, c ? (c === 'all' ? 'ಎಲ್ಲಾ ತರಗತಿ' : c + 'ನೇ ತರಗತಿ') : '', ['lp', 'ppt', 'nt', 'sub'].includes(t) && subjName(x), !short && MEDIA[m]].filter(Boolean).join(' · ');
 }
 /* ಪ್ಯಾಕ್ a, ಪ್ಯಾಕ್ b ಯನ್ನು ಒಳಗೊಂಡಿದೆಯೇ */
 function covers(a, b) {
@@ -2143,7 +2183,7 @@ const ACC = (() => {
     $('rMob').oninput = adm; adm();
     $('auForgot').href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('ನಮಸ್ಕಾರ, ಬೋಧನಾ ಮಿತ್ರ ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೇನೆ. ನನ್ನ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ: ')}` : '#';
     $('auPrices').innerHTML = `<h3>ಬೆಲೆ ಪಟ್ಟಿ <small>(ಒಂದು ಶೈಕ್ಷಣಿಕ ವರ್ಷಕ್ಕೆ)</small></h3><div class="plist">` +
-      ['lp', 'ppt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (' + (Object.values(DOCS).slice(0, 2).join(', ') || 'ಕ್ರಿಯಾ ಯೋಜನೆ') + '…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
+      ['lp', 'ppt', 'nt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (' + (Object.values(DOCS).slice(0, 2).join(', ') || 'ಕ್ರಿಯಾ ಯೋಜನೆ') + '…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' || t === 'nt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
   }
   function hideAuth() { $('auth').hidden = true; document.body.style.overflow = ''; }
   function bindAuth() {
@@ -2321,13 +2361,14 @@ function packOpts(p) {
   const m = p.med || 'kn', c = p.cls, s = p.subj;
   if (p.type === 'lp') return [`lp:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`, `sch:${m}`];
   if (p.type === 'ppt') return [`ppt:${m}:${c}:${s}`, `sub:${m}:${c}:${s}`, `cls:${m}:${c}`, `sch:${m}`];
+  if (p.type === 'nt') return [`nt:${m}:${c}:${s}`, `cls:${m}:${c}`, `sch:${m}`];
   if (p.type === 'aj') return [`aj:${m}:${c}`, `cls:${m}:${c}`, `sch:${m}`];
   if (p.type === 'doc') return c ? [`doc:${m}:${c}:${p.doc}`, `cls:${m}:${c}`, `sch:${m}`] : [`doc:${m}:all:${p.doc}`, `sch:${m}`];
   return [];
 }
 function optBtn(k) {
   const t = k.split(':')[0];
-  const lab = { lp: 'ಈ ವಿಷಯದ ಪಾಠಯೋಜನೆ', ppt: 'ಈ ವಿಷಯದ ಎಲ್ಲಾ PPT', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಈ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಈ ದಾಖಲೆ ಮಾತ್ರ', cls: k.split(':')[2] + 'ನೇ ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' }[t];
+  const lab = { lp: 'ಈ ವಿಷಯದ ಪಾಠಯೋಜನೆ', ppt: 'ಈ ವಿಷಯದ ಎಲ್ಲಾ PPT', nt: 'ಈ ವಿಷಯದ ಎಲ್ಲಾ ನೋಟ್ಸ್', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಈ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಈ ದಾಖಲೆ ಮಾತ್ರ', cls: k.split(':')[2] + 'ನೇ ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' }[t];
   const state = ACC.pending(k) ? 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ' : CART.get().some(a => covers(a, k)) ? 'ಕಾರ್ಟ್‌ನಲ್ಲಿದೆ ✓' : '';
   return `<button class="opt${t === 'sub' || t === 'cls' ? ' best' : ''}" type="button" data-pack="${esc(k)}"${state ? ' data-in="1"' : ''}><span><b>${esc(lab)}</b><small>${esc(PACK_D[t] || 'ಒಂದು ತರಗತಿ')}</small></span><em>${state || '₹' + packPrice(k)}</em></button>`;
 }
@@ -2406,7 +2447,7 @@ function adminRender() {
   adminSettings();
 }
 function adminSettings() {
-  const P = CONFIG.prices, L = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
+  const P = CONFIG.prices, L = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್ಸ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
   $('stPrices').innerHTML = Object.keys(L).map(k => `<label class="field">${L[k]} ₹<input type="number" min="0" data-p="${k}" value="${esc(P[k])}"></label>`).join('');
   const list = { ...ADM.docs };
   const draw = () => {
@@ -2472,7 +2513,7 @@ function adminUser(id) {
   fillSelect($('upSubj'), Object.entries(SUBJECTS), 'samaja');
   fillSelect($('upDoc'), Object.entries(DOCS), 'kriya');
   $('upExp').value = yearEnd();
-  const vis = () => { const t = $('upType').value; $('upClsW').hidden = t === 'sch'; $('upSubjW').hidden = !['lp', 'ppt', 'sub'].includes(t); $('upDocW').hidden = t !== 'doc'; };
+  const vis = () => { const t = $('upType').value; $('upClsW').hidden = t === 'sch'; $('upSubjW').hidden = !['lp', 'ppt', 'nt', 'sub'].includes(t); $('upDocW').hidden = t !== 'doc'; };
   $('upType').onchange = vis; vis();
   $('upAdd').onclick = () => busy($('upAdd'), async () => {
     const t = $('upType').value, m = $('upMed').value, c = $('upCls').value;
