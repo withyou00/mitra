@@ -597,10 +597,12 @@ const LANG = {
     cols: ['5E टप्पा', 'अध्ययन घटक', 'उपक्रम', 'शैक्षणिक साहित्य', 'मूल्यमापन', 'शिक्षकाचे स्व-अवलोकन', 'दिनांक'],
     content: 'अध्ययन घटक', activity: 'कृती', teacher: 'शिक्षकाची कृती', student: 'विद्यार्थ्यांची कृती',
     period: 'तासिका', date: 'दिनांक', part: 'भाग', tsig: 'शिक्षकाची स्वाक्षरी', hsig: 'मुख्याध्यापकांची स्वाक्षरी', ord: c => c + 'वी' },
-  bi: { unit: 'ಪಾಠ / ಘಟಕ (Lesson / Unit)', subject: 'ವಿಷಯ (Subject)', cls: 'ತರಗತಿ (Class)', start: 'ಪ್ರಾರಂಭ ದಿನಾಂಕ (Start date)', end: 'ಮುಕ್ತಾಯ ದಿನಾಂಕ (End date)', obj: 'ನಿರ್ದಿಷ್ಟ ಉದ್ದೇಶಗಳು (Specific Objectives)',
-    cols: ['5E ಹಂತ (Stage)', 'ಕಲಿಕಾಂಶಗಳು (Learning Points)', 'ಚಟುವಟಿಕೆಗಳು (Activities)', 'ಕಲಿಕೋಪಕರಣಗಳು (Teaching Aids)', 'ಮೌಲ್ಯಮಾಪನ (Evaluation)', 'ಶಿಕ್ಷಕರ ಸ್ವ-ಅವಲೋಕನ (Reflection)', 'ದಿನಾಂಕ (Date)'],
-    content: 'ಕಲಿಕಾಂಶ (Learning points)', activity: 'ಚಟುವಟಿಕೆ (Activity)', teacher: 'ಶಿಕ್ಷಕರ ಚಟುವಟಿಕೆ (Teacher)', student: 'ವಿದ್ಯಾರ್ಥಿ ಚಟುವಟಿಕೆ (Students)',
-    period: 'ಅವಧಿ (Period)', date: 'ದಿನಾಂಕ (Date)', part: 'ಭಾಗ', tsig: 'ಶಿಕ್ಷಕರ ಸಹಿ (Teacher)', hsig: 'ಮುಖ್ಯ ಶಿಕ್ಷಕರ ಸಹಿ (Head Teacher)', ord: c => c + 'ನೇ' },
+  /* ದ್ವಿಭಾಷಾ ಮಾಧ್ಯಮ: ಶೀರ್ಷಿಕೆಗಳು ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿ (ಮೂಲ Excel ನಂತೆ), ಒಳಗಿನ ವಿಷಯ Excel ನಲ್ಲಿರುವಂತೆಯೇ */
+  bi: { unit: 'Lesson / Component', subject: 'Subject', cls: 'Class', start: 'Start Date', end: 'End Date', obj: 'Specific Objectives',
+    cols: ['5E Phase', 'Learning Points', 'Activities', 'Learning Resources', 'Assessment', 'Teacher Self-Reflection', 'Date'],
+    content: 'Learning Points', activity: 'Activity', teacher: 'Teacher Activity', student: 'Student Activity',
+    period: 'Period', date: 'Date', part: 'Part', tsig: "Teacher's Signature", hsig: "Head Teacher's Signature",
+    ord: c => c + ({ 1: 'st', 2: 'nd', 3: 'rd' }[c] || 'th') },
   ur: { unit: 'سبق / اکائی', subject: 'مضمون', cls: 'جماعت', start: 'آغاز کی تاریخ', end: 'تکمیل کی تاریخ', obj: 'مقررہ مقاصد',
     cols: ['مرحلہ 5E', 'سیکھنے کے نتائج', 'سرگرمیاں', 'تدریسی مواد', 'تشخیص', 'استاد کا خود جائزہ', 'تاریخ'],
     content: 'سیکھنے کے نتائج', activity: 'سرگرمی', teacher: 'استاد کی سرگرمی', student: 'طلبہ کی سرگرمی',
@@ -677,9 +679,13 @@ const PM = (() => {
     /* one line of label:value pairs spread across the width */
     infoRow(pairs, size = 10.5) {
       this.ensure(size * 2);
-      const ctx = this.ctx, colW = this.cw / pairs.length;
+      const ctx = this.ctx;
+      /* ಪ್ರತಿ ಜೋಡಿಗೆ ಅದರ ಉದ್ದಕ್ಕೆ ತಕ್ಕ ಅಗಲ (ಉದ್ದದ ವಿಷಯದ ಹೆಸರು ಪಕ್ಕದದರ ಮೇಲೆ ಬರದಂತೆ) */
+      const need = pairs.map(([k, v]) => { ctx.font = `700 ${size}px ${F}`; const w = ctx.measureText(k + ' : ').width; ctx.font = `400 ${size}px ${F}`; return w + (v ? ctx.measureText(s(v)).width : 90) + 18; });
+      const tot = need.reduce((a, b) => a + b, 0), extra = Math.max(0, this.cw - tot) / pairs.length;
+      const widths = tot <= this.cw ? need.map(n => n + extra) : pairs.map(() => this.cw / pairs.length);
       pairs.forEach(([k, v], i) => {
-        const x = this.left + i * colW;
+        const colW = widths[i], x = this.left + widths.slice(0, i).reduce((a, b) => a + b, 0);
         ctx.font = `700 ${size}px ${F}`; ctx.fillStyle = '#111'; ctx.fillText(k + ' : ', x, this.y + size);
         const kw = ctx.measureText(k + ' : ').width;
         ctx.font = `400 ${size}px ${F}`;
@@ -1032,7 +1038,8 @@ const XL = (() => {
   const tx = el => [...el.getElementsByTagName('t')].filter(t => t.parentNode.nodeName !== 'rPh').map(t => t.textContent).join('');
   const colNum = c => [...c].reduce((a, ch) => a * 26 + ch.charCodeAt(0) - 64, 0);
   const ref = r => { const m = /^([A-Z]+)(\d+)$/.exec(r); return [+m[2], colNum(m[1])]; };
-  const clean = v => String(v).replace(/ø/g, 'ೃ').replace(/[ \t\r\n ]+/g, ' ').trim();
+  /* ಸಾಲು ಬದಲಾವಣೆ (Alt+Enter) ಉಳಿಸಿಕೊಳ್ಳುತ್ತದೆ: ದ್ವಿಭಾಷಾ ಕೋಶಗಳಲ್ಲಿ ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಕನ್ನಡ ಬೇರೆ ಸಾಲುಗಳಲ್ಲಿ */
+  const clean = v => String(v).replace(/ø/g, 'ೃ').replace(/\r/g, '').replace(/[ \t\u00a0]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{2,}/g, '\n').trim();
   async function read(bytes) {
     const zip = await JSZip.loadAsync(bytes);
     const file = async p => { const f = zip.file(p); return f ? P(await f.async('string')) : null; };
@@ -1461,6 +1468,7 @@ const AUTO_REFL_LANG = {
     other: ['Students participated with interest.', 'Most students understood the lesson.', 'The class responded well.']
   }
 };
+AUTO_REFL_LANG.bi = AUTO_REFL_LANG.en;
 function stageKey(st) {
   const t = String(st || '').toLowerCase();
   if (/engage|ಆಸಕ್ತಿ|ತೊಡಗಿಸ|रुचि|जुड़|जोड|सहभाग|مشغول|دلچسپ|شمولیت|راغب/.test(t)) return 'engage';
