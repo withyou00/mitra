@@ -1336,6 +1336,22 @@ function allowedBy(packs, p, today) {
   const act = Object.keys(packs || {}).filter(k => String(packs[k]) >= today);
   return needKeys(p).some(k => k.startsWith('ANY:') ? act.some(a => a.split(':')[1] === k.slice(4)) : act.includes(k));
 }
+/* ಈಗಿರುವ ದಾಖಲೆಗಳಿಂದಲೇ ಉಚಿತ ಮಾದರಿ (ಖರೀದಿಸದವರಿಗೂ ಮುನ್ನೋಟ ಮಾತ್ರ):
+   ಪಾಠಯೋಜನೆ = ಮೊದಲ ಭಾಗದ ಫೈಲ್ (ವೆಬ್‌ಸೈಟ್ ಮೊದಲ ಪಾಠ ಮಾತ್ರ ತೋರಿಸುತ್ತದೆ), PPT / ನೋಟ್ಸ್ = ಪ್ರತಿ ವಿಷಯದ ಮೊದಲನೆಯದು,
+   ಅಂದಾಜು ಪತ್ರಿಕೆ / ಇತರೆ ದಾಖಲೆ = ಮೊದಲ ಪುಟಗಳು. ನೀವೇ sample- ಫೈಲ್ ಹಾಕಿದ್ದರೆ ಆ ವಿಧಕ್ಕೆ ಅದೇ ಮಾದರಿ. */
+function isAutoSample(p, names) {
+  if (!p || !['lp', 'ppt', 'nt', 'aj', 'doc'].includes(p.type)) return false;
+  const m = p.med || 'kn', ps = names.map(parseName).filter(q => q && q.type !== 'bad');
+  if (ps.some(q => q.type === 'sample' && q.kind === p.type && ['kn', m].includes(q.med || 'kn'))) return false;
+  if (p.type === 'aj' || p.type === 'doc') return true;
+  const same = ps.filter(q => q.type === p.type && (q.med || 'kn') === m && q.cls === p.cls && q.subj === p.subj);
+  const minPart = Math.min(...same.map(q => +q.part || 1));
+  if ((+p.part || 1) !== minPart) return false;
+  if (p.type === 'lp') return true;
+  const k = q => [q.unit ?? 999, q.sub ?? 0, q.title || ''];
+  const first = same.filter(q => (+q.part || 1) === minPart).sort((a, b) => k(a)[0] - k(b)[0] || k(a)[1] - k(b)[1] || String(k(a)[2]).localeCompare(String(k(b)[2])))[0];
+  return !!first && k(first).join('|') === k(p).join('|');
+}
 /* RULES:END */
 
 /* ಇತರೆ ದಾಖಲೆಗಳ ಹೆಸರುಗಳು: ಹೊಸ ದಾಖಲೆ ಬೇಕಿದ್ದರೆ ಇಲ್ಲಿ ಒಂದು ಸಾಲು ಸೇರಿಸಿ  (ಫೈಲ್ ಹೆಸರು: doc-kriya-6-samaja-1.xlsx) */
@@ -1582,10 +1598,11 @@ const emptyBox = (t, sub = '') => `<div class="empty"><b>${t}</b>${sub ? `<span 
 /* ---------- ಮುನ್ನೋಟ ---------- */
 const PV = {
   async open(bytes, title, name, opt = {}) {
-    this.bytes = bytes; this.name = name; this.page = 1; this.sample = !!opt.sample;
+    this.bytes = bytes; this.name = name; this.page = 1; this.sample = !!opt.sample || !!this.forceSample;
     $('pvDl').hidden = this.sample;
     $('pvTitle').textContent = title;
     this.doc = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
+    this.max = this.sample ? Math.min(3, this.doc.numPages) : this.doc.numPages;          // ಮಾದರಿ: ಮೊದಲ 3 ಪುಟ ಮಾತ್ರ
     if (!$('pv').open) $('pv').showModal();
     await this.render();
   },
@@ -1600,11 +1617,11 @@ const PV = {
       ctx.font = `700 ${Math.round(Math.min(cv.width, cv.height) / 6)}px "Anek Kannada",sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillStyle = 'rgba(200,40,40,.16)'; ctx.fillText('ಮಾದರಿ · SAMPLE', 0, 0); ctx.restore();
     }
-    $('pvInfo').textContent = `${this.page} / ${this.doc.numPages}`;
+    $('pvInfo').textContent = `${this.page} / ${this.max}${this.sample && this.max < this.doc.numPages ? ' (ಮಾದರಿ)' : ''}`;
   }
 };
 $('pvPrev').onclick = () => { if (PV.page > 1) { PV.page--; PV.render(); } };
-$('pvNext').onclick = () => { if (PV.doc && PV.page < PV.doc.numPages) { PV.page++; PV.render(); } };
+$('pvNext').onclick = () => { if (PV.doc && PV.page < PV.max) { PV.page++; PV.render(); } };
 $('pvDl').onclick = () => { saveFile(PV.bytes, PV.name); toast('Download ಆಯಿತು.'); };
 $('pvClose').onclick = () => $('pv').close();
 
@@ -1694,7 +1711,17 @@ const VIEWS = {
       if (!sub || !sub.lp[part]) { $('lpHead').textContent = 'ಘಟಕಗಳು'; box.innerHTML = emptyBox('ಪಾಠಯೋಜನೆ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ'); return; }
       const files = sub.lp[part], head = `${subjName(sub.subj)} · ${sub.cls}ನೇ ತರಗತಿ · ಭಾಗ ${part}`;
       const lpp = parseName(files.xlsx || files.json || files.pdf);
-      if (!can(lpp)) { $('lpHead').textContent = head; box.innerHTML = lockHtml(lpp, `${subjName(sub.subj)} ಪಾಠಯೋಜನೆ · ${sub.cls}ನೇ ತರಗತಿ`); return; }
+      if (!can(lpp)) {
+        $('lpHead').textContent = head;
+        const sp = Object.keys(sub.lp).sort()[0], sf = sub.lp[sp], sdata = sf.xlsx || sf.json;
+        const fn = autoOk(sdata || sf.pdf) ? async () => {
+          if (!sdata) { const out = await PM.stampUploaded(await getBytes(sf.pdf.name || sf.pdf), requireSchool()); return PV.open(out, `ಮಾದರಿ: ${subjName(sub.subj)} ಪಾಠಯೋಜನೆ`, null); }
+          const lp = await loadLesson(sdata);
+          await lessonPdf({ cls: sub.cls, subject: subjName(sub.subj), part: sp, lang: lp.lang, subjLabel: lp.subjLabel }, [lp.units[0]], true);
+        } : null;
+        box.innerHTML = lockHtml(lpp, `${subjName(sub.subj)} ಪಾಠಯೋಜನೆ · ${sub.cls}ನೇ ತರಗತಿ`, fn, 'ಮಾದರಿ ನೋಡಿ (ಮೊದಲ ಪಾಠ)');
+        return;
+      }
       const pdfRow = files.pdf ? `<div class="unit"><span class="no pdf">PDF</span><div><b>ಸಂಪೂರ್ಣ ಪಾಠಯೋಜನೆ (PDF)</b><small>ಮೂಲ PDF ಮೇಲೆ ಶಾಲೆಯ ಹೆಸರು ಸೇರಿಸಿ</small></div>
         <div class="acts"><button class="btn sm" type="button" data-pdf="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-pdf="d">${ICON_DL}PDF</button></div></div>` : '';
       const data = files.xlsx || files.json;
@@ -1754,7 +1781,16 @@ const VIEWS = {
           ${f.pdf ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : ''}
           ${f.pptx ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pptx">${ICON_DL}PowerPoint</button>` : `<button class="btn sm" type="button" data-i="${i}" data-k="pdf2pptx" title="PDF ಪುಟಗಳನ್ನು ಸ್ಲೈಡ್‌ಗಳಾಗಿ">${ICON_DL}PowerPoint</button>`}`}</div></div>`;
       }).join('');
-      if (!pOk) box.insertAdjacentHTML('afterbegin', lockHtml(pp0, `${subjName(sub.subj)} PPT ಗಳು · ${sub.cls}ನೇ ತರಗತಿ`));
+      if (!pOk) {
+        const sp = Object.keys(sub.ppt).sort()[0];
+        const first = sub.ppt[sp].slice().sort((a, b) => (a.unit ?? 999) - (b.unit ?? 999) || (a.sub ?? 0) - (b.sub ?? 0) || String(a.title || '').localeCompare(String(b.title || '')))[0];
+        const fn = first && autoOk(Object.values(first.files)[0].name) ? async () => {
+          const label = first.title || 'ಮಾದರಿ PPT';
+          if (first.files.pdf) return pptFile(sub, sp, { ...first, u: first.unit }, label, 'v');
+          return officeView(first.files.pptx.name, 'ಮಾದರಿ: ' + label, null);
+        } : null;
+        box.insertAdjacentHTML('afterbegin', lockHtml(pp0, `${subjName(sub.subj)} PPT ಗಳು · ${sub.cls}ನೇ ತರಗತಿ`, fn, 'ಮಾದರಿ ನೋಡಿ (ಮೊದಲ PPT)'));
+      }
       box.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => {
         const it = items[+b.dataset.i], label = it.title || (it.u != null ? utitle(it.u) || 'ಘಟಕ ' + it.u : 'PPT');
         if (b.dataset.k === 'ov') return officeView(it.files.pptx.name, label, () => pptFile(sub, part, it, label, 'pptx'));
@@ -1777,7 +1813,15 @@ const VIEWS = {
       const name = it => it.title || units.find(u => +u.no === +it.u)?.title || (it.u != null ? 'ಪಾಠ ' + it.u : 'ನೋಟ್ಸ್');
       box.innerHTML = items.map((it, i) => `<div class="unit"><span class="no">${it.u ?? '★'}</span><div><b>${esc(name(it))}</b><small>PDF · ${mb(it.files.pdf.size)}</small></div>
         <div class="acts">${ok ? `<button class="btn sm" type="button" data-i="${i}" data-k="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : '<span class="pill warn lk">ಖರೀದಿಸಿಲ್ಲ</span>'}</div></div>`).join('');
-      if (!ok) box.insertAdjacentHTML('afterbegin', lockHtml(np, `${subjName(sub.subj)} ನೋಟ್ಸ್ · ${sub.cls}ನೇ ತರಗತಿ`));
+      if (!ok) {
+        const sp = Object.keys(sub.nt).sort()[0];
+        const first = sub.nt[sp].slice().sort((a, b) => (a.unit ?? 999) - (b.unit ?? 999) || (a.sub ?? 0) - (b.sub ?? 0) || String(a.title || '').localeCompare(String(b.title || '')))[0];
+        const fn = first && autoOk(first.files.pdf.name) ? async () => {
+          const out = await PM.stampUploaded(await getBytes(first.files.pdf.name), requireSchool());
+          await PV.open(out, `ಮಾದರಿ: ${subjName(sub.subj)} ನೋಟ್ಸ್`, null);
+        } : null;
+        box.insertAdjacentHTML('afterbegin', lockHtml(np, `${subjName(sub.subj)} ನೋಟ್ಸ್ · ${sub.cls}ನೇ ತರಗತಿ`, fn, 'ಮಾದರಿ ನೋಡಿ (ಮೊದಲ ಪಾಠ)'));
+      }
       box.querySelectorAll('button[data-i]').forEach(b => b.onclick = () => busy(b, async () => {
         const it = items[+b.dataset.i], sc = requireSchool(); if (!sc) return;
         const label = name(it), base = fname('ನೋಟ್ಸ್', sub.cls + 'ನೇ', subjName(sub.subj), `ಭಾಗ${part}`, it.u != null && `ಪಾಠ${it.u}`, it.title);
@@ -1855,7 +1899,7 @@ const VIEWS = {
         const canPdf = e.files.pdf || e.files.xlsx;
         const dp = parseName(Object.values(e.files)[0].name);
         if (!can(dp)) return `<div class="unit"><span class="no">${e.cls || '★'}</span><div><b>${esc(t)}</b><small>${kinds} · ${e.cls ? '' : 'ಯಾವುದೇ ಖರೀದಿಯೊಂದಿಗೆ ಉಚಿತ · '}🔒 ಖರೀದಿಸಿಲ್ಲ</small></div>
-          <div class="acts">${samplesOf('doc').slice(0, 1).map(x => `<button class="btn sm" type="button" data-sample="${esc(x.name)}">ಮಾದರಿ</button>`).join('')}${packOpts(dp).slice(0, 2).map(k => `<button class="btn sm${k.startsWith('doc') ? ' pri' : ''}" type="button" data-pack="${esc(k)}">${k.startsWith('doc') ? 'ಈ ದಾಖಲೆ' : k.startsWith('cls') ? 'ತರಗತಿ ಪ್ಯಾಕ್' : 'ಶಾಲಾ ಪ್ಯಾಕ್'} ₹${packPrice(k)}</button>`).join('')}</div></div>`;
+          <div class="acts">${samplesOf('doc').length ? samplesOf('doc').slice(0, 1).map(x => `<button class="btn sm" type="button" data-sample="${esc(x.name)}">ಮಾದರಿ</button>`).join('') : autoOk(Object.values(e.files)[0].name) ? autoBtn(() => docFile(e, 'v'), 'ಮಾದರಿ') : ''}${packOpts(dp).slice(0, 2).map(k => `<button class="btn sm${k.startsWith('doc') ? ' pri' : ''}" type="button" data-pack="${esc(k)}">${k.startsWith('doc') ? 'ಈ ದಾಖಲೆ' : k.startsWith('cls') ? 'ತರಗತಿ ಪ್ಯಾಕ್' : 'ಶಾಲಾ ಪ್ಯಾಕ್'} ₹${packPrice(k)}</button>`).join('')}</div></div>`;
         return `<div class="unit"><span class="no">${e.cls || '★'}</span><div><b>${esc(t)}</b><small>${kinds} · ${mb(size)}</small></div>
           <div class="acts">${canPdf ? `<button class="btn sm" type="button" data-i="${i}" data-k="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : `<button class="btn sm" type="button" data-i="${i}" data-k="ov">${ICON_EYE}ಮುನ್ನೋಟ</button>`}
           ${e.files.pptx ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pptx">${ICON_DL}PowerPoint</button>` : ''}</div></div>`;
@@ -1938,7 +1982,7 @@ async function officeView(file, title, onDownload) {
     google: 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(url)
   };
   $('ovTitle').textContent = title;
-  ovDownload = onDownload;
+  ovDownload = onDownload; $('ovDl').hidden = !onDownload;
   const set = k => { $('ovFrame').src = src[k]; document.querySelectorAll('#ovSrc button').forEach(b => b.classList.toggle('on', b.dataset.s === k)); };
   document.querySelectorAll('#ovSrc button').forEach(b => b.onclick = () => set(b.dataset.s));
   set('office');
@@ -1976,7 +2020,13 @@ async function loadAj() {
   if (!ok) {
     AJ = null; $('ajSem').innerHTML = ''; $('ajSum').innerHTML = ''; fillSelect($('ajSubject'), []);
     $('ajHead').textContent = `ಅಂದಾಜು ಪತ್ರಿಕೆ · ${cls}ನೇ ತರಗತಿ`;
-    $('ajTable').innerHTML = `<tr><td style="padding:0">${lockHtml(ajp, `${cls}ನೇ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ`)}</td></tr>`;
+    const fn = autoOk(file) ? async () => {
+      const sems = await loadAndaju(file), sc = requireSchool(); if (!sc) return;
+      const sem = { ...sems[0], cls: sems[0].cls || cls, lang: { en: 'en', mr: 'mr', ur: 'ur' }[medium()] || 'kn' };
+      const out = await PM.stampPdf(await PM.andaju(sem, sem.rows, {}, sc, { blank: false, subject: '' }), sc);
+      await PV.open(out, `ಮಾದರಿ: ${cls}ನೇ ತರಗತಿ ಅಂದಾಜು ಪತ್ರಿಕೆ`, null);
+    } : null;
+    $('ajTable').innerHTML = `<tr><td style="padding:0">${lockHtml(ajp, `${cls}ನೇ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ`, fn)}</td></tr>`;
     return;
   }
   $('ajTable').innerHTML = `<tr><td>${emptyBox('ತೆರೆಯಲಾಗುತ್ತಿದೆ…')}</td></tr>`;
@@ -2383,6 +2433,13 @@ function samplesOf(kind) {
   return l;
 }
 const sampleBtns = (kind, cls = 'btn sm') => samplesOf(kind).map(x => `<button class="${cls}" type="button" data-sample="${esc(x.name)}"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>ಮಾದರಿ ನೋಡಿ${kind ? (x.title ? ': ' + esc(x.title) : '') : ': ' + SAMPLE_T[x.kind] + (x.title ? ' · ' + esc(x.title) : '')}</button>`).join('');
+const ALLNAMES = () => (FULL?.all || []).map(f => f.name);
+const autoOk = name => PAID && !!name && isAutoSample(parseName(name), ALLNAMES());
+const AUTOS = []; let autosSeq = 0;
+function regSample(fn) { const id = ++autosSeq; AUTOS[id] = fn; return id; }
+async function asSample(fn) { PV.forceSample = true; try { await fn(); } finally { PV.forceSample = false; } }
+const autoBtn = (fn, label = 'ಮಾದರಿ ನೋಡಿ', cls = 'btn sm') => `<button class="${cls}" type="button" data-autos="${regSample(fn)}"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>${label}</button>`;
+document.addEventListener('click', e => { const b = e.target.closest('[data-autos]'); if (b && AUTOS[+b.dataset.autos]) busy(b, () => asSample(AUTOS[+b.dataset.autos])); });
 async function openSample(name, btn) {
   await busy(btn, async () => {
     const x = [...(DB?.samples || []), ...(FULL?.samples || [])].find(y => y.name === name);
@@ -2409,13 +2466,14 @@ function optBtn(k) {
   const state = ACC.pending(k) ? 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ' : CART.get().some(a => covers(a, k)) ? 'ಕಾರ್ಟ್‌ನಲ್ಲಿದೆ ✓' : '';
   return `<button class="opt${t === 'sub' || t === 'cls' ? ' best' : ''}" type="button" data-pack="${esc(k)}"${state ? ' data-in="1"' : ''}><span><b>${esc(lab)}</b><small>${esc(PACK_D[t] || 'ಒಂದು ತರಗತಿ')}</small></span><em>${state || '₹' + packPrice(k)}</em></button>`;
 }
-function lockHtml(p, title) {
+function lockHtml(p, title, sampleFn, sampleLabel) {
   if (!PAID) return '';
+  const smp = sampleBtns(p.type) || (sampleFn ? autoBtn(sampleFn, sampleLabel) : '');
   const pend = packOpts(p).some(k => ACC.pending(k));
   return `<div class="lock"><div class="lk-h"><span class="lk-i"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><div><b>${esc(title)}</b>
     <small>${pend ? 'ನಿಮ್ಮ ಆರ್ಡರ್ ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ. ಹಣ ಬಂದಿರುವುದನ್ನು ನೋಡಿದ ತಕ್ಷಣ ಇಲ್ಲಿ ತೆರೆಯುತ್ತದೆ.' : `ಖರೀದಿಸಿದ ನಂತರ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ download ಮಾಡಬಹುದು. ${dmy(yearEnd())} ರವರೆಗೆ.`}</small></div></div>
     <div class="lk-opts">${packOpts(p).map(optBtn).join('')}</div>
-    ${sampleBtns(p.type) ? `<div class="lk-smp"><span class="small muted">ಖರೀದಿಸುವ ಮೊದಲು ನೋಡಿ:</span>${sampleBtns(p.type)}</div>` : ''}</div>`;
+    ${smp ? `<div class="lk-smp"><span class="small muted">ಖರೀದಿಸುವ ಮೊದಲು ನೋಡಿ:</span>${smp}</div>` : ''}</div>`;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-pack]'); if (!b) return;
