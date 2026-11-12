@@ -232,6 +232,9 @@ input[type=password],input[type=date]{background:var(--bg);border:1px solid var(
 .opt em{font-style:normal;font-weight:700;font-size:15px;color:var(--accent);white-space:nowrap}
 .opt.best{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
 .opt[data-in] em{font-size:12.5px;color:var(--ok)}
+.lk-smp{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.smp-card{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.smp-card .btns{display:flex;flex-wrap:wrap;gap:8px}
 .pill.lk::before{content:"🔒";font-size:10px}
 dialog.narrow{width:min(640px,calc(100vw - 24px))}
 .dbody{max-height:calc(100vh - 110px);overflow:auto}
@@ -1245,7 +1248,7 @@ const skel = t => String(t).normalize('NFC').toLowerCase()
 const SUBJ_INDEX = {};
 for (const [k, names] of Object.entries(SUBJECT_LIST)) for (const n of [k, ...names]) SUBJ_INDEX[skel(n)] ??= k;
 const subjCode = raw => SUBJ_INDEX[skel(raw)] || String(raw).normalize('NFC').toLowerCase().replace(/\s+/g, '');
-const MED_RE = /^(en|mr|ur|bi|kn)-(?=(?:lp|ppt|nt|aj|doc)-)/i;
+const MED_RE = /^(en|mr|ur|bi|kn)-(?=(?:lp|ppt|nt|aj|doc|sample)-)/i;
 const medOf = name => ((MED_RE.exec(name.normalize('NFC').trim()) || [])[1] || 'kn').toLowerCase();
 /* ---------- ಫೈಲ್ ಹೆಸರು → ಅರ್ಥ ----------
    ಹೆಸರನ್ನು "-" ಚಿಹ್ನೆಯಲ್ಲಿ ಭಾಗಿಸಲಾಗುತ್ತದೆ: ಪ್ರಕಾರ - ತರಗತಿ - ವಿಷಯ - ಭಾಗ - ಘಟಕ
@@ -1256,13 +1259,19 @@ function parseName0(name) {
   const clean = name.normalize('NFC').trim().replace(MED_RE, '').replace(/(?:\.(?:xlsx|pdf|pptx|json))+(\.(?:xlsx|pdf|pptx|json))$/i, '$1');  // .xlsx.xlsx → .xlsx
   const m = /^(.+)\.(xlsx|pdf|pptx|json)$/i.exec(clean);
   if (!m) {
-    if (/^(lp|ppt|nt|aj|doc)-/i.test(clean) && !/\.[a-z0-9]{2,5}$/i.test(clean))
+    if (/^(lp|ppt|nt|aj|doc|sample)-/i.test(clean) && !/\.[a-z0-9]{2,5}$/i.test(clean))
       return { type: 'bad', reason: `ಹೆಸರಿನ ಕೊನೆಯಲ್ಲಿ <b>.pptx</b> / <b>.pdf</b> / <b>.xlsx</b> ಇಲ್ಲ. GitHub ನಲ್ಲಿ rename ಮಾಡಿ ಕೊನೆಗೆ ಸೇರಿಸಿ, ಉದಾ: <code>${esc(clean)}.pptx</code>` };
     return null;
   }
   const ext = m[2].toLowerCase(), parts = m[1].split('-').map(x => x.trim()).filter(Boolean);
   const type = (parts.shift() || '').toLowerCase();
   const isNum = x => /^\d{1,2}$/.test(x);
+  /* ಮಾದರಿ (ಖರೀದಿಸುವ ಮೊದಲು ಎಲ್ಲರಿಗೂ ನೋಡಲು): sample-lp.pdf, sample-ppt-ಹೆಸರು.pdf, sample-nt.pdf, sample-aj.pdf, sample-doc.pdf */
+  if (type === 'sample') {
+    const kind = (parts.shift() || '').toLowerCase();
+    if (ext !== 'pdf' || !['lp', 'ppt', 'nt', 'aj', 'doc'].includes(kind)) return null;
+    return { type, kind, title: parts.join(' - '), ext };
+  }
   if (type === 'doc') {
     if (ext === 'json') return null;
     const doc = (parts.shift() || '').toLowerCase();
@@ -1384,7 +1393,7 @@ async function listRepo(force) {
 }
 let DB = null;
 function buildDB(files) {
-  const db = { subjects: {}, aj: {}, docs: {}, bad: [], dirs: [], all: [] };
+  const db = { subjects: {}, aj: {}, docs: {}, samples: [], bad: [], dirs: [], all: [] };
   for (const f of files) {
     if (f.type === 'dir') { db.dirs.push(f); continue; }
     if (IGNORE.includes(f.name.toLowerCase())) continue;
@@ -1395,6 +1404,7 @@ function buildDB(files) {
       db.bad.push({ ...f, small: true, reason: `ಫೈಲ್ ಸರಿಯಾಗಿ upload ಆಗಿಲ್ಲ: GitHub ನಲ್ಲಿ ಕೇವಲ ${f.size} bytes ಇದೆ. ನಿಜವಾದ ಫೈಲ್ ಕಂಪ್ಯೂಟರ್‌ನಲ್ಲಿ ಪೂರ್ಣ download ಆಗಿದೆಯೇ ನೋಡಿ (OneDrive / Google Drive ಫೋಲ್ಡರ್‌ನಲ್ಲಿದ್ದರೆ ಮೊದಲು ಡೆಸ್ಕ್‌ಟಾಪ್‌ಗೆ copy ಮಾಡಿ), ನಂತರ ಅಳಿಸಿ ಮತ್ತೆ upload ಮಾಡಿ.` });
       continue;
     }
+    if (p.type === 'sample') { db.samples.push({ kind: p.kind, title: p.title, name: f.name, size: f.size }); continue; }
     if (p.type === 'aj') { db.aj[p.cls] = f.name; continue; }
     if (p.type === 'doc') {
       const list = db.docs[p.doc] ||= [], k = [p.cls, p.subj, p.part].join('|');
@@ -1571,8 +1581,9 @@ const emptyBox = (t, sub = '') => `<div class="empty"><b>${t}</b>${sub ? `<span 
 
 /* ---------- ಮುನ್ನೋಟ ---------- */
 const PV = {
-  async open(bytes, title, name) {
-    this.bytes = bytes; this.name = name; this.page = 1;
+  async open(bytes, title, name, opt = {}) {
+    this.bytes = bytes; this.name = name; this.page = 1; this.sample = !!opt.sample;
+    $('pvDl').hidden = this.sample;
     $('pvTitle').textContent = title;
     this.doc = await pdfjsLib.getDocument({ data: bytes.slice() }).promise;
     if (!$('pv').open) $('pv').showModal();
@@ -1584,6 +1595,11 @@ const PV = {
     const base = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(1.6, avail / base.width) * dpr });
     cv.width = vp.width; cv.height = vp.height; cv.style.width = vp.width / dpr + 'px';
     await page.render({ canvasContext: cv.getContext('2d'), viewport: vp }).promise;
+    if (this.sample) {                        // ಮಾದರಿ: ಓರೆಯಾದ "ಮಾದರಿ" ಮುದ್ರೆ
+      const ctx = cv.getContext('2d'); ctx.save(); ctx.translate(cv.width / 2, cv.height / 2); ctx.rotate(-Math.atan2(cv.height, cv.width));
+      ctx.font = `700 ${Math.round(Math.min(cv.width, cv.height) / 6)}px "Anek Kannada",sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(200,40,40,.16)'; ctx.fillText('ಮಾದರಿ · SAMPLE', 0, 0); ctx.restore();
+    }
     $('pvInfo').textContent = `${this.page} / ${this.doc.numPages}`;
   }
 };
@@ -1639,6 +1655,8 @@ const VIEWS = {
          <div class="meta">${sc.udise ? `<span>UDISE: ${esc(sc.udise)}</span>` : ''}<span>${esc([sc.place, sc.taluk, sc.dist].filter(Boolean).join(', '))}</span>${sc.year ? `<span>ಶೈಕ್ಷಣಿಕ ವರ್ಷ ${esc(sc.year)}</span>` : ''}${PAID && !ACC.isAdmin() ? `<span>ಸಕ್ರಿಯ ಖರೀದಿ: ${ACC.active().length}</span>` : ''}</div></div>`
          + (PAID && !ACC.isAdmin() && !ACC.active().length ? `<div class="banner" style="margin-top:14px"><span><b>ಬೇಕಾದಷ್ಟು ಮಾತ್ರ ಖರೀದಿಸಿ.</b> ಪಾಠಯೋಜನೆ ₹${CONFIG.prices.lp}, PPT ₹${CONFIG.prices.ppt}, ಅಂದಾಜು ಪತ್ರಿಕೆ ₹${CONFIG.prices.aj} … ಕೆಳಗಿನ ಪಟ್ಟಿಯಲ್ಲಿ 🔒 ಇರುವುದನ್ನು ತೆರೆದು ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ.</span></div>` : '')
       : `<div class="banner"><span><b>ಸ್ವಾಗತ!</b> ಮೊದಲು ನಿಮ್ಮ ಶಾಲೆಯ ವಿವರ ತುಂಬಿ. ನಂತರ ಪ್ರತಿ download ಮೇಲೂ ಅದು ತಾನಾಗಿಯೇ ಮುದ್ರಣವಾಗುತ್ತದೆ.</span><a class="btn pri" href="#school">ಶಾಲೆಯ ವಿವರ ತುಂಬಿ</a></div>`;
+    if (PAID && !ACC.isAdmin() && samplesOf().length)
+      $('homeTop').insertAdjacentHTML('beforeend', `<div class="card pad smp-card" style="margin-top:14px"><span><b>ಖರೀದಿಸುವ ಮೊದಲು ಮಾದರಿ ನೋಡಿ</b><span class="small muted" style="display:block">ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ ಹೇಗೆ ಬರುತ್ತದೆ ಎಂದು ನೋಡಿ. ಇಷ್ಟವಾದರೆ ಖರೀದಿಸಿ.</span></span><span class="btns">${sampleBtns('')}</span></div>`);
     const subs = Object.values(DB.subjects);
     const lpN = subs.reduce((a, s) => a + Object.keys(s.lp).length, 0);
     const pptN = subs.reduce((a, s) => a + Object.values(s.ppt).reduce((b, u) => b + Object.keys(u).length, 0), 0);
@@ -1837,7 +1855,7 @@ const VIEWS = {
         const canPdf = e.files.pdf || e.files.xlsx;
         const dp = parseName(Object.values(e.files)[0].name);
         if (!can(dp)) return `<div class="unit"><span class="no">${e.cls || '★'}</span><div><b>${esc(t)}</b><small>${kinds} · ${e.cls ? '' : 'ಯಾವುದೇ ಖರೀದಿಯೊಂದಿಗೆ ಉಚಿತ · '}🔒 ಖರೀದಿಸಿಲ್ಲ</small></div>
-          <div class="acts">${packOpts(dp).slice(0, 2).map(k => `<button class="btn sm${k.startsWith('doc') ? ' pri' : ''}" type="button" data-pack="${esc(k)}">${k.startsWith('doc') ? 'ಈ ದಾಖಲೆ' : k.startsWith('cls') ? 'ತರಗತಿ ಪ್ಯಾಕ್' : 'ಶಾಲಾ ಪ್ಯಾಕ್'} ₹${packPrice(k)}</button>`).join('')}</div></div>`;
+          <div class="acts">${samplesOf('doc').slice(0, 1).map(x => `<button class="btn sm" type="button" data-sample="${esc(x.name)}">ಮಾದರಿ</button>`).join('')}${packOpts(dp).slice(0, 2).map(k => `<button class="btn sm${k.startsWith('doc') ? ' pri' : ''}" type="button" data-pack="${esc(k)}">${k.startsWith('doc') ? 'ಈ ದಾಖಲೆ' : k.startsWith('cls') ? 'ತರಗತಿ ಪ್ಯಾಕ್' : 'ಶಾಲಾ ಪ್ಯಾಕ್'} ₹${packPrice(k)}</button>`).join('')}</div></div>`;
         return `<div class="unit"><span class="no">${e.cls || '★'}</span><div><b>${esc(t)}</b><small>${kinds} · ${mb(size)}</small></div>
           <div class="acts">${canPdf ? `<button class="btn sm" type="button" data-i="${i}" data-k="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : `<button class="btn sm" type="button" data-i="${i}" data-k="ov">${ICON_EYE}ಮುನ್ನೋಟ</button>`}
           ${e.files.pptx ? `<button class="btn sm pri" type="button" data-i="${i}" data-k="pptx">${ICON_DL}PowerPoint</button>` : ''}</div></div>`;
@@ -2074,6 +2092,7 @@ function describe(p) {
   return md + describe0(p);
 }
 function describe0(p) {
+  if (p.type === 'sample') return `ಮಾದರಿ (ಎಲ್ಲರಿಗೂ ಉಚಿತ ಮುನ್ನೋಟ) · ${{ lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್ಸ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ' }[p.kind]}${p.title ? ' · ' + p.title : ''}`;
   if (p.subj && !SUBJECTS[p.subj]) return `⚠ "${p.subj}" ಎಂಬ ವಿಷಯ ಗೊತ್ತಿಲ್ಲ. ಫೈಲ್ ಹೆಸರಿನಲ್ಲಿ ${Object.keys(SUBJECTS).slice(0, 7).join(', ')}… ಇವುಗಳಲ್ಲಿ ಒಂದನ್ನು ಬಳಸಿ.`;
   if (p.type === 'doc') return [docTitle(p.doc), p.cls ? p.cls + 'ನೇ' : 'ಎಲ್ಲಾ ತರಗತಿಗಳು', p.subj && subjName(p.subj), p.part && 'ಭಾಗ ' + p.part].filter(Boolean).join(' · ');
   if (p.type === 'aj') return `ಅಂದಾಜು ಪತ್ರಿಕೆ · ${p.cls}ನೇ ತರಗತಿ`;
@@ -2356,6 +2375,24 @@ async function qrSvg(text) {
   return q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
 }
 
+/* ---------- ಮಾದರಿಗಳು ---------- */
+const SAMPLE_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್ಸ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ' };
+function samplesOf(kind) {
+  let l = (DB?.samples || []).filter(x => !kind || x.kind === kind);
+  if (!l.length && FULL) l = (FULL.samples || []).filter(x => (!kind || x.kind === kind) && medOf(x.name) === 'kn');   // ಆ ಮಾಧ್ಯಮದ್ದು ಇಲ್ಲದಿದ್ದರೆ ಕನ್ನಡದ್ದು
+  return l;
+}
+const sampleBtns = (kind, cls = 'btn sm') => samplesOf(kind).map(x => `<button class="${cls}" type="button" data-sample="${esc(x.name)}"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>ಮಾದರಿ ನೋಡಿ${kind ? (x.title ? ': ' + esc(x.title) : '') : ': ' + SAMPLE_T[x.kind] + (x.title ? ' · ' + esc(x.title) : '')}</button>`).join('');
+async function openSample(name, btn) {
+  await busy(btn, async () => {
+    const x = [...(DB?.samples || []), ...(FULL?.samples || [])].find(y => y.name === name);
+    let bytes = await getBytes(name);
+    const sc = school(); if (sc?.name) { try { bytes = await PM.stampUploaded(bytes, sc); } catch (e) {} }
+    await PV.open(bytes, `ಮಾದರಿ: ${SAMPLE_T[x?.kind] || ''}${x?.title ? ' · ' + x.title : ''}`, null, { sample: true });
+  });
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-sample]'); if (b) openSample(b.dataset.sample, b); });
+
 /* ---------- 🔒 ಖರೀದಿಸದ ದಾಖಲೆ ---------- */
 function packOpts(p) {
   const m = p.med || 'kn', c = p.cls, s = p.subj;
@@ -2377,7 +2414,8 @@ function lockHtml(p, title) {
   const pend = packOpts(p).some(k => ACC.pending(k));
   return `<div class="lock"><div class="lk-h"><span class="lk-i"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><div><b>${esc(title)}</b>
     <small>${pend ? 'ನಿಮ್ಮ ಆರ್ಡರ್ ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ. ಹಣ ಬಂದಿರುವುದನ್ನು ನೋಡಿದ ತಕ್ಷಣ ಇಲ್ಲಿ ತೆರೆಯುತ್ತದೆ.' : `ಖರೀದಿಸಿದ ನಂತರ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ download ಮಾಡಬಹುದು. ${dmy(yearEnd())} ರವರೆಗೆ.`}</small></div></div>
-    <div class="lk-opts">${packOpts(p).map(optBtn).join('')}</div></div>`;
+    <div class="lk-opts">${packOpts(p).map(optBtn).join('')}</div>
+    ${sampleBtns(p.type) ? `<div class="lk-smp"><span class="small muted">ಖರೀದಿಸುವ ಮೊದಲು ನೋಡಿ:</span>${sampleBtns(p.type)}</div>` : ''}</div>`;
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-pack]'); if (!b) return;
