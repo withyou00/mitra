@@ -471,7 +471,7 @@ textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;pad
           <div class="pad" style="padding-top:0"><div class="prices-ed" id="stPrices"></div></div>
           <div class="pad" style="padding-top:0"><h3 class="h3">📢 ಮುಖಪುಟದ ಪ್ರಕಟಣೆ</h3>
             <textarea id="stNotice" rows="2" maxlength="400" placeholder="ಉದಾ: 7ನೇ ತರಗತಿ ವಿಜ್ಞಾನ PPT ಸೇರಿಸಲಾಗಿದೆ. ದಸರಾ offer: DASARA20 ಕೂಪನ್ ಬಳಸಿ 20% ಕಡಿತ." style="width:100%"></textarea>
-            <p class="muted small" style="margin:4px 0 0">ಖಾಲಿ ಬಿಟ್ಟರೆ ಪ್ರಕಟಣೆ ಕಾಣುವುದಿಲ್ಲ.</p></div>
+            <div style="display:flex;gap:10px;align-items:center;margin-top:6px"><button class="btn sm pri" type="button" id="stNoticeSave">ಪ್ರಕಟಣೆ ಉಳಿಸಿ</button><span class="muted small">ಉಳಿಸಿದ ನಂತರ ಎಲ್ಲಾ ಶಿಕ್ಷಕರ ಮುಖಪುಟದ ಮೇಲ್ಭಾಗದಲ್ಲಿ ಕಾಣುತ್ತದೆ. ಖಾಲಿ ಮಾಡಿ ಉಳಿಸಿದರೆ ಮರೆಯಾಗುತ್ತದೆ.</span></div></div>
           <div class="pad" style="padding-top:0"><h3 class="h3">🎟️ ಕೂಪನ್‌ಗಳು</h3>
             <div class="tw"><table class="list" id="stCoupons" style="min-width:420px"></table></div>
             <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-top:12px">
@@ -2735,6 +2735,11 @@ function adminSettings() {
     toast('ಸೇರಿಸಲಾಗಿದೆ. ಕೊನೆಗೆ ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.');
   };
   $('stNotice').value = SET.notice || '';
+  $('stNoticeSave').onclick = () => busy($('stNoticeSave'), async () => {
+    try { await ACC.saveSettings({ notice: $('stNotice').value.trim() }); }
+    catch (e) { return toast('ಉಳಿಸಲು ಆಗಲಿಲ್ಲ: Firebase Rules ನೋಡಿ. ' + (e.code || e.message || ''), true); }
+    toast($('stNotice').value.trim() ? 'ಪ್ರಕಟಣೆ ಉಳಿಸಲಾಗಿದೆ. ಮುಖಪುಟದಲ್ಲಿ ನೋಡಿ.' : 'ಪ್ರಕಟಣೆ ತೆಗೆಯಲಾಗಿದೆ.');
+  });
   $('stRefPct').value = SET.refPct; $('stRefRew').value = SET.refReward;
   const cps = JSON.parse(JSON.stringify(SET.coupons || {}));
   const drawC = () => {
