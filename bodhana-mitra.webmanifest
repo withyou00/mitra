@@ -1,0 +1,26 @@
+{
+  "id": "/mitra/",
+  "name": "ಬೋಧನಾ ಮಿತ್ರ (Bodhana Mitra)",
+  "short_name": "ಬೋಧನಾ ಮಿತ್ರ",
+  "description": "ಪಾಠಯೋಜನೆ, PPT, ಅಂದಾಜು ಪತ್ರಿಕೆ — ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ",
+  "lang": "kn",
+  "start_url": "/mitra/",
+  "scope": "/mitra/",
+  "display": "standalone",
+  "background_color": "#10261f",
+  "theme_color": "#10261f",
+  "icons": [
+    {
+      "src": "/mitra/bm-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/mitra/bm-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
