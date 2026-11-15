@@ -232,6 +232,9 @@ input[type=password],input[type=date]{background:var(--bg);border:1px solid var(
 .opt em{font-style:normal;font-weight:700;font-size:15px;color:var(--accent);white-space:nowrap}
 .opt.best{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
 .opt[data-in] em{font-size:12.5px;color:var(--ok)}
+.offer{padding:10px 14px;border-radius:10px;background:#fff1d6;color:#5a3500;font-size:13.5px;border:1px dashed #e0a43a}
+.offer code{background:#fff;padding:1px 6px;border-radius:5px;font-weight:700}
+.offer.big{font-size:15px;padding:14px 18px}
 .cartbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:20;display:flex;gap:14px;align-items:center;background:#10261f;color:#fff;padding:10px 12px 10px 18px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);width:min(560px,calc(100vw - 24px))}
 .cartbar span{flex:1;font-size:14.5px}.cartbar small{display:block;color:#b9d3c8;font-size:12px}
 body:has(dialog[open]) .cartbar{display:none}
@@ -478,6 +481,7 @@ textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;pad
               <label class="field">ಕೋಡ್<input type="text" id="ncCode" placeholder="DASARA20" style="width:130px;text-transform:uppercase"></label>
               <label class="field">ಕಡಿತ %<input type="number" id="ncPct" min="1" max="90" value="10" style="width:80px"></label>
               <label class="field">ಕೊನೆಯ ದಿನ<input type="date" id="ncUntil"></label>
+              <label class="check" style="align-self:center"><input type="checkbox" id="ncShow" checked> ಎಲ್ಲರಿಗೂ ತೋರಿಸಿ (ಆಫರ್)</label>
               <button class="btn" type="button" id="ncAdd">+ ಸೇರಿಸಿ</button>
             </div></div>
           <div class="pad" style="padding-top:0"><h3 class="h3">🎁 ಸ್ನೇಹಿತರಿಗೆ ತಿಳಿಸಿ (referral)</h3>
@@ -1726,6 +1730,7 @@ const VIEWS = {
     $('homeTop').innerHTML = sc?.name
       ? `<div class="welcome"><p>ನಮಸ್ಕಾರ${sc.teacher ? ', ' + esc(sc.teacher) : ''}</p><h2>${esc(sc.name)}</h2>
          <div class="meta">${sc.udise ? `<span>UDISE: ${esc(sc.udise)}</span>` : ''}<span>${esc([sc.place, sc.taluk, sc.dist].filter(Boolean).join(', '))}</span>${sc.year ? `<span>ಶೈಕ್ಷಣಿಕ ವರ್ಷ ${esc(sc.year)}</span>` : ''}${PAID && !ACC.isAdmin() ? `<span>ಸಕ್ರಿಯ ಖರೀದಿ: ${ACC.active().length}</span>` : ''}</div></div>`
+         + (PAID && publicOffer() ? `<div class="offer big" style="margin-top:14px">${offerLine(publicOffer())}</div>` : '')
          + (PAID && SET.notice ? `<div class="card pad notice" style="margin-top:14px"><b>📢 ಪ್ರಕಟಣೆ</b><div style="white-space:pre-line;margin-top:4px">${esc(SET.notice)}</div></div>` : '')
          + (PAID && !ACC.isAdmin() && !ACC.active().length ? `<div class="card pad" style="margin-top:14px"><b>ಹೇಗೆ ಖರೀದಿಸುವುದು? 4 ಸುಲಭ ಹಂತ</b>
             <div class="howto">
@@ -2270,6 +2275,14 @@ const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF
 /* ದಾಖಲೆವಾರು ಬೆಲೆ (Admin → ದರಪಟ್ಟಿ ಯಲ್ಲಿ ಬದಲಿಸಿದ್ದು). ಇಲ್ಲದಿದ್ದರೆ "ಇತರೆ ದಾಖಲೆ" ಬೆಲೆ */
 const DOC_PRICE = {};
 const SET = { notice: '', coupons: {}, refPct: 10, refReward: 50 };     // Admin → ದರಪಟ್ಟಿ ಯಲ್ಲಿ ಬದಲಿಸುವವು
+/* ಎಲ್ಲರಿಗೂ ತೋರಿಸುವ ಆಫರ್: ಸಕ್ರಿಯವಾಗಿರುವ "ಎಲ್ಲರಿಗೂ" ಕೂಪನ್‌ಗಳಲ್ಲಿ ಹೆಚ್ಚು ಕಡಿತದ್ದು. ಕಾರ್ಟ್‌ನಲ್ಲಿ ತಾನಾಗಿಯೇ ಅನ್ವಯ */
+function publicOffer() {
+  const t = today();
+  return Object.entries(SET.coupons || {}).filter(([, c]) => !c.off && c.show !== false && (!c.until || String(c.until) >= t))
+    .map(([code, c]) => ({ code, pct: +c.pct || 0, until: c.until })).sort((a, b) => b.pct - a.pct)[0] || null;
+}
+const offPrice = n => { const o = publicOffer(); return o ? n - Math.round(n * o.pct / 100) : n; };
+const offerLine = o => `🎉 <b>ಆಫರ್: ಎಲ್ಲಾ ಖರೀದಿಗಳಿಗೆ ${o.pct}% ಕಡಿತ</b>${o.until ? ` · ${dmy(o.until)} ರವರೆಗೆ ಮಾತ್ರ` : ''} · ಕೋಡ್ <code>${esc(o.code)}</code> (ಕಾರ್ಟ್‌ನಲ್ಲಿ ತಾನಾಗಿಯೇ ಅನ್ವಯವಾಗುತ್ತದೆ)`;
 const packPrice = k => { const [t, , , x] = k.split(':'); return (t === 'doc' && DOC_PRICE[x] != null ? +DOC_PRICE[x] : +CONFIG.prices[t]) || 0; };
 /* Firestore ನಲ್ಲಿ ಉಳಿಸಿದ ದರಪಟ್ಟಿ ಮತ್ತು ದಾಖಲೆಗಳ ಹೆಸರು */
 function applySettings(st) {
@@ -2348,7 +2361,7 @@ const ACC = (() => {
     const adm = () => { const a = !!CONFIG.admin && $('rMob').value.replace(/\D/g, '') === String(CONFIG.admin).trim(); $('auRegSchool').hidden = a; $('auAdmNote').hidden = !a; };
     $('rMob').oninput = adm; adm();
     $('auForgot').href = CONFIG.whatsapp ? `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('ನಮಸ್ಕಾರ, ಬೋಧನಾ ಮಿತ್ರ ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿದ್ದೇನೆ. ನನ್ನ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ: ')}` : '#';
-    $('auPrices').innerHTML = `<h3>ಬೆಲೆ ಪಟ್ಟಿ <small>(ಒಂದು ಶೈಕ್ಷಣಿಕ ವರ್ಷಕ್ಕೆ)</small></h3><div class="plist">` +
+    $('auPrices').innerHTML = (publicOffer() ? `<div class="offer">${offerLine(publicOffer())}</div>` : '') + `<h3>ಬೆಲೆ ಪಟ್ಟಿ <small>(ಒಂದು ಶೈಕ್ಷಣಿಕ ವರ್ಷಕ್ಕೆ)</small></h3><div class="plist">` +
       ['lp', 'ppt', 'nt', 'aj', 'doc', 'sub', 'cls', 'sch'].map(t => `<div><span>${t === 'doc' ? 'ಇತರೆ ದಾಖಲೆ (' + (Object.values(DOCS).slice(0, 2).join(', ') || 'ಕ್ರಿಯಾ ಯೋಜನೆ') + '…)' : PACK_T[t]}<small>${t === 'lp' || t === 'ppt' || t === 'nt' ? '1 ತರಗತಿ, 1 ವಿಷಯ · ' : t === 'aj' || t === 'doc' ? '1 ತರಗತಿ · ' : t === 'sch' ? '1 ಮಾಧ್ಯಮ · ' : t === 'sub' ? '1 ವಿಷಯ · ' : '1 ತರಗತಿ · '}${PACK_D[t] || '1 ದಾಖಲೆ'}</small></span><b>₹${CONFIG.prices[t]}</b></div>`).join('') + '</div>';
   }
   function hideAuth() { $('auth').hidden = true; document.body.style.overflow = ''; }
@@ -2464,7 +2477,7 @@ const CART = {
   badge() {
     const l = this.get(), n = l.length; $('cartN').textContent = n; $('cartN').hidden = !n;
     $('cartBar').hidden = !n || !PAID;
-    if (n) $('cartBarTxt').innerHTML = `<b>ಕಾರ್ಟ್‌ನಲ್ಲಿ ${n}</b> · ₹${this.total(l)}<small>ಮುಂದಿನ ಹಂತ: ಹಣ ಪಾವತಿಸಿ ಆರ್ಡರ್ ಕಳುಹಿಸಿ</small>`;
+    if (n) { const C = this.calc(l); $('cartBarTxt').innerHTML = `<b>ಕಾರ್ಟ್‌ನಲ್ಲಿ ${n}</b> · ${C.total < C.sub ? `<s style="opacity:.6">₹${C.sub}</s> ` : ''}₹${C.total}<small>ಮುಂದಿನ ಹಂತ: ಹಣ ಪಾವತಿಸಿ ಆರ್ಡರ್ ಕಳುಹಿಸಿ</small>`; }
   },
   add(k) {
     if (ACC.owns(k)) return toast('ಇದು ಈಗಾಗಲೇ ನಿಮ್ಮ ಖರೀದಿಯಲ್ಲಿದೆ.');
@@ -2479,12 +2492,13 @@ const CART = {
   /* ರಿಯಾಯಿತಿಗಳು: ಕೂಪನ್ → ಸ್ನೇಹಿತರ ಸಂಖ್ಯೆ (ಮೊದಲ ಖರೀದಿಗೆ) → ಸಂಗ್ರಹಿಸಿದ ಬಹುಮಾನ */
   calc(l) {
     const sub = this.total(l), x = this.x(), t = today();
-    const cp = x.coupon && SET.coupons[x.coupon], cpOk = !!cp && !cp.off && (!cp.until || String(cp.until) >= t);
+    const auto = !x.coupon && publicOffer(), code = x.coupon || (auto ? auto.code : '');
+    const cp = code && SET.coupons[code], cpOk = !!cp && !cp.off && (!cp.until || String(cp.until) >= t);
     const couponOff = cpOk ? Math.round(sub * (+cp.pct || 0) / 100) : 0;
     const refOk = !!x.ref && /^[6-9]\d{9}$/.test(x.ref) && x.ref !== ACC.mobile() && ACC.firstOrder() && SET.refPct > 0;
     const refOff = refOk ? Math.round((sub - couponOff) * SET.refPct / 100) : 0;
     const creditUsed = Math.min(ACC.credit(), sub - couponOff - refOff);
-    return { sub, coupon: cpOk ? x.coupon : '', couponBad: !!x.coupon && !cpOk, couponOff, ref: refOk ? x.ref : '', refOff, creditUsed, total: sub - couponOff - refOff - creditUsed };
+    return { sub, coupon: cpOk ? code : '', auto: !!auto && cpOk, couponBad: !!x.coupon && !cpOk, couponOff, ref: refOk ? x.ref : '', refOff, creditUsed, total: sub - couponOff - refOff - creditUsed };
   },
   /* ಉಳಿತಾಯದ ಸೂಚನೆಗಳು */
   hints(l) {
@@ -2513,8 +2527,8 @@ const CART = {
     box.innerHTML = `<div class="cl">${l.map((k, i) => `<div class="ci"><span><b>${esc(packLabel(k, true))}</b><small>${esc(PACK_D[k.split(':')[0]] || '')}${PACK_D[k.split(':')[0]] ? ' · ' : ''}${esc(MEDIA[k.split(':')[1]])}</small></span><b>₹${packPrice(k)}</b><button class="x" type="button" data-rm="${i}" aria-label="ತೆಗೆಯಿರಿ">✕</button></div>`).join('')}</div>
       ${hints.map(h => `<div class="hint"><span>💡 <b>${esc(packLabel(h.k, true))}</b> (₹${packPrice(h.k)}) ತೆಗೆದುಕೊಂಡರೆ ಇವೆಲ್ಲವೂ ಮತ್ತು ಇನ್ನೂ ಹೆಚ್ಚು ಸಿಗುತ್ತದೆ${h.save > 0 ? `, ₹${h.save} ಉಳಿತಾಯ` : ''}.</span><button class="btn sm" type="button" data-up="${esc(h.k)}">ಬದಲಿಸಿ</button></div>`).join('')}
       <div class="disc">
-        <label class="field">ಕೂಪನ್ ಕೋಡ್<span class="row2"><input type="text" id="cpIn" value="${esc(X.coupon || '')}" placeholder="ಇದ್ದರೆ" style="text-transform:uppercase"><button class="btn sm" type="button" id="cpGo">ಅನ್ವಯಿಸಿ</button></span>
-          ${C.couponBad ? '<small class="bad">ಈ ಕೂಪನ್ ಸರಿಯಿಲ್ಲ ಅಥವಾ ಅವಧಿ ಮುಗಿದಿದೆ</small>' : C.coupon ? `<small class="ok">✓ ${esc(C.coupon)}: ₹${C.couponOff} ಕಡಿತ</small>` : ''}</label>
+        <label class="field">ಕೂಪನ್ ಕೋಡ್<span class="row2"><input type="text" id="cpIn" value="${esc(X.coupon || (C.auto ? C.coupon : ''))}" placeholder="ಇದ್ದರೆ" style="text-transform:uppercase"><button class="btn sm" type="button" id="cpGo">ಅನ್ವಯಿಸಿ</button></span>
+          ${C.couponBad ? '<small class="bad">ಈ ಕೂಪನ್ ಸರಿಯಿಲ್ಲ ಅಥವಾ ಅವಧಿ ಮುಗಿದಿದೆ</small>' : C.coupon ? `<small class="ok">✓ ${esc(C.coupon)}: ₹${C.couponOff} ಕಡಿತ${C.auto ? ' (ಆಫರ್ ತಾನಾಗಿಯೇ ಅನ್ವಯವಾಗಿದೆ)' : ''}</small>` : ''}</label>
         ${ACC.firstOrder() && SET.refPct > 0 ? `<label class="field">ನಿಮಗೆ ಸೂಚಿಸಿದ ಶಿಕ್ಷಕರ ಮೊಬೈಲ್<span class="row2"><input type="tel" id="refIn" maxlength="10" inputmode="numeric" value="${esc(X.ref || '')}" placeholder="ಇದ್ದರೆ"><button class="btn sm" type="button" id="refGo">ಅನ್ವಯಿಸಿ</button></span>
           ${C.ref ? `<small class="ok">✓ ಮೊದಲ ಖರೀದಿಗೆ ${SET.refPct}%: ₹${C.refOff} ಕಡಿತ</small>` : X.ref ? '<small class="bad">ಸರಿಯಾದ 10 ಅಂಕಿಯ ಬೇರೆ ಶಿಕ್ಷಕರ ಸಂಖ್ಯೆ ಬರೆಯಿರಿ</small>' : `<small class="muted">ಮೊದಲ ಖರೀದಿಗೆ ${SET.refPct}% ಕಡಿತ</small>`}</label>` : ''}
       </div>
@@ -2610,7 +2624,7 @@ function optBtn(k) {
   const t = k.split(':')[0];
   const lab = { lp: 'ಈ ವಿಷಯದ ಪಾಠಯೋಜನೆ', ppt: 'ಈ ವಿಷಯದ ಎಲ್ಲಾ PPT', nt: 'ಈ ವಿಷಯದ ಎಲ್ಲಾ ನೋಟ್ಸ್', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಈ ತರಗತಿಯ ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಈ ದಾಖಲೆ ಮಾತ್ರ', cls: k.split(':')[2] + 'ನೇ ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' }[t];
   const state = ACC.pending(k) ? 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ' : CART.get().some(a => covers(a, k)) ? 'ಕಾರ್ಟ್‌ನಲ್ಲಿದೆ ✓' : '';
-  return `<button class="opt${t === 'sub' || t === 'cls' ? ' best' : ''}" type="button" data-pack="${esc(k)}"${state ? ' data-in="1"' : ''}><span><b>${esc(lab)}</b><small>${esc(PACK_D[t] || 'ಒಂದು ತರಗತಿ')}</small></span><em>${state || '₹' + packPrice(k)}</em></button>`;
+  return `<button class="opt${t === 'sub' || t === 'cls' ? ' best' : ''}" type="button" data-pack="${esc(k)}"${state ? ' data-in="1"' : ''}><span><b>${esc(lab)}</b><small>${esc(PACK_D[t] || 'ಒಂದು ತರಗತಿ')}</small></span><em>${state || (publicOffer() ? `<s style="opacity:.5;font-weight:500">₹${packPrice(k)}</s> ₹${offPrice(packPrice(k))}` : '₹' + packPrice(k))}</em></button>`;
 }
 function lockHtml(p, title, sampleFn, sampleLabel) {
   if (!PAID) return '';
@@ -2618,6 +2632,7 @@ function lockHtml(p, title, sampleFn, sampleLabel) {
   const pend = packOpts(p).some(k => ACC.pending(k));
   return `<div class="lock"><div class="lk-h"><span class="lk-i"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><div><b>${esc(title)}</b>
     <small>${pend ? 'ನಿಮ್ಮ ಆರ್ಡರ್ ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ. ಹಣ ಬಂದಿರುವುದನ್ನು ನೋಡಿದ ತಕ್ಷಣ ಇಲ್ಲಿ ತೆರೆಯುತ್ತದೆ.' : `ಖರೀದಿಸಿದ ನಂತರ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ download ಮಾಡಬಹುದು. ${dmy(yearEnd())} ರವರೆಗೆ.`}</small></div></div>
+    ${publicOffer() ? `<div class="offer">${offerLine(publicOffer())}</div>` : ''}
     <div class="lk-opts">${packOpts(p).map(optBtn).join('')}</div>
     ${smp ? `<div class="lk-smp"><span class="small muted">ಖರೀದಿಸುವ ಮೊದಲು ನೋಡಿ:</span>${smp}</div>` : ''}</div>`;
 }
@@ -2700,7 +2715,7 @@ function adminLeads() {
     .sort((a, b) => String(b.created).localeCompare(String(a.created)));
   $('adLeadN').textContent = leads.length;
   const site = location.origin + location.pathname;
-  const msg = u => `ನಮಸ್ಕಾರ ${u.teacher || ''} ಅವರೇ, ಬೋಧನಾ ಮಿತ್ರದಲ್ಲಿ ನೋಂದಣಿ ಮಾಡಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು 🙏\n\nದಾಖಲೆ ಪಡೆಯುವ ವಿಧಾನ:\n1️⃣ ${site} ತೆರೆದು login ಆಗಿ\n2️⃣ ಎಡಭಾಗದ ಪಾಠಯೋಜನೆ / PPT / ನೋಟ್ಸ್ ನಲ್ಲಿ ತರಗತಿ, ವಿಷಯ ಆರಿಸಿ\n3️⃣ "ಮಾದರಿ ನೋಡಿ" ಒತ್ತಿ ನೋಡಿ, ಇಷ್ಟವಾದರೆ ಬೆಲೆಯ ಡಬ್ಬಿ ಒತ್ತಿ ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ\n4️⃣ ಕೆಳಗೆ "ಹಣ ಪಾವತಿಸಿ" → PhonePe / GPay ನಿಂದ ${CONFIG.payPhone || CONFIG.upi} ಗೆ ಕಳುಹಿಸಿ → "ಆರ್ಡರ್ ಕಳುಹಿಸಿ"\n\nಸಮಸ್ಯೆ ಇದ್ದರೆ ಇದೇ ಸಂಖ್ಯೆಗೆ ಸಂದೇಶ ಕಳುಹಿಸಿ. ಧನ್ಯವಾದಗಳು.`;
+  const msg = u => `ನಮಸ್ಕಾರ ${u.teacher || ''} ಅವರೇ, ಬೋಧನಾ ಮಿತ್ರದಲ್ಲಿ ನೋಂದಣಿ ಮಾಡಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು 🙏\n\nದಾಖಲೆ ಪಡೆಯುವ ವಿಧಾನ:\n1️⃣ ${site} ತೆರೆದು login ಆಗಿ\n2️⃣ ಎಡಭಾಗದ ಪಾಠಯೋಜನೆ / PPT / ನೋಟ್ಸ್ ನಲ್ಲಿ ತರಗತಿ, ವಿಷಯ ಆರಿಸಿ\n3️⃣ "ಮಾದರಿ ನೋಡಿ" ಒತ್ತಿ ನೋಡಿ, ಇಷ್ಟವಾದರೆ ಬೆಲೆಯ ಡಬ್ಬಿ ಒತ್ತಿ ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ\n4️⃣ ಕೆಳಗೆ "ಹಣ ಪಾವತಿಸಿ" → PhonePe / GPay ನಿಂದ ${CONFIG.payPhone || CONFIG.upi} ಗೆ ಕಳುಹಿಸಿ → "ಆರ್ಡರ್ ಕಳುಹಿಸಿ"\n\n${publicOffer() ? `🎉 ಈಗ ಆಫರ್: ಎಲ್ಲಾ ಖರೀದಿಗಳಿಗೆ ${publicOffer().pct}% ಕಡಿತ${publicOffer().until ? ` (${dmy(publicOffer().until)} ರವರೆಗೆ)` : ''}, ತಾನಾಗಿಯೇ ಅನ್ವಯವಾಗುತ್ತದೆ.\n\n` : ''}ಸಮಸ್ಯೆ ಇದ್ದರೆ ಇದೇ ಸಂಖ್ಯೆಗೆ ಸಂದೇಶ ಕಳುಹಿಸಿ. ಧನ್ಯವಾದಗಳು.`;
   $('adLeads').innerHTML = `<thead><tr><th>ನೋಂದಣಿ</th><th>ಶಿಕ್ಷಕರು</th><th>ಶಾಲೆ</th><th>ಮೊಬೈಲ್</th><th></th></tr></thead><tbody>` +
     (leads.map(u => `<tr><td>${dmy(u.created)}</td><td>${esc(u.teacher || '')}</td><td>${esc(u.name || '')}</td><td>${esc(u.id)}</td><td style="text-align:right"><a class="btn sm pri" target="_blank" rel="noopener" href="https://wa.me/91${esc(u.id)}?text=${encodeURIComponent(msg(u))}">WhatsApp</a></td></tr>`).join('') || `<tr><td colspan="5">${emptyBox('ಎಲ್ಲರೂ ಖರೀದಿಸಿದ್ದಾರೆ 🎉')}</td></tr>`) + '</tbody>';
 }
@@ -2743,15 +2758,16 @@ function adminSettings() {
   $('stRefPct').value = SET.refPct; $('stRefRew').value = SET.refReward;
   const cps = JSON.parse(JSON.stringify(SET.coupons || {}));
   const drawC = () => {
-    $('stCoupons').innerHTML = `<thead><tr><th>ಕೋಡ್</th><th>ಕಡಿತ</th><th>ಕೊನೆಯ ದಿನ</th><th></th></tr></thead><tbody>` +
-      (Object.entries(cps).filter(([, c]) => !c.off).map(([k, c]) => `<tr><td><code>${esc(k)}</code></td><td>${c.pct}%</td><td>${c.until ? dmy(c.until) + (String(c.until) < today() ? ' <span class="pill off">ಮುಗಿದಿದೆ</span>' : '') : 'ಮಿತಿ ಇಲ್ಲ'}</td><td style="text-align:right"><button class="x" type="button" data-cx="${esc(k)}">✕</button></td></tr>`).join('') || '<tr><td colspan="4" class="muted small">ಯಾವುದೇ ಕೂಪನ್ ಇಲ್ಲ</td></tr>') + '</tbody>';
+    $('stCoupons').innerHTML = `<thead><tr><th>ಕೋಡ್</th><th>ಕಡಿತ</th><th>ಕೊನೆಯ ದಿನ</th><th>ಯಾರಿಗೆ</th><th></th></tr></thead><tbody>` +
+      (Object.entries(cps).filter(([, c]) => !c.off).map(([k, c]) => `<tr><td><code>${esc(k)}</code></td><td>${c.pct}%</td><td>${c.until ? dmy(c.until) + (String(c.until) < today() ? ' <span class="pill off">ಮುಗಿದಿದೆ</span>' : '') : 'ಮಿತಿ ಇಲ್ಲ'}</td><td><button class="btn sm" type="button" data-cs="${esc(k)}">${c.show !== false ? '📢 ಎಲ್ಲರಿಗೂ ಕಾಣುತ್ತದೆ' : '🔒 ಕೋಡ್ ಗೊತ್ತಿರುವವರಿಗೆ ಮಾತ್ರ'}</button></td><td style="text-align:right"><button class="x" type="button" data-cx="${esc(k)}">✕</button></td></tr>`).join('') || '<tr><td colspan="5" class="muted small">ಯಾವುದೇ ಕೂಪನ್ ಇಲ್ಲ</td></tr>') + '</tbody>';
     $('stCoupons').querySelectorAll('[data-cx]').forEach(b => b.onclick = () => { cps[b.dataset.cx] = { ...cps[b.dataset.cx], off: true }; drawC(); });
+    $('stCoupons').querySelectorAll('[data-cs]').forEach(b => b.onclick = () => { const c = cps[b.dataset.cs]; c.show = c.show === false; drawC(); toast('ಬದಲಾಯಿತು. ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.'); });
   };
   $('ncAdd').onclick = () => {
     const k = $('ncCode').value.trim().toUpperCase().replace(/\s+/g, ''), pct = +$('ncPct').value;
     if (!/^[A-Z0-9]{3,20}$/.test(k)) return toast('ಕೋಡ್: ಇಂಗ್ಲಿಷ್ ಅಕ್ಷರ / ಅಂಕೆ ಮಾತ್ರ, 3–20.', true);
     if (!(pct > 0 && pct <= 90)) return toast('ಕಡಿತ 1–90% ಒಳಗೆ.', true);
-    cps[k] = { pct, until: $('ncUntil').value || '' }; $('ncCode').value = ''; drawC(); toast('ಸೇರಿಸಲಾಗಿದೆ. ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.');
+    cps[k] = { pct, until: $('ncUntil').value || '', show: $('ncShow').checked }; $('ncCode').value = ''; drawC(); toast('ಸೇರಿಸಲಾಗಿದೆ. ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.');
   };
   drawC();
   $('stSave').onclick = () => busy($('stSave'), async () => {
