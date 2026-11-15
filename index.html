@@ -232,6 +232,8 @@ input[type=password],input[type=date]{background:var(--bg);border:1px solid var(
 .opt em{font-style:normal;font-weight:700;font-size:15px;color:var(--accent);white-space:nowrap}
 .opt.best{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
 .opt[data-in] em{font-size:12.5px;color:var(--ok)}
+.renew{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-left:4px solid var(--danger);background:var(--danger-soft)}
+.nbadge{margin-left:auto;min-width:20px;height:20px;border-radius:999px;background:#d64545;color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;padding:0 6px}
 .offer{padding:10px 14px;border-radius:10px;background:#fff1d6;color:#5a3500;font-size:13.5px;border:1px dashed #e0a43a}
 .offer code{background:#fff;padding:1px 6px;border-radius:5px;font-weight:700}
 .offer.big{font-size:15px;padding:14px 18px}
@@ -257,7 +259,8 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
 .dbody{max-height:calc(100vh - 110px);overflow:auto}
 .cl{display:grid}
 .ci{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:11px 18px;border-bottom:1px solid var(--line)}
-#udPacks .ci{padding:9px 0}
+#udPacks .ci,#udPay .ci{padding:9px 0}
+#udPay .ci{grid-template-columns:minmax(0,1fr) auto auto auto}
 .ci b{display:block;font-size:14.5px}
 .ci small{color:var(--muted);font-size:12.5px}
 .x{border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px 8px;border-radius:6px}
@@ -315,7 +318,6 @@ textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;pad
       <a href="#docs" data-v="docs"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>ಇತರೆ ದಾಖಲೆಗಳು</a>
       <a href="#school" data-v="school"><svg viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg><span id="navSchool">ಶಾಲೆಯ ವಿವರ</span></a>
       <span class="sep"></span>
-      <a href="https://withyou00.github.io/qp/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v4h4M9 13l2 2 4-4"/></svg>ಪ್ರಶ್ನೆ ಪತ್ರಿಕೆ (With You QP) ↗</a>
       <a href="#admin" data-v="admin" id="navAdmin" hidden><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Admin</a>
       <a href="#files" data-v="files" id="navFiles"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M12 11v5M9.5 13.5h5"/></svg>ಫೈಲ್ ನಿರ್ವಹಣೆ</a>
     </nav>
@@ -1101,7 +1103,36 @@ const PM = (() => {
     return pptx.write({ outputType: 'uint8array' });
   }
 
-  return { lessonUnit, lessonPeriod, andaju, excelDoc, stampPdf, stampUploaded, stampPptx, pdfToPptx };
+  /* ಹಣ ಪಾವತಿ ರಸೀದಿ */
+  async function receipt(o, u) {
+    const f = new Flow({ top: 44, bottom: 40, side: 46 });
+    f.text('ಬೋಧನಾ ಮಿತ್ರ', { size: 20, weight: 700, color: GREEN, gap: 0 });
+    f.text('ಶಿಕ್ಷಕರ ದಾಖಲೆ ಭಂಡಾರ · ' + location.host + location.pathname.replace(/index\.html$/, ''), { size: 9, color: '#555', gap: 10 });
+    f.text('ಹಣ ಪಾವತಿ ರಸೀದಿ  /  Payment Receipt', { size: 14, weight: 700, gap: 8 });
+    f.infoRow([['ರಸೀದಿ ಸಂಖ್ಯೆ', 'BM-' + String(o.id || '').slice(-8).toUpperCase()], ['ದಿನಾಂಕ', dmy(o.doneAt || o.at)]], 10.5);
+    f.infoRow([['ಶಾಲೆ', u.name || o.school || '']], 10.5);
+    f.infoRow([['UDISE', u.udise || '-'], ['ಶಿಕ್ಷಕರು', u.teacher || o.teacher || ''], ['ಮೊಬೈಲ್', o.uid]], 10.5);
+    f.y += 6;
+    const items = o.items || [], pr = o.prices || items.map(packPrice);
+    const rows = items.map((k, i) => [String(i + 1), packLabel(k), items.length && pr[i] != null ? '₹' + pr[i] : '']);
+    if (!rows.length) rows.push(['1', 'ಬೋಧನಾ ಮಿತ್ರ ದಾಖಲೆಗಳು (ನೇರ ಪಾವತಿ)', '₹' + o.total]);
+    const sub = o.sub ?? (items.length ? pr.reduce((a, b) => a + (+b || 0), 0) : o.total);
+    if (o.couponOff) rows.push(['', `ಕೂಪನ್ ಕಡಿತ (${o.coupon})`, '− ₹' + o.couponOff]);
+    if (o.refOff) rows.push(['', 'ಸ್ನೇಹಿತರ ಸೂಚನೆ ಕಡಿತ', '− ₹' + o.refOff]);
+    if (o.creditUsed) rows.push(['', 'ಬಹುಮಾನ ಬಳಕೆ', '− ₹' + o.creditUsed]);
+    const other = sub - (o.couponOff || 0) - (o.refOff || 0) - (o.creditUsed || 0) - o.total;
+    if (items.length && other > 0) rows.push(['', 'ಇತರೆ ಕಡಿತ', '− ₹' + other]);
+    rows.push(['', [{ t: 'ಒಟ್ಟು ಪಾವತಿಸಿದ ಮೊತ್ತ', b: true }], [{ t: '₹' + o.total, b: true }]]);
+    f.table([.09, .66, .25], ['ಕ್ರ.ಸಂ', 'ವಿವರ', 'ಮೊತ್ತ'], rows, { fs: 10 });
+    f.y += 8;
+    f.text(`ಪಾವತಿ ವಿಧಾನ: UPI${o.utr ? ' · UTR ' + o.utr : ''}${o.manual ? ' (ನೇರ ಪಾವತಿ)' : ''}`, { size: 10 });
+    if (o.exp || items.length) f.text(`ಬಳಕೆಯ ಅವಧಿ: ${dmy(o.exp || yearEnd(new Date(o.doneAt || o.at)))} ರವರೆಗೆ`, { size: 10 });
+    f.y += 10;
+    f.text('ಇದು ಗಣಕೀಕೃತ ರಸೀದಿ. ಸಹಿ ಅಗತ್ಯವಿಲ್ಲ. ಧನ್ಯವಾದಗಳು.', { size: 9, color: '#666' });
+    return f.toPdf();
+  }
+
+  return { lessonUnit, lessonPeriod, andaju, excelDoc, stampPdf, stampUploaded, stampPptx, pdfToPptx, receipt };
 })();
 
 /* ============================================================
@@ -1731,6 +1762,7 @@ const VIEWS = {
     $('homeTop').innerHTML = sc?.name
       ? `<div class="welcome"><p>ನಮಸ್ಕಾರ${sc.teacher ? ', ' + esc(sc.teacher) : ''}</p><h2>${esc(sc.name)}</h2>
          <div class="meta">${sc.udise ? `<span>UDISE: ${esc(sc.udise)}</span>` : ''}<span>${esc([sc.place, sc.taluk, sc.dist].filter(Boolean).join(', '))}</span>${sc.year ? `<span>ಶೈಕ್ಷಣಿಕ ವರ್ಷ ${esc(sc.year)}</span>` : ''}${PAID && !ACC.isAdmin() ? `<span>ಸಕ್ರಿಯ ಖರೀದಿ: ${ACC.active().length}</span>` : ''}</div></div>`
+         + (PAID ? renewBanner() : '')
          + (PAID && publicOffer() ? `<div class="offer big" style="margin-top:14px">${offerLine(publicOffer())}</div>` : '')
          + (PAID && SET.notice ? `<div class="card pad notice" style="margin-top:14px"><b>📢 ಪ್ರಕಟಣೆ</b><div style="white-space:pre-line;margin-top:4px">${esc(SET.notice)}</div></div>` : '')
          + (PAID && !ACC.isAdmin() && !ACC.active().length ? `<div class="card pad" style="margin-top:14px"><b>ಹೇಗೆ ಖರೀದಿಸುವುದು? 4 ಸುಲಭ ಹಂತ</b>
@@ -1742,6 +1774,7 @@ const VIEWS = {
             </div></div>` : '')
          + (PAID && !ACC.isAdmin() && ACC.credit() ? `<div class="banner" style="margin-top:14px"><span>🎁 ನಿಮ್ಮ ಬಹುಮಾನ ₹${ACC.credit()}. ಮುಂದಿನ ಖರೀದಿಯಲ್ಲಿ ತಾನಾಗಿಯೇ ಕಡಿತವಾಗುತ್ತದೆ.</span></div>` : '')
       : `<div class="banner"><span><b>ಸ್ವಾಗತ!</b> ಮೊದಲು ನಿಮ್ಮ ಶಾಲೆಯ ವಿವರ ತುಂಬಿ. ನಂತರ ಪ್ರತಿ download ಮೇಲೂ ಅದು ತಾನಾಗಿಯೇ ಮುದ್ರಣವಾಗುತ್ತದೆ.</span><a class="btn pri" href="#school">ಶಾಲೆಯ ವಿವರ ತುಂಬಿ</a></div>`;
+    if (PAID) $('homeTop').insertAdjacentHTML('beforeend', recentCard());
     if (PAID && !ACC.isAdmin()) $('homeTop').insertAdjacentHTML('beforeend', `
       <div class="smp2">
         <div class="card pad"><b>ನಿಮಗೆ ಬೇಕಾದ ದಾಖಲೆ ಇಲ್ಲವೇ?</b><span class="small muted" style="display:block;margin:2px 0 8px">ಉದಾ: "5ನೇ ತರಗತಿ ಹಿಂದಿ ನೋಟ್ಸ್". ಹೆಚ್ಚು ಜನ ಕೇಳಿದ್ದನ್ನು ಮೊದಲು ಸೇರಿಸುತ್ತೇವೆ.</span>
@@ -2268,8 +2301,30 @@ $('fRefresh').onclick = () => busy($('fRefresh'), async () => { await loadDB(tru
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
 /* ಖರೀದಿಯ ಅವಧಿ: ಶೈಕ್ಷಣಿಕ ವರ್ಷದ ಕೊನೆ (ಮೇ 31). ಮಾರ್ಚ್ ನಂತರ ಖರೀದಿಸಿದರೆ ಮುಂದಿನ ವರ್ಷದ ಮೇ 31 ರವರೆಗೆ */
 const yearEnd = (d = new Date()) => `${d.getMonth() + 1 >= 3 ? d.getFullYear() + 1 : d.getFullYear()}-05-31`;
+const RENEW_DAYS = 10;                       // ಮುಗಿಯುವ ಎಷ್ಟು ದಿನ ಮೊದಲು ನೆನಪು
+const daysLeft = iso => Math.ceil((new Date(String(iso).slice(0, 10) + 'T23:59:59') - new Date()) / 864e5);
 const dmy = iso => iso ? String(iso).slice(0, 10).split('-').reverse().join('-') : '';
 const can = p => !PAID || ACC.can(p);
+function renewList() {
+  if (!PAID || ACC.isAdmin()) return [];
+  const p = ACC.packs(), act = ACC.active();
+  return Object.keys(p).filter(k => { const d = daysLeft(p[k]); return d <= RENEW_DAYS && d > -30; })
+    .filter(k => !act.some(a => a !== k && covers(a, k) && daysLeft(p[a]) > RENEW_DAYS))      // ದೊಡ್ಡ ಪ್ಯಾಕ್ ಇದ್ದರೆ ಬೇಡ
+    .sort((a, b) => String(p[a]).localeCompare(String(p[b])));
+}
+function renewBanner() {
+  const l = renewList(); if (!l.length) return '';
+  const p = ACC.packs(), d = daysLeft(p[l[0]]);
+  return `<div class="card pad renew" style="margin-top:14px"><div><b>⏰ ${d >= 0 ? `ನಿಮ್ಮ ${l.length} ಖರೀದಿಯ ಅವಧಿ ${d === 0 ? 'ಇಂದು' : d + ' ದಿನಗಳಲ್ಲಿ'} (${dmy(p[l[0]])}) ಮುಗಿಯುತ್ತದೆ` : `ನಿಮ್ಮ ${l.length} ಖರೀದಿಯ ಅವಧಿ ಮುಗಿದಿದೆ`}</b>
+    <span class="small muted" style="display:block">${l.map(k => esc(packLabel(k, true))).join(' · ')}</span></div>
+    <button class="btn pri" type="button" data-renewall>ಈಗಲೇ ನವೀಕರಿಸಿ</button></div>`;
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-renewall]')) { const l = renewList(); l.forEach(k => { const c = CART.get(); if (!c.some(a => covers(a, k))) CART.set([...c.filter(a => !covers(k, a)), k]); }); CART.open(); } });
+function renewBadge() {
+  const n = renewList().length, a = document.querySelector('#nav a[data-v="school"]'); if (!a) return;
+  let b = a.querySelector('.nbadge'); if (!n) { if (b) b.remove(); return; }
+  if (!b) { b = document.createElement('span'); b.className = 'nbadge'; a.appendChild(b); } b.textContent = n; b.title = 'ನವೀಕರಿಸಬೇಕಾದ ಖರೀದಿಗಳು';
+}
 
 const PACK_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್ಸ್', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
 const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF + PowerPoint)', nt: 'ಎಲ್ಲಾ ಪಾಠಗಳ ನೋಟ್ಸ್ (PDF)', sub: 'ಪಾಠಯೋಜನೆ + PPT', aj: 'ಎರಡೂ ಸೆಮಿಸ್ಟರ್', doc: '', cls: 'ಎಲ್ಲಾ ವಿಷಯ, ಎಲ್ಲಾ ದಾಖಲೆ', sch: 'ಎಲ್ಲಾ ತರಗತಿ, ಎಲ್ಲವೂ' };
@@ -2480,12 +2535,13 @@ const CART = {
     $('cartBar').hidden = !n || !PAID;
     if (n) { const C = this.calc(l); $('cartBarTxt').innerHTML = `<b>ಕಾರ್ಟ್‌ನಲ್ಲಿ ${n}</b> · ${C.total < C.sub ? `<s style="opacity:.6">₹${C.sub}</s> ` : ''}₹${C.total}<small>ಮುಂದಿನ ಹಂತ: ಹಣ ಪಾವತಿಸಿ ಆರ್ಡರ್ ಕಳುಹಿಸಿ</small>`; }
   },
-  add(k) {
-    if (ACC.owns(k)) return toast('ಇದು ಈಗಾಗಲೇ ನಿಮ್ಮ ಖರೀದಿಯಲ್ಲಿದೆ.');
+  add(k, renew) {
+    if (!renew && ACC.owns(k)) return toast('ಇದು ಈಗಾಗಲೇ ನಿಮ್ಮ ಖರೀದಿಯಲ್ಲಿದೆ.');
     let l = this.get();
-    if (l.some(a => covers(a, k))) return toast('ಇದು ಕಾರ್ಟ್‌ನಲ್ಲಿರುವ ಪ್ಯಾಕ್‌ನಲ್ಲೇ ಸೇರಿದೆ.');
+    if (l.some(a => covers(a, k))) return renew ? this.open() : toast('ಇದು ಕಾರ್ಟ್‌ನಲ್ಲಿರುವ ಪ್ಯಾಕ್‌ನಲ್ಲೇ ಸೇರಿದೆ.');
     l = l.filter(a => !covers(k, a)); l.push(k); this.set(l);
     toast('ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ: ' + packLabel(k, true));
+    if (renew) this.open();
   },
   total: l => l.reduce((a, k) => a + packPrice(k), 0),
   x: () => store.get('bm_cart_x', {}),
@@ -2559,7 +2615,7 @@ const CART = {
     }
     $('cartSend').onclick = () => busy($('cartSend'), async () => {
       const utr = $('utr').value.trim(), C2 = this.calc(l), tot = C2.total;
-      const id = await ACC.order(l, tot, utr, { sub: C2.sub, coupon: C2.coupon, couponOff: C2.couponOff, ref: C2.ref, refOff: C2.refOff, creditUsed: C2.creditUsed });
+      const id = await ACC.order(l, tot, utr, { prices: l.map(packPrice), sub: C2.sub, coupon: C2.coupon, couponOff: C2.couponOff, ref: C2.ref, refOff: C2.refOff, creditUsed: C2.creditUsed });
       const sc = school() || {};
       const text = `ಬೋಧನಾ ಮಿತ್ರ ಆರ್ಡರ್ #${id.slice(-6).toUpperCase()}\nಮೊಬೈಲ್: ${m}\nಶಾಲೆ: ${sc.name || ''}\nಶಿಕ್ಷಕರು: ${sc.teacher || ''}\n\n${l.map(k => `• ${packLabel(k)} — ₹${packPrice(k)}`).join('\n')}${C2.sub !== tot ? `\n\nಮೊತ್ತ ₹${C2.sub}${C2.coupon ? `\nಕೂಪನ್ ${C2.coupon}: −₹${C2.couponOff}` : ''}${C2.ref ? `\nಸೂಚಿಸಿದವರು ${C2.ref}: −₹${C2.refOff}` : ''}${C2.creditUsed ? `\nಬಹುಮಾನ: −₹${C2.creditUsed}` : ''}` : ''}\n\nಪಾವತಿಸಿದ್ದು: ₹${tot}${utr ? '\nUTR: ' + utr : ''}\n\n(payment screenshot ಸೇರಿಸಿದ್ದೇನೆ)`;
       this.set([]); store.set('bm_cart_x', {});
@@ -2647,6 +2703,11 @@ document.addEventListener('click', e => {
   });
 });
 
+async function openReceipt(o, u) {
+  const out = await PM.receipt(o, u || {});
+  await PV.open(out, 'ರಸೀದಿ BM-' + String(o.id).slice(-8).toUpperCase(), fname('ರಸೀದಿ', 'BM-' + String(o.id).slice(-8).toUpperCase(), dmy(o.doneAt || o.at)) + '.pdf');
+}
+
 /* ---------- ನನ್ನ ಖಾತೆ ---------- */
 function renderAccount() {
   const box = $('acct'); if (!PAID) { box.hidden = true; return; }
@@ -2655,11 +2716,14 @@ function renderAccount() {
   const keys = Object.keys(p).sort((a, b) => String(p[b]).localeCompare(String(p[a])));
   const ord = ACC.orders().slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
   const ST = { pending: ['warn', 'ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ'], done: ['', 'ಸಕ್ರಿಯ'], rejected: ['bad', 'ತಿರಸ್ಕರಿಸಲಾಗಿದೆ'] };
-  $('acctBody').innerHTML = `<p class="muted small" style="margin:0 0 12px">ಮೊಬೈಲ್: <b>${esc(ACC.mobile())}</b>${ACC.isAdmin() ? ' · <span class="pill">Admin</span>' : ''}</p>
+  $('acctBody').innerHTML = renewBanner().replace('margin-top:14px', 'margin:0 0 14px') + `<p class="muted small" style="margin:0 0 12px">ಮೊಬೈಲ್: <b>${esc(ACC.mobile())}</b>${ACC.isAdmin() ? ' · <span class="pill">Admin</span>' : ''}</p>
     <h3 class="h3">ನನ್ನ ಖರೀದಿಗಳು</h3>
-    ${keys.length ? `<div class="tw"><table class="list"><thead><tr><th>ದಾಖಲೆ</th><th>ಅವಧಿ</th><th></th></tr></thead><tbody>${keys.map(k => `<tr><td>${esc(packLabel(k))}</td><td>${dmy(p[k])} ರವರೆಗೆ</td><td>${String(p[k]) >= t ? '<span class="pill">ಸಕ್ರಿಯ</span>' : '<span class="pill off">ಅವಧಿ ಮುಗಿದಿದೆ</span>'}</td></tr>`).join('')}</tbody></table></div>`
+    ${keys.length ? `<div class="tw"><table class="list"><thead><tr><th>ದಾಖಲೆ</th><th>ಅವಧಿ</th><th></th></tr></thead><tbody>${keys.map(k => `<tr><td>${esc(packLabel(k))}</td><td>${dmy(p[k])} ರವರೆಗೆ</td><td>${String(p[k]) < t ? '<span class="pill off">ಅವಧಿ ಮುಗಿದಿದೆ</span>' : daysLeft(p[k]) <= RENEW_DAYS ? `<span class="pill warn">${daysLeft(p[k])} ದಿನ ಬಾಕಿ</span>` : '<span class="pill">ಸಕ್ರಿಯ</span>'}
+        ${String(p[k]) < t || daysLeft(p[k]) <= RENEW_DAYS ? ` <button class="btn sm pri" type="button" data-renew="${esc(k)}">ನವೀಕರಿಸಿ</button>` : ''}</td></tr>`).join('')}</tbody></table></div>`
       : `<p class="muted small">${ACC.isAdmin() ? 'Admin ಆಗಿ ನಿಮಗೆ ಎಲ್ಲವೂ ತೆರೆದಿದೆ.' : 'ಇನ್ನೂ ಏನೂ ಖರೀದಿಸಿಲ್ಲ. ಪಾಠಯೋಜನೆ / PPT / ಅಂದಾಜು ಪತ್ರಿಕೆ ಪುಟಗಳಲ್ಲಿ ಬೇಕಾದದ್ದನ್ನು ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ.'}</p>`}
-    ${ord.length ? `<h3 class="h3" style="margin-top:18px">ಆರ್ಡರ್‌ಗಳು</h3><div class="tw"><table class="list"><thead><tr><th>ದಿನಾಂಕ</th><th>ದಾಖಲೆಗಳು</th><th>ಮೊತ್ತ</th><th>ಸ್ಥಿತಿ</th></tr></thead><tbody>${ord.map(o => `<tr><td>${dmy(o.at)}</td><td class="small">${o.items.map(k => esc(packLabel(k, true))).join('<br>')}</td><td>₹${o.total}</td><td><span class="pill ${ST[o.status]?.[0] || ''}">${ST[o.status]?.[1] || esc(o.status)}</span></td></tr>`).join('')}</tbody></table></div>` : ''}`;
+    ${ord.length ? `<h3 class="h3" style="margin-top:18px">ಆರ್ಡರ್‌ಗಳು</h3><div class="tw"><table class="list"><thead><tr><th>ದಿನಾಂಕ</th><th>ದಾಖಲೆಗಳು</th><th>ಮೊತ್ತ</th><th>ಸ್ಥಿತಿ</th><th></th></tr></thead><tbody>${ord.map((o, i) => `<tr><td>${dmy(o.at)}</td><td class="small">${(o.items || []).map(k => esc(packLabel(k, true))).join('<br>') || 'ನೇರ ಪಾವತಿ'}</td><td>₹${o.total}</td><td><span class="pill ${ST[o.status]?.[0] || ''}">${ST[o.status]?.[1] || esc(o.status)}</span></td><td style="text-align:right">${o.status === 'done' ? `<button class="btn sm" type="button" data-rc="${i}">ರಸೀದಿ</button>` : ''}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
+  $('acctBody').querySelectorAll('[data-rc]').forEach(b => b.onclick = () => busy(b, () => openReceipt(ord[+b.dataset.rc], ACC.prof() || {})));
+  $('acctBody').querySelectorAll('[data-renew]').forEach(b => b.onclick = () => { CART.add(b.dataset.renew, true); });
   $('acctLogout').onclick = () => busy($('acctLogout'), () => ACC.logout());
   $('acctReload').onclick = () => busy($('acctReload'), async () => { await ACC.reload(); route(); toast('ನವೀಕರಿಸಲಾಗಿದೆ.'); });
 }
@@ -2686,14 +2750,16 @@ function adminRender() {
       <div class="acts"><button class="btn sm pri" type="button" data-ok="${esc(o.id)}">✓ ಸಕ್ರಿಯಗೊಳಿಸಿ</button><button class="btn sm" type="button" data-no="${esc(o.id)}">✗ ತಿರಸ್ಕರಿಸಿ</button></div></div>`;
   }).join('') || emptyBox('ಬಾಕಿ ಆರ್ಡರ್ ಇಲ್ಲ');
   $('adOrders').querySelectorAll('[data-ok]').forEach(b => b.onclick = () => busy(b, async () => {
-    const o = ADM.orders.find(x => x.id === b.dataset.ok), exp = yearEnd();
-    await ACC.grant(o.uid, o.items, exp);
+    const o = ADM.orders.find(x => x.id === b.dataset.ok), exp = yearEnd(), buyer0 = ADM.users.find(x => x.id === o.uid);
+    /* ನವೀಕರಣ: ಇನ್ನೂ ಸಕ್ರಿಯವಾಗಿರುವ ಖರೀದಿಗೆ ಮುಂದಿನ ವರ್ಷದ 31 ಮೇ */
+    const expOf = k => { const cur = buyer0?.packs?.[k]; return cur && String(cur) >= today() && String(cur) >= exp ? `${+String(cur).slice(0, 4) + 1}-05-31` : exp; };
+    for (const k of o.items) await ACC.grant(o.uid, [k], expOf(k));
     await ACC.setOrder(o.id, { status: 'done', doneAt: new Date().toISOString(), exp });
     const buyer = ADM.users.find(x => x.id === o.uid), refU = o.ref && ADM.users.find(x => x.id === o.ref && x.id !== o.uid);
     if (o.creditUsed && buyer) { buyer.credit = Math.max(0, (+buyer.credit || 0) - o.creditUsed); await ACC.setUser(buyer.id, { credit: buyer.credit }); }
     if (refU && SET.refReward > 0) { refU.credit = (+refU.credit || 0) + SET.refReward; await ACC.setUser(refU.id, { credit: refU.credit }); toast(`${refU.id} ಅವರಿಗೆ ₹${SET.refReward} ಬಹುಮಾನ ಸೇರಿಸಲಾಗಿದೆ.`); }
     o.status = 'done'; o.doneAt = new Date().toISOString();
-    const u = ADM.users.find(x => x.id === o.uid); if (u) { u.packs = { ...(u.packs || {}), ...Object.fromEntries(o.items.map(k => [k, exp])) }; }
+    const u = ADM.users.find(x => x.id === o.uid); if (u) { u.packs = { ...(u.packs || {}), ...Object.fromEntries(o.items.map(k => [k, expOf(k)])) }; }
     adminRender();
     toast('ಸಕ್ರಿಯಗೊಳಿಸಲಾಗಿದೆ. ಶಿಕ್ಷಕರಿಗೆ ಈಗ ತೆರೆಯುತ್ತದೆ.');
     const wa = `https://wa.me/91${o.uid}?text=${encodeURIComponent(`ನಮಸ್ಕಾರ, ನಿಮ್ಮ ಬೋಧನಾ ಮಿತ್ರ ಆರ್ಡರ್ (₹${o.total}) ಸಕ್ರಿಯವಾಗಿದೆ. ${dmy(exp)} ರವರೆಗೆ download ಮಾಡಬಹುದು. ಧನ್ಯವಾದಗಳು.`)}`;
@@ -2806,8 +2872,9 @@ function adminUser(id) {
   const drawPay = () => {
     const pays = ADM.orders.filter(o => o.uid === u.id && o.status === 'done').sort((a, b) => String(b.doneAt || b.at).localeCompare(String(a.doneAt || a.at)));
     const tot = pays.reduce((a, o) => a + (+o.total || 0), 0);
-    $('udPay').innerHTML = pays.map(o => `<div class="ci"><span><b>₹${o.total}</b><small>${dmy(o.doneAt || o.at)} · ${(o.items || []).map(k => esc(packLabel(k, true))).join(', ') || 'ನೇರ ಪಾವತಿ'}${o.manual ? ' · ನೇರ' : ' · ಆರ್ಡರ್'}</small></span><b></b><button class="x" type="button" data-po="${esc(o.id)}" aria-label="ಅಳಿಸಿ">✕</button></div>`).join('')
+    $('udPay').innerHTML = pays.map(o => `<div class="ci"><span><b>₹${o.total}</b><small>${dmy(o.doneAt || o.at)} · ${(o.items || []).map(k => esc(packLabel(k, true))).join(', ') || 'ನೇರ ಪಾವತಿ'}${o.manual ? ' · ನೇರ' : ' · ಆರ್ಡರ್'}</small></span><button class="btn sm" type="button" data-pr="${esc(o.id)}">ರಸೀದಿ</button><button class="x" type="button" data-po="${esc(o.id)}" aria-label="ಅಳಿಸಿ">✕</button></div>`).join('')
       + (pays.length ? `<div class="ci"><span><b>ಒಟ್ಟು ₹${tot}</b></span><b></b><span></span></div>` : '<p class="muted small" style="margin:0">ಯಾವುದೇ ಹಣದ ದಾಖಲೆ ಇಲ್ಲ.</p>');
+    $('udPay').querySelectorAll('[data-pr]').forEach(b => b.onclick = () => busy(b, () => openReceipt(ADM.orders.find(o => o.id === b.dataset.pr), u)));
     $('udPay').querySelectorAll('[data-po]').forEach(b => b.onclick = () => {
       if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'ಖಚಿತವೇ? ✕'; b.style.color = 'var(--danger)'; return; }
       busy(b, async () => { await ACC.delOrder(b.dataset.po); ADM.orders = ADM.orders.filter(o => o.id !== b.dataset.po); drawPay(); adminRender(); toast('ಹಣದ ದಾಖಲೆ ಅಳಿಸಲಾಗಿದೆ. ಆದಾಯದ ಲೆಕ್ಕ ಸರಿಯಾಗಿದೆ.'); });
@@ -2873,12 +2940,45 @@ function markSeen(files) {
   for (const f of files) if (!SEEN[f.name]) SEEN[f.name] = first ? '2000-01-01' : t;
   store.set('bm_seen', SEEN);
 }
-const isNew = name => { const d = SEEN[name]; if (!d || d === '2000-01-01') return false; return (Date.now() - new Date(d)) / 864e5 <= 15; };
+let RECENT = {};                                    // ಫೈಲ್ ಹೆಸರು → GitHub ಗೆ ಸೇರಿಸಿದ ದಿನಾಂಕ (Worker /recent)
+async function loadRecent() {
+  if (!PAID) return;
+  const c = store.get('bm_recent', null);
+  if (c && Date.now() - c.t < 10 * 60e3) { RECENT = c.map; return; }
+  try {
+    const r = await fetch(CONFIG.worker.replace(/\/$/, '') + '/recent'); if (!r.ok) return;
+    RECENT = Object.fromEntries((await r.json()).map(x => [x.name, x.at])); store.set('bm_recent', { t: Date.now(), map: RECENT });
+  } catch (e) {}
+}
+const isNew = name => {
+  if (RECENT[name]) return (Date.now() - new Date(RECENT[name])) / 864e5 <= 15;
+  const d = SEEN[name]; if (!d || d === '2000-01-01') return false; return (Date.now() - new Date(d)) / 864e5 <= 15;
+};
+const VIEW_OF = { lp: 'lesson', ppt: 'ppt', nt: 'notes', aj: 'andaju', doc: 'docs' };
+function recentCard() {
+  const names = new Set((FULL?.all || []).map(f => f.name)), m = medium();
+  const list = Object.entries(RECENT).filter(([n, at]) => names.has(n) && (Date.now() - new Date(at)) / 864e5 <= 30)
+    .map(([n, at]) => ({ n, at, p: parseName(n) })).filter(x => x.p && VIEW_OF[x.p.type] && (x.p.med || 'kn') === m)
+    .sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  /* ಒಂದೇ ಪಾಠದ PDF + PowerPoint ಎರಡನ್ನೂ ಒಂದೇ ಸಾಲಾಗಿ */
+  const seen = new Set(), rows = list.filter(x => { const k = describe(x.p); if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
+  if (!rows.length) return '';
+  return `<div class="card" style="margin-top:14px"><div class="pad sec-h" style="padding-bottom:6px"><h2>📥 ಹೊಸದಾಗಿ ಸೇರಿಸಿದ ದಾಖಲೆಗಳು</h2></div><div class="units">` +
+    rows.map(x => `<div class="unit"><span class="no">${{ lp: 'ಪಾ', ppt: 'P', nt: 'ನೋ', aj: 'ಅಂ', doc: 'ದಾ' }[x.p.type]}</span><div><b>${esc(describe(x.p))}</b><small>${dmy(x.at)} ರಂದು ಸೇರಿಸಲಾಗಿದೆ</small></div>
+      <div class="acts"><button class="btn sm" type="button" data-go="${esc(x.n)}">ತೆರೆಯಿರಿ</button></div></div>`).join('') + '</div></div>';
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]'); if (!b) return;
+  const p = parseName(b.dataset.go); if (!p) return;
+  if (p.cls) store.set('bm_pick', { ...store.get('bm_pick', {}), c: String(p.cls), ...(p.subj ? { s: p.subj, p: String(p.part || 1) } : {}) });
+  location.hash = VIEW_OF[p.type];
+});
 const subNew = s => [...Object.values(s.lp).flatMap(o => Object.values(o)), ...['ppt', 'nt'].flatMap(t => Object.values(s[t]).flat().flatMap(it => Object.values(it.files).map(f => f.name)))].some(n => isNew(typeof n === 'string' ? n : n?.name));
 async function loadDB(force) {
   try {
     const files = await listRepo(force), m = medium();
     markSeen(files.filter(f => f.type !== 'dir'));
+    await loadRecent();
     FULL = buildDB(files);
     DB = buildDB(files.filter(f => f.type === 'dir' || medOf(f.name) === m));
     DB.bad = []; DB.dirs = [];
@@ -2923,6 +3023,8 @@ window.addEventListener('resize', () => { if ($('pv').open) { clearTimeout(windo
     $('navSchool').textContent = 'ನನ್ನ ಖಾತೆ';
     $('sideNote').textContent = 'ಅಂದಾಜು ಪತ್ರಿಕೆಯ ಪ್ರಗತಿ (ಸಾಗಿದೆ / ಸಾಗಿಲ್ಲ) ಈ ಸಾಧನದಲ್ಲಿ ಉಳಿಯುತ್ತದೆ.';
     if (!store.get('bm_medium', null) && school()?.medium) store.set('bm_medium', school().medium);
+    renewBadge();
+    if (renewList().length && store.get('bm_renew_toast', '') !== today()) { store.set('bm_renew_toast', today()); setTimeout(() => toast('⏰ ನಿಮ್ಮ ಕೆಲವು ಖರೀದಿಗಳ ಅವಧಿ ಮುಗಿಯುತ್ತಿದೆ. ಮುಖಪುಟ / ನನ್ನ ಖಾತೆ ನೋಡಿ.'), 1500); }
   }
   initMedium();
   route();
