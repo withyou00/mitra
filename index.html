@@ -232,7 +232,21 @@ input[type=password],input[type=date]{background:var(--bg);border:1px solid var(
 .opt em{font-style:normal;font-weight:700;font-size:15px;color:var(--accent);white-space:nowrap}
 .opt.best{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
 .opt[data-in] em{font-size:12.5px;color:var(--ok)}
+.cartbar{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:20;display:flex;gap:14px;align-items:center;background:#10261f;color:#fff;padding:10px 12px 10px 18px;border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);width:min(560px,calc(100vw - 24px))}
+.cartbar span{flex:1;font-size:14.5px}.cartbar small{display:block;color:#b9d3c8;font-size:12px}
+body:has(dialog[open]) .cartbar{display:none}
+.toast{bottom:90px}
+.disc{display:flex;flex-wrap:wrap;gap:12px 18px;padding:12px 18px 0}
+.disc .field{flex:1 1 220px}.row2{display:flex;gap:8px}.row2 input{flex:1;min-width:0}
+.disc small.ok,.ctot small.ok{color:var(--ok);font-weight:600}.disc small.bad{color:var(--danger)}
+.payw{flex:1;min-width:220px}
+.howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:12px}
+.howto div{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:10px;background:var(--bg)}
+.howto b{display:block;font-size:14px}.howto small{color:var(--muted);font-size:12.5px}
+.pill.new{background:#fde9c8;color:#8a4b00}
+.notice{border-left:4px solid var(--amber)}
 .lk-smp{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.smp2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
 .smp-card{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .smp-card .btns{display:flex;flex-wrap:wrap;gap:8px}
 .pill.lk::before{content:"🔒";font-size:10px}
@@ -256,6 +270,9 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
 .qr{width:150px;height:150px;background:#fff;border-radius:8px;padding:4px;flex:none}
 .qr svg{width:100%;height:100%;display:block}
 .h3{font-size:15px;font-weight:700;margin:0 0 8px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.grid2>.card{margin:0}
+textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;font-size:14.5px}
 .prices-ed{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
 .prices-ed input,#stDocs input{width:100%}
 .addp .opts{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
@@ -373,6 +390,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <span class="grow"></span>
           <button class="btn" id="ajView" type="button"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>ಮುನ್ನೋಟ</button>
           <button class="btn" id="ajBlank" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ಖಾಲಿ ಪತ್ರಿಕೆ</button>
+          <button class="btn" id="ajMonth" type="button" title="ಆರಿಸಿದ ತಿಂಗಳ ಸಾಗಿದ / ಸಾಗದ ಪಾಠಗಳ ವರದಿ"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>ತಿಂಗಳ ವರದಿ</button>
           <button class="btn pri" id="ajFilled" type="button"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>ತುಂಬಿದ ಪತ್ರಿಕೆ</button>
         </div>
         <div class="card">
@@ -431,6 +449,15 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <div class="units" id="adOrders"></div>
         </div>
         <div class="card">
+          <div class="pad sec-h"><h2>ನೋಂದಣಿ ಆಗಿದೆ, ಇನ್ನೂ ಖರೀದಿಸಿಲ್ಲ</h2><span class="pill" id="adLeadN"></span></div>
+          <p class="muted small" style="margin:0;padding:0 20px 12px">ಇವರಿಗೆ WhatsApp ನಲ್ಲಿ ಹೇಗೆ ಖರೀದಿಸುವುದು ಎಂದು ತಿಳಿಸಿ. ಸಂದೇಶ ತಾನಾಗಿಯೇ ತುಂಬಿರುತ್ತದೆ, ನೀವು ಕಳುಹಿಸಿದರೆ ಸಾಕು.</p>
+          <div class="tw"><table class="list" id="adLeads"></table></div>
+        </div>
+        <div class="grid2">
+          <div class="card"><div class="pad sec-h"><h2>ಶಿಕ್ಷಕರ ಬೇಡಿಕೆಗಳು</h2></div><div class="units" id="adReq"></div></div>
+          <div class="card"><div class="pad sec-h"><h2>ಹೆಚ್ಚು ತೆರೆದ ದಾಖಲೆಗಳು</h2></div><div class="tw"><table class="list" id="adTop"></table></div></div>
+        </div>
+        <div class="card">
           <div class="pad sec-h"><h2>ಶಿಕ್ಷಕರು / ಶಾಲೆಗಳು</h2><input type="text" id="adSearch" placeholder="ಮೊಬೈಲ್, ಶಾಲೆ, ಹೆಸರು, UDISE ಹುಡುಕಿ" style="width:min(320px,100%)"></div>
           <div class="tw"><table class="list" id="adUsers"></table></div>
         </div>
@@ -442,6 +469,22 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
           <div class="pad sec-h"><h2>ದರಪಟ್ಟಿ ಮತ್ತು ದಾಖಲೆಗಳು</h2><button class="btn sm pri" id="stSave" type="button">ಉಳಿಸಿ</button></div>
           <p class="muted small" style="margin:0;padding:0 20px 12px">ಇಲ್ಲಿ ಬದಲಿಸಿ "ಉಳಿಸಿ" ಒತ್ತಿದರೆ ಎಲ್ಲಾ ಶಿಕ್ಷಕರಿಗೂ ಹೊಸ ಬೆಲೆ ಕಾಣುತ್ತದೆ. ಈಗಾಗಲೇ ಖರೀದಿಸಿದವರಿಗೆ ಏನೂ ಬದಲಾಗುವುದಿಲ್ಲ.</p>
           <div class="pad" style="padding-top:0"><div class="prices-ed" id="stPrices"></div></div>
+          <div class="pad" style="padding-top:0"><h3 class="h3">📢 ಮುಖಪುಟದ ಪ್ರಕಟಣೆ</h3>
+            <textarea id="stNotice" rows="2" maxlength="400" placeholder="ಉದಾ: 7ನೇ ತರಗತಿ ವಿಜ್ಞಾನ PPT ಸೇರಿಸಲಾಗಿದೆ. ದಸರಾ offer: DASARA20 ಕೂಪನ್ ಬಳಸಿ 20% ಕಡಿತ." style="width:100%"></textarea>
+            <p class="muted small" style="margin:4px 0 0">ಖಾಲಿ ಬಿಟ್ಟರೆ ಪ್ರಕಟಣೆ ಕಾಣುವುದಿಲ್ಲ.</p></div>
+          <div class="pad" style="padding-top:0"><h3 class="h3">🎟️ ಕೂಪನ್‌ಗಳು</h3>
+            <div class="tw"><table class="list" id="stCoupons" style="min-width:420px"></table></div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin-top:12px">
+              <label class="field">ಕೋಡ್<input type="text" id="ncCode" placeholder="DASARA20" style="width:130px;text-transform:uppercase"></label>
+              <label class="field">ಕಡಿತ %<input type="number" id="ncPct" min="1" max="90" value="10" style="width:80px"></label>
+              <label class="field">ಕೊನೆಯ ದಿನ<input type="date" id="ncUntil"></label>
+              <button class="btn" type="button" id="ncAdd">+ ಸೇರಿಸಿ</button>
+            </div></div>
+          <div class="pad" style="padding-top:0"><h3 class="h3">🎁 ಸ್ನೇಹಿತರಿಗೆ ತಿಳಿಸಿ (referral)</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:10px">
+              <label class="field">ಹೊಸಬರಿಗೆ ಮೊದಲ ಖರೀದಿಯಲ್ಲಿ ಕಡಿತ %<input type="number" id="stRefPct" min="0" max="50" style="width:90px"></label>
+              <label class="field">ಸೂಚಿಸಿದವರಿಗೆ ಬಹುಮಾನ ₹<input type="number" id="stRefRew" min="0" style="width:90px"></label>
+            </div><p class="muted small" style="margin:4px 0 0">ಎರಡೂ 0 ಮಾಡಿದರೆ ಈ ವ್ಯವಸ್ಥೆ ನಿಲ್ಲುತ್ತದೆ. ಬಹುಮಾನ ಆರ್ಡರ್ ಸಕ್ರಿಯಗೊಳಿಸಿದಾಗ ತಾನಾಗಿಯೇ ಸೇರುತ್ತದೆ, ಮುಂದಿನ ಖರೀದಿಯಲ್ಲಿ ಕಡಿತವಾಗುತ್ತದೆ.</p></div>
           <div class="pad" style="padding-top:0"><h3 class="h3">ಇತರೆ ದಾಖಲೆಗಳು</h3>
             <p class="muted small" style="margin:0 0 10px">"ಗುರುತು" ಫೈಲ್ ಹೆಸರಿನಲ್ಲಿ ಬರುವ ಪದ: <code>doc-<b>kriya</b>-6.xlsx</code>. ಇಂಗ್ಲಿಷ್ ಸಣ್ಣ ಅಕ್ಷರ ಮಾತ್ರ. ಬೆಲೆ ಖಾಲಿ ಬಿಟ್ಟರೆ "ಇತರೆ ದಾಖಲೆ" ಬೆಲೆ.</p>
             <div class="tw"><table class="list" id="stDocs" style="min-width:520px"></table></div>
@@ -512,6 +555,10 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
   </div>
   <div class="dstage"><canvas id="pvCanvas"></canvas></div>
 </dialog>
+<dialog id="mr" class="narrow">
+  <div class="dh"><h3>ಯಾವ ತಿಂಗಳ ವರದಿ?</h3><button class="btn sm" type="button" id="mrClose">ಮುಚ್ಚಿ</button></div>
+  <div class="dbody" style="padding:18px"><p class="small muted" style="margin:0 0 12px">ಆ ತಿಂಗಳ ಪಾಠಗಳು, ಸಾಗಿದೆ / ಸಾಗಿಲ್ಲ, ಕಾರಣ ಮತ್ತು ಕ್ರಮಗಳೊಂದಿಗೆ ವರದಿ ಸಿದ್ಧವಾಗುತ್ತದೆ. ಮುಖ್ಯ ಶಿಕ್ಷಕರಿಗೆ / CRP ಗೆ ಕೊಡಲು.</p><div id="mrList" style="display:flex;flex-wrap:wrap;gap:8px"></div></div>
+</dialog>
 <dialog id="cart" class="narrow">
   <div class="dh"><h3>ಕಾರ್ಟ್</h3><button class="btn sm" type="button" id="cartClose">ಮುಚ್ಚಿ</button></div>
   <div id="cartBody" class="dbody"></div>
@@ -528,7 +575,9 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
         <label class="field" id="upSubjW">ವಿಷಯ<select id="upSubj"></select></label>
         <label class="field" id="upDocW">ದಾಖಲೆ<select id="upDoc"></select></label>
         <label class="field">ಅವಧಿ<input type="date" id="upExp"></label>
+        <label class="field">ಪಡೆದ ಹಣ ₹ <small>(ಉಚಿತವಾದರೆ 0)</small><input type="number" id="upAmt" min="0" value="0" style="width:100px"></label>
         <button class="btn pri" type="button" id="upAdd">ಸೇರಿಸಿ</button>
+        <button class="btn" type="button" id="upMoney" title="ಪ್ಯಾಕ್ ಈಗಾಗಲೇ ಕೊಟ್ಟಿದ್ದು, ಹಣ ಮಾತ್ರ ಆದಾಯಕ್ಕೆ ಸೇರಿಸಲು">ಹಣ ಮಾತ್ರ ದಾಖಲಿಸಿ</button>
       </div></div>
     <div><h3 class="h3">ಶಾಲೆಯ ವಿವರ</h3><form class="form" id="udForm" novalidate></form></div>
     <div class="banner bad"><span><b>ಈ ಶಿಕ್ಷಕರು / ಶಾಲೆಯನ್ನು ಅಳಿಸಿ.</b> ಶಾಲೆಯ ವಿವರ ಮತ್ತು ಖರೀದಿಗಳು ಹೋಗುತ್ತವೆ. ಆರ್ಡರ್‌ಗಳ ದಾಖಲೆ (ಆದಾಯ ಲೆಕ್ಕ) ಉಳಿಯುತ್ತದೆ. ಅದೇ ಸಂಖ್ಯೆಯಿಂದ ಮತ್ತೆ login ಆದರೆ ಹೊಸದಾಗಿ ಶಾಲೆಯ ವಿವರ ಕೇಳುತ್ತದೆ.</span><button class="btn sm" type="button" id="udDel">ಅಳಿಸಿ</button></div>
@@ -575,6 +624,7 @@ dialog.narrow{width:min(640px,calc(100vw - 24px))}
     <div class="auth-card prices" id="auPrices"></div>
   </div>
 </div>
+<div class="cartbar" id="cartBar" hidden><span id="cartBarTxt"></span><button class="btn pri" type="button" id="cartBarGo">ಹಣ ಪಾವತಿಸಿ →</button></div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -588,6 +638,7 @@ const CONFIG = {
   admin: '9902090911',           // ನಿಮ್ಮ (admin) ಮೊಬೈಲ್ ಸಂಖ್ಯೆ, 10 ಅಂಕಿ
   upi: '9902090911@ybl',             // ಹಣ ಬರಬೇಕಾದ UPI ID, ಉದಾ: '98xxxxxxxx@ybl'
   upiName: 'ಬೋಧನಾ ಮಿತ್ರ',
+  payPhone: '9902090911', // PhonePe / GPay ಗೆ ಜೋಡಿಸಿದ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ (ಸಂಖ್ಯೆಗೇ ನೇರ ಪಾವತಿ)
   whatsapp: '919902090911',        // ಆರ್ಡರ್ ಬರಬೇಕಾದ WhatsApp ಸಂಖ್ಯೆ, 91 ಸೇರಿಸಿ, ಉದಾ: '9198xxxxxxxx'
   prices: { lp: 99, ppt: 150, nt: 99, aj: 50, doc: 50, sub: 200, cls: 500, sch: 1500 }
 };
@@ -899,10 +950,10 @@ const PM = (() => {
 
 
   /* ಅಂದಾಜು ಪತ್ರಿಕೆ (ನಿಮ್ಮ Excel ಮಾದರಿ) */
-  async function andaju(sheet, rows, state, school, { blank, subject }) {
+  async function andaju(sheet, rows, state, school, { blank, subject, title }) {
     const A = AJ_LANG[sheet.lang] || AJ_LANG.kn, L = LANG[sheet.lang] || LANG.kn;
     const f = new Flow({ w: 842, h: 595, top: 74, bottom: 34, side: 26, rtl: sheet.lang === 'ur' });
-    f.text(`${A.title} ${school.year || ''}`, { size: 14, weight: 700, color: GREEN, gap: 0 });
+    f.text(title || `${A.title} ${school.year || ''}`, { size: 14, weight: 700, color: GREEN, gap: 0 });
     f.infoRow([[A.sem, sheet.sem], [L.cls, clsTxt(sheet.cls, L)], [L.subject, subject || A.all], [A.teacher, school.teacher || '']], 9.5);
     let lastM = null, lastS = null;
     const body = rows.map(r => {
@@ -1452,6 +1503,7 @@ async function getBytes(name) {
     r = await fetch(CONFIG.worker.replace(/\/$/, '') + '/f/' + encodeURIComponent(name), { headers: { Authorization: 'Bearer ' + tok } }).catch(() => null);
     if (r && r.status === 403) throw new Error('ಈ ದಾಖಲೆಯನ್ನು ನೀವು ಇನ್ನೂ ಖರೀದಿಸಿಲ್ಲ, ಅಥವಾ ಅವಧಿ ಮುಗಿದಿದೆ.');
     if (r && r.status === 401) throw new Error('Login ಅವಧಿ ಮುಗಿದಿದೆ. ಪುಟವನ್ನು reload ಮಾಡಿ ಮತ್ತೆ login ಆಗಿ.');
+    if (r && r.ok && !PV.forceSample && can(parseName(name))) ACC.count(name);
   } else r = await fetch(encodeURIComponent(name)).catch(() => null);
   if (!r || !r.ok) throw new Error(`"${name}" ಇನ್ನೂ ವೆಬ್‌ಸೈಟ್‌ಗೆ ಬಂದಿಲ್ಲ. Upload ಮಾಡಿದ 2–3 ನಿಮಿಷದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.`);
   const b = new Uint8Array(await r.arrayBuffer());
@@ -1670,8 +1722,27 @@ const VIEWS = {
     $('homeTop').innerHTML = sc?.name
       ? `<div class="welcome"><p>ನಮಸ್ಕಾರ${sc.teacher ? ', ' + esc(sc.teacher) : ''}</p><h2>${esc(sc.name)}</h2>
          <div class="meta">${sc.udise ? `<span>UDISE: ${esc(sc.udise)}</span>` : ''}<span>${esc([sc.place, sc.taluk, sc.dist].filter(Boolean).join(', '))}</span>${sc.year ? `<span>ಶೈಕ್ಷಣಿಕ ವರ್ಷ ${esc(sc.year)}</span>` : ''}${PAID && !ACC.isAdmin() ? `<span>ಸಕ್ರಿಯ ಖರೀದಿ: ${ACC.active().length}</span>` : ''}</div></div>`
-         + (PAID && !ACC.isAdmin() && !ACC.active().length ? `<div class="banner" style="margin-top:14px"><span><b>ಬೇಕಾದಷ್ಟು ಮಾತ್ರ ಖರೀದಿಸಿ.</b> ಪಾಠಯೋಜನೆ ₹${CONFIG.prices.lp}, PPT ₹${CONFIG.prices.ppt}, ಅಂದಾಜು ಪತ್ರಿಕೆ ₹${CONFIG.prices.aj} … ಕೆಳಗಿನ ಪಟ್ಟಿಯಲ್ಲಿ 🔒 ಇರುವುದನ್ನು ತೆರೆದು ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ.</span></div>` : '')
+         + (PAID && SET.notice ? `<div class="card pad notice" style="margin-top:14px"><b>📢 ಪ್ರಕಟಣೆ</b><div style="white-space:pre-line;margin-top:4px">${esc(SET.notice)}</div></div>` : '')
+         + (PAID && !ACC.isAdmin() && !ACC.active().length ? `<div class="card pad" style="margin-top:14px"><b>ಹೇಗೆ ಖರೀದಿಸುವುದು? 4 ಸುಲಭ ಹಂತ</b>
+            <div class="howto">
+              <div><span class="sn">1</span><span><b>ದಾಖಲೆ ಆರಿಸಿ</b><small>ಎಡಭಾಗದ ಪಾಠಯೋಜನೆ / PPT / ನೋಟ್ಸ್ ತೆರೆದು ತರಗತಿ, ವಿಷಯ ಆರಿಸಿ. 🔒 ಕಾಣುತ್ತದೆ.</small></span></div>
+              <div><span class="sn">2</span><span><b>ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ</b><small>ಬೇಕಾದ ಬೆಲೆಯ ಡಬ್ಬಿ ಒತ್ತಿ (₹${CONFIG.prices.lp}, ₹${CONFIG.prices.sub}…). ಮೊದಲು "ಮಾದರಿ ನೋಡಿ" ಒತ್ತಿ ನೋಡಬಹುದು.</small></span></div>
+              <div><span class="sn">3</span><span><b>ಹಣ ಪಾವತಿಸಿ</b><small>ಕೆಳಗೆ ಬರುವ "ಹಣ ಪಾವತಿಸಿ" ಒತ್ತಿ. PhonePe / GPay ನಿಂದ ಕಳುಹಿಸಿ, "ಆರ್ಡರ್ ಕಳುಹಿಸಿ" ಒತ್ತಿ.</small></span></div>
+              <div><span class="sn">4</span><span><b>ದಾಖಲೆ ತೆರೆಯುತ್ತದೆ</b><small>ಹಣ ಪರಿಶೀಲಿಸಿದ ತಕ್ಷಣ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ download ಮಾಡಬಹುದು.</small></span></div>
+            </div></div>` : '')
+         + (PAID && !ACC.isAdmin() && ACC.credit() ? `<div class="banner" style="margin-top:14px"><span>🎁 ನಿಮ್ಮ ಬಹುಮಾನ ₹${ACC.credit()}. ಮುಂದಿನ ಖರೀದಿಯಲ್ಲಿ ತಾನಾಗಿಯೇ ಕಡಿತವಾಗುತ್ತದೆ.</span></div>` : '')
       : `<div class="banner"><span><b>ಸ್ವಾಗತ!</b> ಮೊದಲು ನಿಮ್ಮ ಶಾಲೆಯ ವಿವರ ತುಂಬಿ. ನಂತರ ಪ್ರತಿ download ಮೇಲೂ ಅದು ತಾನಾಗಿಯೇ ಮುದ್ರಣವಾಗುತ್ತದೆ.</span><a class="btn pri" href="#school">ಶಾಲೆಯ ವಿವರ ತುಂಬಿ</a></div>`;
+    if (PAID && !ACC.isAdmin()) $('homeTop').insertAdjacentHTML('beforeend', `
+      <div class="smp2">
+        <div class="card pad"><b>ನಿಮಗೆ ಬೇಕಾದ ದಾಖಲೆ ಇಲ್ಲವೇ?</b><span class="small muted" style="display:block;margin:2px 0 8px">ಉದಾ: "5ನೇ ತರಗತಿ ಹಿಂದಿ ನೋಟ್ಸ್". ಹೆಚ್ಚು ಜನ ಕೇಳಿದ್ದನ್ನು ಮೊದಲು ಸೇರಿಸುತ್ತೇವೆ.</span>
+          <span class="row2"><input type="text" id="reqIn" maxlength="200" placeholder="ಯಾವ ತರಗತಿ, ವಿಷಯ, ದಾಖಲೆ"><button class="btn sm pri" type="button" id="reqGo">ಕಳುಹಿಸಿ</button></span></div>
+        ${SET.refReward > 0 ? `<div class="card pad"><b>🎁 ಸ್ನೇಹಿತರಿಗೆ ತಿಳಿಸಿ, ಬಹುಮಾನ ಪಡೆಯಿರಿ</b><span class="small muted" style="display:block;margin:2px 0 8px">ಅವರು ಖರೀದಿಸುವಾಗ ನಿಮ್ಮ ಮೊಬೈಲ್ ಸಂಖ್ಯೆ <b>${esc(ACC.mobile())}</b> ಹಾಕಿದರೆ ಅವರಿಗೆ ${SET.refPct}% ಕಡಿತ, ನಿಮಗೆ ₹${SET.refReward} ಬಹುಮಾನ.</span>
+          <a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(`ಪಾಠಯೋಜನೆ, PPT, ನೋಟ್ಸ್, ಅಂದಾಜು ಪತ್ರಿಕೆ ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ: ${location.origin + location.pathname}\nಖರೀದಿಸುವಾಗ ನನ್ನ ಸಂಖ್ಯೆ ${ACC.mobile()} ಹಾಕಿದರೆ ${SET.refPct}% ಕಡಿತ.`)}">WhatsApp ನಲ್ಲಿ ಹಂಚಿಕೊಳ್ಳಿ</a></div>` : ''}
+      </div>`);
+    if ($('reqGo')) $('reqGo').onclick = () => busy($('reqGo'), async () => {
+      const t = $('reqIn').value.trim(); if (t.length < 3) return toast('ಏನು ಬೇಕು ಎಂದು ಬರೆಯಿರಿ.', true);
+      await ACC.request(t); $('reqIn').value = ''; toast('ಧನ್ಯವಾದಗಳು. ನಿಮ್ಮ ಬೇಡಿಕೆ ತಲುಪಿದೆ.');
+    });
     if (PAID && !ACC.isAdmin() && samplesOf().length)
       $('homeTop').insertAdjacentHTML('beforeend', `<div class="card pad smp-card" style="margin-top:14px"><span><b>ಖರೀದಿಸುವ ಮೊದಲು ಮಾದರಿ ನೋಡಿ</b><span class="small muted" style="display:block">ನಿಮ್ಮ ಶಾಲೆಯ ಹೆಸರಿನೊಂದಿಗೆ ಹೇಗೆ ಬರುತ್ತದೆ ಎಂದು ನೋಡಿ. ಇಷ್ಟವಾದರೆ ಖರೀದಿಸಿ.</span></span><span class="btns">${sampleBtns('')}</span></div>`);
     const subs = Object.values(DB.subjects);
@@ -1688,14 +1759,14 @@ const VIEWS = {
       const m = medium(), lk = ok => ok ? 'pill' : 'pill warn lk';
       const nt = Object.values(s.nt).reduce((b, u) => b + u.length, 0), ntOk = can({ type: 'nt', med: m, cls: s.cls, subj: s.subj });
       const lpOk = can({ type: 'lp', med: m, cls: s.cls, subj: s.subj }), ppOk = can({ type: 'ppt', med: m, cls: s.cls, subj: s.subj }), ajOk = can({ type: 'aj', med: m, cls: s.cls });
-      return `<tr><td><b>${esc(s.cls)}ನೇ</b></td><td>${esc(subjName(s.subj))}</td>
+      return `<tr><td><b>${esc(s.cls)}ನೇ</b></td><td>${esc(subjName(s.subj))}${subNew(s) ? ' <span class="pill new">ಹೊಸದು</span>' : ''}</td>
         <td><div class="pills">${parts.length ? parts.map(p => `<span class="${lk(lpOk)}">ಭಾಗ ${p}</span>`).join('') : '<span class="pill off">ಇಲ್ಲ</span>'}</div></td>
         <td>${pp ? `<span class="${lk(ppOk)}">${pp}</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
         <td>${nt ? `<span class="${lk(ntOk)}">${nt}</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
         <td>${DB.aj[s.cls] ? `<span class="${lk(ajOk)}">ಸಿದ್ಧ</span>` : '<span class="pill off">ಇಲ್ಲ</span>'}</td>
         <td style="text-align:right"><button class="btn sm" type="button" data-c="${esc(s.cls)}" data-s="${esc(s.subj)}" data-t="${parts.length ? 'lesson' : pp ? 'ppt' : 'notes'}">ತೆರೆಯಿರಿ</button></td></tr>`;
     });
-    $('homeTop').insertAdjacentHTML('beforeend', DB.bad.length ? `<div class="banner bad" style="margin-top:14px"><span>${DB.bad.length} ಫೈಲ್‌ಗಳಲ್ಲಿ ಸಮಸ್ಯೆ ಇರುವುದರಿಂದ (ತಪ್ಪು ಹೆಸರು ಅಥವಾ ಅಪೂರ್ಣ upload) ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಕಾಣುತ್ತಿಲ್ಲ. ಈಗಷ್ಟೇ ಸರಿಪಡಿಸಿದ್ದರೆ "ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ" ಒತ್ತಿ.</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="homeRefresh">ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button><a class="btn sm" href="#files">ನೋಡಿ</a></span></div>` : '');
+    $('homeTop').insertAdjacentHTML('beforeend', DB.bad.length && (!PAID || ACC.isAdmin()) ? `<div class="banner bad" style="margin-top:14px"><span>${DB.bad.length} ಫೈಲ್‌ಗಳಲ್ಲಿ ಸಮಸ್ಯೆ ಇರುವುದರಿಂದ (ತಪ್ಪು ಹೆಸರು ಅಥವಾ ಅಪೂರ್ಣ upload) ವೆಬ್‌ಸೈಟ್‌ನಲ್ಲಿ ಕಾಣುತ್ತಿಲ್ಲ. ಈಗಷ್ಟೇ ಸರಿಪಡಿಸಿದ್ದರೆ "ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ" ಒತ್ತಿ.</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="homeRefresh">ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button><a class="btn sm" href="#files">ನೋಡಿ</a></span></div>` : '');
     if ($('homeRefresh')) $('homeRefresh').onclick = () => busy($('homeRefresh'), async () => { await loadDB(true); route(); toast('ಫೈಲ್ ಪಟ್ಟಿ ನವೀಕರಿಸಲಾಗಿದೆ.'); });
     $('catTable').innerHTML = `<thead><tr><th>ತರಗತಿ</th><th>ವಿಷಯ</th><th>ಪಾಠಯೋಜನೆ</th><th>PPT</th><th>ನೋಟ್ಸ್</th><th>ಅಂದಾಜು ಪತ್ರಿಕೆ</th><th></th></tr></thead><tbody>${rows.join('') || `<tr><td colspan="7">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ದಾಖಲೆ ಸೇರಿಸಿಲ್ಲ', '<a href="#files">ಫೈಲ್ ನಿರ್ವಹಣೆ</a> ಪುಟದಲ್ಲಿ ಫೈಲ್ ಹೆಸರು ಹೇಗಿರಬೇಕು ಎಂದು ನೋಡಿ.')}</td></tr>`}</tbody>`;
     $('catTable').querySelectorAll('button').forEach(b => b.onclick = () => {
@@ -1811,7 +1882,7 @@ const VIEWS = {
       const items = sub.nt[part].map(it => ({ ...it, u: it.unit }))
         .sort((a, b) => (a.u ?? 999) - (b.u ?? 999) || (a.sub ?? 0) - (b.sub ?? 0) || a.title.localeCompare(b.title));
       const name = it => it.title || units.find(u => +u.no === +it.u)?.title || (it.u != null ? 'ಪಾಠ ' + it.u : 'ನೋಟ್ಸ್');
-      box.innerHTML = items.map((it, i) => `<div class="unit"><span class="no">${it.u ?? '★'}</span><div><b>${esc(name(it))}</b><small>PDF · ${mb(it.files.pdf.size)}</small></div>
+      box.innerHTML = items.map((it, i) => `<div class="unit"><span class="no">${it.u ?? '★'}</span><div><b>${esc(name(it))}${isNew(it.files.pdf.name) ? ' <span class="pill new">ಹೊಸದು</span>' : ''}</b><small>PDF · ${mb(it.files.pdf.size)}</small></div>
         <div class="acts">${ok ? `<button class="btn sm" type="button" data-i="${i}" data-k="v">${ICON_EYE}ಮುನ್ನೋಟ</button><button class="btn sm pri" type="button" data-i="${i}" data-k="pdf">${ICON_DL}PDF</button>` : '<span class="pill warn lk">ಖರೀದಿಸಿಲ್ಲ</span>'}</div></div>`).join('');
       if (!ok) {
         const sp = Object.keys(sub.nt).sort()[0];
@@ -2016,7 +2087,7 @@ let AJ = null;
 async function loadAj() {
   const cls = $('ajClass').value, file = DB.aj[cls];
   const ajp = parseName(file), ok = can(ajp);
-  ['ajView', 'ajBlank', 'ajFilled'].forEach(id => { $(id).hidden = !ok; });
+  ['ajView', 'ajBlank', 'ajFilled', 'ajMonth'].forEach(id => { $(id).hidden = !ok; });
   if (!ok) {
     AJ = null; $('ajSem').innerHTML = ''; $('ajSum').innerHTML = ''; fillSelect($('ajSubject'), []);
     $('ajHead').textContent = `ಅಂದಾಜು ಪತ್ರಿಕೆ · ${cls}ನೇ ತರಗತಿ`;
@@ -2097,6 +2168,23 @@ async function andajuPdf(blank, preview) {
   if (preview) await PV.open(out, 'ಅಂದಾಜು ಪತ್ರಿಕೆ', name); else { saveFile(out, name); toast('Download ಆಯಿತು.'); }
 }
 $('ajView').onclick = () => busy($('ajView'), () => andajuPdf(false, true));
+/* ತಿಂಗಳ ಪ್ರಗತಿ ವರದಿ: ಆ ತಿಂಗಳ ಪಾಠಗಳು ಮತ್ತು "ಸಾಗಿದೆ / ಸಾಗಿಲ್ಲ" ಸ್ಥಿತಿ */
+$('ajMonth').onclick = () => {
+  if (!AJ) return;
+  const months = [...new Set(AJ.rows.map(r => r.month).filter(Boolean))];
+  if (!months.length) return toast('ತಿಂಗಳುಗಳು ಸಿಗಲಿಲ್ಲ.', true);
+  $('mrList').innerHTML = months.map(m => `<button class="btn" type="button" data-m="${esc(m)}">${esc(m)}</button>`).join('');
+  $('mrList').querySelectorAll('[data-m]').forEach(b => b.onclick = () => busy(b, async () => {
+    const sc = requireSchool(); if (!sc) return;
+    const rows = AJ.rows.filter(r => r.month === b.dataset.m), state = store.get(AJ.key, {});
+    const raw = await PM.andaju(AJ.sem, rows, state, sc, { blank: false, subject: AJ.subject, title: `${b.dataset.m} ತಿಂಗಳ ಬೋಧನಾ ಪ್ರಗತಿ ವರದಿ ${sc.year || ''}` });
+    const out = await PM.stampPdf(raw, sc);
+    $('mr').close();
+    await PV.open(out, `${b.dataset.m} ತಿಂಗಳ ಪ್ರಗತಿ ವರದಿ`, fname('ಪ್ರಗತಿ_ವರದಿ', AJ.sem.cls + 'ನೇ', b.dataset.m, AJ.subject) + '.pdf');
+  }));
+  $('mr').showModal();
+};
+$('mrClose').onclick = () => $('mr').close();
 $('ajBlank').onclick = () => busy($('ajBlank'), () => andajuPdf(true, false));
 $('ajFilled').onclick = () => busy($('ajFilled'), () => andajuPdf(false, false));
 
@@ -2177,10 +2265,15 @@ const PACK_T = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್�
 const PACK_D = { lp: 'ಭಾಗ 1 + ಭಾಗ 2', ppt: 'ಎಲ್ಲಾ PPT (PDF + PowerPoint)', nt: 'ಎಲ್ಲಾ ಪಾಠಗಳ ನೋಟ್ಸ್ (PDF)', sub: 'ಪಾಠಯೋಜನೆ + PPT', aj: 'ಎರಡೂ ಸೆಮಿಸ್ಟರ್', doc: '', cls: 'ಎಲ್ಲಾ ವಿಷಯ, ಎಲ್ಲಾ ದಾಖಲೆ', sch: 'ಎಲ್ಲಾ ತರಗತಿ, ಎಲ್ಲವೂ' };
 /* ದಾಖಲೆವಾರು ಬೆಲೆ (Admin → ದರಪಟ್ಟಿ ಯಲ್ಲಿ ಬದಲಿಸಿದ್ದು). ಇಲ್ಲದಿದ್ದರೆ "ಇತರೆ ದಾಖಲೆ" ಬೆಲೆ */
 const DOC_PRICE = {};
+const SET = { notice: '', coupons: {}, refPct: 10, refReward: 50 };     // Admin → ದರಪಟ್ಟಿ ಯಲ್ಲಿ ಬದಲಿಸುವವು
 const packPrice = k => { const [t, , , x] = k.split(':'); return (t === 'doc' && DOC_PRICE[x] != null ? +DOC_PRICE[x] : +CONFIG.prices[t]) || 0; };
 /* Firestore ನಲ್ಲಿ ಉಳಿಸಿದ ದರಪಟ್ಟಿ ಮತ್ತು ದಾಖಲೆಗಳ ಹೆಸರು */
 function applySettings(st) {
   if (!st) return;
+  if ('notice' in st) SET.notice = st.notice || '';
+  if (st.coupons) SET.coupons = st.coupons;
+  if (st.refPct != null) SET.refPct = +st.refPct || 0;
+  if (st.refReward != null) SET.refReward = +st.refReward || 0;
   if (st.prices) for (const k of Object.keys(CONFIG.prices)) if (st.prices[k] != null && st.prices[k] !== '') CONFIG.prices[k] = +st.prices[k];
   if (st.docs) for (const [code, d] of Object.entries(st.docs)) {
     if (d === null || d.removed) { delete DOCS[code]; delete DOC_PRICE[code]; continue; }
@@ -2332,8 +2425,8 @@ const ACC = (() => {
       const d = {}; ['teacher', 'hm', 'year', 'medium', 'watermark'].forEach(k => { if (k in rec) d[k] = rec[k]; });
       await fb.updateDoc(uref(mob()), d); Object.assign(prof, d);
     },
-    async order(items, total, utr) {
-      const o = { uid: mob(), items, total, utr: utr || '', status: 'pending', at: new Date().toISOString(), school: prof?.name || '', teacher: prof?.teacher || '' };
+    async order(items, total, utr, extra = {}) {
+      const o = { uid: mob(), items, total, utr: utr || '', status: 'pending', at: new Date().toISOString(), school: prof?.name || '', teacher: prof?.teacher || '', ...extra };
       const r = await fb.addDoc(fb.collection(fb.db, 'orders'), o);
       orders.push({ id: r.id, ...o });
       return r.id;
@@ -2347,7 +2440,15 @@ const ACC = (() => {
     async setOrder(id, d) { await fb.updateDoc(fb.doc(fb.db, 'orders', id), d); },
     async setUser(m, d) { await fb.updateDoc(uref(m), d); },
     async delUser(m) { await fb.deleteDoc(uref(m)); },
-    async saveSettings(st) { await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), st); applySettings(st); }
+    async saveSettings(st) { await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), st, { merge: true }); applySettings(st); },
+    async adminOrder(o) { return (await fb.addDoc(fb.collection(fb.db, 'orders'), o)).id; },
+    async request(text) { await fb.addDoc(fb.collection(fb.db, 'requests'), { uid: mob(), text, school: prof?.name || '', teacher: prof?.teacher || '', medium: medium(), at: new Date().toISOString() }); },
+    async requests() { return (await fb.getDocs(fb.collection(fb.db, 'requests'))).docs.map(d => ({ id: d.id, ...d.data() })); },
+    async delRequest(id) { await fb.deleteDoc(fb.doc(fb.db, 'requests', id)); },
+    count(name) { if (!user || isAdmin()) return; try { fb.setDoc(fb.doc(fb.db, 'stats', 'counts'), { files: { [name]: fb.increment(1) } }, { merge: true }).catch(() => {}); } catch (e) {} },
+    async counts() { try { const d = await fb.getDoc(fb.doc(fb.db, 'stats', 'counts')); return d.exists() ? d.data().files || {} : {}; } catch (e) { return {}; } },
+    credit: () => +(prof?.credit || 0),
+    firstOrder: () => !orders.some(o => o.status !== 'rejected')
   };
 })();
 
@@ -2355,7 +2456,11 @@ const ACC = (() => {
 const CART = {
   get: () => store.get('bm_cart', []),
   set(l) { store.set('bm_cart', l); this.badge(); },
-  badge() { const n = this.get().length; $('cartN').textContent = n; $('cartN').hidden = !n; },
+  badge() {
+    const l = this.get(), n = l.length; $('cartN').textContent = n; $('cartN').hidden = !n;
+    $('cartBar').hidden = !n || !PAID;
+    if (n) $('cartBarTxt').innerHTML = `<b>ಕಾರ್ಟ್‌ನಲ್ಲಿ ${n}</b> · ₹${this.total(l)}<small>ಮುಂದಿನ ಹಂತ: ಹಣ ಪಾವತಿಸಿ ಆರ್ಡರ್ ಕಳುಹಿಸಿ</small>`;
+  },
   add(k) {
     if (ACC.owns(k)) return toast('ಇದು ಈಗಾಗಲೇ ನಿಮ್ಮ ಖರೀದಿಯಲ್ಲಿದೆ.');
     let l = this.get();
@@ -2364,6 +2469,18 @@ const CART = {
     toast('ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಲಾಗಿದೆ: ' + packLabel(k, true));
   },
   total: l => l.reduce((a, k) => a + packPrice(k), 0),
+  x: () => store.get('bm_cart_x', {}),
+  setX(v) { store.set('bm_cart_x', { ...this.x(), ...v }); },
+  /* ರಿಯಾಯಿತಿಗಳು: ಕೂಪನ್ → ಸ್ನೇಹಿತರ ಸಂಖ್ಯೆ (ಮೊದಲ ಖರೀದಿಗೆ) → ಸಂಗ್ರಹಿಸಿದ ಬಹುಮಾನ */
+  calc(l) {
+    const sub = this.total(l), x = this.x(), t = today();
+    const cp = x.coupon && SET.coupons[x.coupon], cpOk = !!cp && !cp.off && (!cp.until || String(cp.until) >= t);
+    const couponOff = cpOk ? Math.round(sub * (+cp.pct || 0) / 100) : 0;
+    const refOk = !!x.ref && /^[6-9]\d{9}$/.test(x.ref) && x.ref !== ACC.mobile() && ACC.firstOrder() && SET.refPct > 0;
+    const refOff = refOk ? Math.round((sub - couponOff) * SET.refPct / 100) : 0;
+    const creditUsed = Math.min(ACC.credit(), sub - couponOff - refOff);
+    return { sub, coupon: cpOk ? x.coupon : '', couponBad: !!x.coupon && !cpOk, couponOff, ref: refOk ? x.ref : '', refOff, creditUsed, total: sub - couponOff - refOff - creditUsed };
+  },
   /* ಉಳಿತಾಯದ ಸೂಚನೆಗಳು */
   hints(l) {
     const out = [], seen = new Set();
@@ -2385,17 +2502,27 @@ const CART = {
         (pend.length ? `<div class="banner" style="margin:0 18px 18px"><span>${pend.length} ಆರ್ಡರ್ ಪರಿಶೀಲನೆಯಲ್ಲಿದೆ. ಹಣ ಬಂದಿರುವುದನ್ನು ನೋಡಿದ ನಂತರ ತೆರೆಯುತ್ತದೆ.</span></div>` : '');
       $('cart').showModal(); return;
     }
-    const hints = this.hints(l);
-    const tn = `BM ${m}`;
-    const upi = CONFIG.upi ? `upi://pay?pa=${encodeURIComponent(CONFIG.upi)}&pn=${encodeURIComponent(CONFIG.upiName)}&am=${tot}&cu=INR&tn=${encodeURIComponent(tn)}` : '';
+    const hints = this.hints(l), C = this.calc(l), pay = C.total, X = this.x();
+    /* UPI ಆಪ್‌ಗಳು ಇಂಗ್ಲಿಷ್ ಹೆಸರು ಮಾತ್ರ ಒಪ್ಪುತ್ತವೆ */
+    const upi = CONFIG.upi ? `upi://pay?pa=${encodeURIComponent(CONFIG.upi)}&pn=BodhanaMitra&am=${pay}.00&cu=INR&tn=BM${m}` : '';
     box.innerHTML = `<div class="cl">${l.map((k, i) => `<div class="ci"><span><b>${esc(packLabel(k, true))}</b><small>${esc(PACK_D[k.split(':')[0]] || '')}${PACK_D[k.split(':')[0]] ? ' · ' : ''}${esc(MEDIA[k.split(':')[1]])}</small></span><b>₹${packPrice(k)}</b><button class="x" type="button" data-rm="${i}" aria-label="ತೆಗೆಯಿರಿ">✕</button></div>`).join('')}</div>
       ${hints.map(h => `<div class="hint"><span>💡 <b>${esc(packLabel(h.k, true))}</b> (₹${packPrice(h.k)}) ತೆಗೆದುಕೊಂಡರೆ ಇವೆಲ್ಲವೂ ಮತ್ತು ಇನ್ನೂ ಹೆಚ್ಚು ಸಿಗುತ್ತದೆ${h.save > 0 ? `, ₹${h.save} ಉಳಿತಾಯ` : ''}.</span><button class="btn sm" type="button" data-up="${esc(h.k)}">ಬದಲಿಸಿ</button></div>`).join('')}
-      <div class="ctot"><span>ಒಟ್ಟು <small>(${dmy(yearEnd())} ರವರೆಗೆ)</small></span><b>₹${tot}</b></div>
+      <div class="disc">
+        <label class="field">ಕೂಪನ್ ಕೋಡ್<span class="row2"><input type="text" id="cpIn" value="${esc(X.coupon || '')}" placeholder="ಇದ್ದರೆ" style="text-transform:uppercase"><button class="btn sm" type="button" id="cpGo">ಅನ್ವಯಿಸಿ</button></span>
+          ${C.couponBad ? '<small class="bad">ಈ ಕೂಪನ್ ಸರಿಯಿಲ್ಲ ಅಥವಾ ಅವಧಿ ಮುಗಿದಿದೆ</small>' : C.coupon ? `<small class="ok">✓ ${esc(C.coupon)}: ₹${C.couponOff} ಕಡಿತ</small>` : ''}</label>
+        ${ACC.firstOrder() && SET.refPct > 0 ? `<label class="field">ನಿಮಗೆ ಸೂಚಿಸಿದ ಶಿಕ್ಷಕರ ಮೊಬೈಲ್<span class="row2"><input type="tel" id="refIn" maxlength="10" inputmode="numeric" value="${esc(X.ref || '')}" placeholder="ಇದ್ದರೆ"><button class="btn sm" type="button" id="refGo">ಅನ್ವಯಿಸಿ</button></span>
+          ${C.ref ? `<small class="ok">✓ ಮೊದಲ ಖರೀದಿಗೆ ${SET.refPct}%: ₹${C.refOff} ಕಡಿತ</small>` : X.ref ? '<small class="bad">ಸರಿಯಾದ 10 ಅಂಕಿಯ ಬೇರೆ ಶಿಕ್ಷಕರ ಸಂಖ್ಯೆ ಬರೆಯಿರಿ</small>' : `<small class="muted">ಮೊದಲ ಖರೀದಿಗೆ ${SET.refPct}% ಕಡಿತ</small>`}</label>` : ''}
+      </div>
+      <div class="ctot"><span>ಒಟ್ಟು <small>(${dmy(yearEnd())} ರವರೆಗೆ)</small>
+        ${C.couponOff || C.refOff || C.creditUsed ? `<small class="ok" style="display:block">₹${C.sub}${C.couponOff ? ' − ಕೂಪನ್ ₹' + C.couponOff : ''}${C.refOff ? ' − ಸ್ನೇಹಿತ ₹' + C.refOff : ''}${C.creditUsed ? ' − ನಿಮ್ಮ ಬಹುಮಾನ ₹' + C.creditUsed : ''}</small>` : ''}</span><b>₹${pay}</b></div>
       <div class="pay">
-        <div class="step"><span class="sn">1</span><div><b>₹${tot} ಅನ್ನು UPI ಮೂಲಕ ಕಳುಹಿಸಿ</b>
-          ${CONFIG.upi ? `<div class="upi"><div id="qr" class="qr"></div><div><div class="small muted">UPI ID</div><code id="upiId">${esc(CONFIG.upi)}</code> <button class="btn sm" type="button" id="upiCopy">copy</button>
-          <p class="small muted" style="margin:8px 0">PhonePe / Google Pay / Paytm ನಲ್ಲಿ QR scan ಮಾಡಿ, ಅಥವಾ ಮೊಬೈಲ್‌ನಲ್ಲಿದ್ದರೆ ಕೆಳಗಿನ ಬಟನ್ ಒತ್ತಿ.</p>
-          <a class="btn sm pri" href="${upi}">UPI ಆಪ್ ತೆರೆಯಿರಿ</a></div></div>` : '<p class="small muted">UPI ವಿವರ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ.</p>'}</div></div>
+        <div class="step"><span class="sn">1</span><div><b>₹${pay} ಪಾವತಿಸಿ</b>
+          ${CONFIG.upi ? `<div class="upi"><div><div id="qr" class="qr"></div><button class="btn sm" type="button" id="qrSave" style="margin-top:6px;width:100%">QR ಚಿತ್ರ ಉಳಿಸಿ</button></div><div class="payw">
+          <p class="small" style="margin:0 0 8px"><b>ಕಂಪ್ಯೂಟರ್‌ನಲ್ಲಿದ್ದರೆ:</b> ಫೋನ್‌ನ PhonePe / Google Pay / Paytm ನಿಂದ ಈ QR scan ಮಾಡಿ.</p>
+          <p class="small" style="margin:0 0 8px"><b>ಇದೇ ಫೋನ್‌ನಲ್ಲಿದ್ದರೆ:</b> "QR ಚಿತ್ರ ಉಳಿಸಿ" ಒತ್ತಿ → PhonePe / GPay ನಲ್ಲಿ Scan → 🖼️ gallery ನಿಂದ ಆ ಚಿತ್ರ ಆರಿಸಿ.</p>
+          ${CONFIG.payPhone ? `<p class="small" style="margin:0 0 8px"><b>ಅಥವಾ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಗೆ:</b> <code>${esc(CONFIG.payPhone)}</code> <button class="btn sm" type="button" data-copy="${esc(CONFIG.payPhone)}">copy</button></p>` : ''}
+          <p class="small" style="margin:0 0 8px"><b>UPI ID:</b> <code>${esc(CONFIG.upi)}</code> <button class="btn sm" type="button" data-copy="${esc(CONFIG.upi)}">copy</button></p>
+          <a class="btn sm" href="${upi}">UPI ಆಪ್ ನೇರವಾಗಿ ತೆರೆಯಿರಿ</a> <span class="small muted">(ಕೆಲವು ಆಪ್‌ಗಳಲ್ಲಿ ತೆರೆಯದಿರಬಹುದು)</span></div></div>` : '<p class="small muted">UPI ವಿವರ ಇನ್ನೂ ಸೇರಿಸಿಲ್ಲ.</p>'}</div></div>
         <div class="step"><span class="sn">2</span><div><b>UPI ವಹಿವಾಟು ಸಂಖ್ಯೆ (UTR)</b> <span class="small muted">ಐಚ್ಛಿಕ, ಬೇಗ ಪರಿಶೀಲಿಸಲು ಸಹಾಯವಾಗುತ್ತದೆ</span>
           <input type="text" id="utr" inputmode="numeric" maxlength="22" placeholder="12 ಅಂಕಿ" style="display:block;margin-top:6px;width:min(260px,100%)"></div></div>
         <div class="step"><span class="sn">3</span><div><b>ಆರ್ಡರ್ ಕಳುಹಿಸಿ</b><p class="small muted" style="margin:2px 0 8px">${CONFIG.whatsapp ? 'WhatsApp ತೆರೆಯುತ್ತದೆ. ಅಲ್ಲಿ payment screenshot ಸೇರಿಸಿ ಕಳುಹಿಸಿ. ' : ''}ಹಣ ಬಂದಿರುವುದನ್ನು ಪರಿಶೀಲಿಸಿದ ತಕ್ಷಣ ದಾಖಲೆಗಳು ತೆರೆಯುತ್ತವೆ.</p>
@@ -2403,14 +2530,19 @@ const CART = {
       </div>`;
     box.querySelectorAll('[data-rm]').forEach(b => b.onclick = () => { const x = this.get(); x.splice(+b.dataset.rm, 1); this.set(x); this.open(); });
     box.querySelectorAll('[data-up]').forEach(b => b.onclick = () => { this.add(b.dataset.up); this.open(); });
-    if ($('upiCopy')) $('upiCopy').onclick = async () => { try { await navigator.clipboard.writeText(CONFIG.upi); toast('UPI ID copy ಆಯಿತು.'); } catch (e) {} };
-    if (CONFIG.upi) qrSvg(upi).then(svg => { if ($('qr')) $('qr').innerHTML = svg; }).catch(() => { if ($('qr')) $('qr').hidden = true; });
+    box.querySelectorAll('[data-copy]').forEach(b => b.onclick = async () => { try { await navigator.clipboard.writeText(b.dataset.copy); toast('Copy ಆಯಿತು: ' + b.dataset.copy); } catch (e) {} });
+    $('cpGo').onclick = () => { this.setX({ coupon: $('cpIn').value.trim().toUpperCase() }); this.open(); };
+    if ($('refGo')) $('refGo').onclick = () => { this.setX({ ref: $('refIn').value.replace(/\D/g, '') }); this.open(); };
+    if (CONFIG.upi) {
+      qrSvg(upi).then(svg => { if ($('qr')) $('qr').innerHTML = svg; }).catch(() => { if ($('qr')) $('qr').hidden = true; });
+      $('qrSave').onclick = () => busy($('qrSave'), async () => saveFile(await qrPng(upi, `₹${pay} · ${CONFIG.upi}`), `BodhanaMitra-UPI-${pay}.png`, 'image/png'));
+    }
     $('cartSend').onclick = () => busy($('cartSend'), async () => {
-      const utr = $('utr').value.trim();
-      const id = await ACC.order(l, tot, utr);
+      const utr = $('utr').value.trim(), C2 = this.calc(l), tot = C2.total;
+      const id = await ACC.order(l, tot, utr, { sub: C2.sub, coupon: C2.coupon, couponOff: C2.couponOff, ref: C2.ref, refOff: C2.refOff, creditUsed: C2.creditUsed });
       const sc = school() || {};
-      const text = `ಬೋಧನಾ ಮಿತ್ರ ಆರ್ಡರ್ #${id.slice(-6).toUpperCase()}\nಮೊಬೈಲ್: ${m}\nಶಾಲೆ: ${sc.name || ''}\nಶಿಕ್ಷಕರು: ${sc.teacher || ''}\n\n${l.map(k => `• ${packLabel(k)} — ₹${packPrice(k)}`).join('\n')}\n\nಒಟ್ಟು: ₹${tot}${utr ? '\nUTR: ' + utr : ''}\n\n(payment screenshot ಸೇರಿಸಿದ್ದೇನೆ)`;
-      this.set([]);
+      const text = `ಬೋಧನಾ ಮಿತ್ರ ಆರ್ಡರ್ #${id.slice(-6).toUpperCase()}\nಮೊಬೈಲ್: ${m}\nಶಾಲೆ: ${sc.name || ''}\nಶಿಕ್ಷಕರು: ${sc.teacher || ''}\n\n${l.map(k => `• ${packLabel(k)} — ₹${packPrice(k)}`).join('\n')}${C2.sub !== tot ? `\n\nಮೊತ್ತ ₹${C2.sub}${C2.coupon ? `\nಕೂಪನ್ ${C2.coupon}: −₹${C2.couponOff}` : ''}${C2.ref ? `\nಸೂಚಿಸಿದವರು ${C2.ref}: −₹${C2.refOff}` : ''}${C2.creditUsed ? `\nಬಹುಮಾನ: −₹${C2.creditUsed}` : ''}` : ''}\n\nಪಾವತಿಸಿದ್ದು: ₹${tot}${utr ? '\nUTR: ' + utr : ''}\n\n(payment screenshot ಸೇರಿಸಿದ್ದೇನೆ)`;
+      this.set([]); store.set('bm_cart_x', {});
       if (CONFIG.whatsapp) window.open(`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`, '_blank');
       $('cartBody').innerHTML = emptyBox('ಆರ್ಡರ್ ಕಳುಹಿಸಲಾಗಿದೆ ✓', `ಆರ್ಡರ್ ಸಂಖ್ಯೆ #${esc(id.slice(-6).toUpperCase())}. ಪರಿಶೀಲನೆಯ ನಂತರ ದಾಖಲೆಗಳು ತೆರೆಯುತ್ತವೆ. "ನನ್ನ ಖಾತೆ" ಪುಟದಲ್ಲಿ ಸ್ಥಿತಿ ನೋಡಬಹುದು.`);
       route();
@@ -2419,6 +2551,15 @@ const CART = {
   }
 };
 let qrLib = null;
+async function qrPng(text, caption) {
+  qrLib ||= new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; s.onload = () => res(window.qrcode); s.onerror = rej; document.head.appendChild(s); });
+  const q = (await qrLib)(0, 'M'); q.addData(text); q.make();
+  const n = q.getModuleCount(), cell = 12, pad = 48, W = n * cell + pad * 2, c = document.createElement('canvas'); c.width = W; c.height = W + 70;
+  const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.fillStyle = '#000';
+  for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (q.isDark(r, k)) x.fillRect(pad + k * cell, pad + r * cell, cell, cell);
+  x.font = '600 26px "Anek Kannada",sans-serif'; x.textAlign = 'center'; x.fillText(caption, W / 2, W + 30);
+  return new Uint8Array(await (await new Promise(r => c.toBlob(r, 'image/png'))).arrayBuffer());
+}
 async function qrSvg(text) {
   qrLib ||= new Promise((res, rej) => { const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js'; s.onload = () => res(window.qrcode); s.onerror = rej; document.head.appendChild(s); });
   const q = (await qrLib)(0, 'M'); q.addData(text); q.make();
@@ -2519,13 +2660,17 @@ function adminRender() {
     const u = uName(o.uid) || {};
     return `<div class="unit ord"><span class="no">₹</span><div><b>₹${o.total} · ${esc(u.name || o.school || '')}</b>
       <small>${esc(o.uid)} · ${esc(u.teacher || o.teacher || '')} · ${dmy(o.at)}${o.utr ? ' · UTR ' + esc(o.utr) : ''}</small>
-      <small class="items">${o.items.map(k => esc(packLabel(k)) + ' — ₹' + packPrice(k)).join('<br>')}</small></div>
+      <small class="items">${o.items.map(k => esc(packLabel(k)) + ' — ₹' + packPrice(k)).join('<br>')}</small>
+      ${o.coupon || o.ref || o.creditUsed ? `<small class="items" style="color:var(--ok)">${[o.coupon && `ಕೂಪನ್ ${esc(o.coupon)} −₹${o.couponOff}`, o.ref && `ಸೂಚಿಸಿದವರು ${esc(o.ref)}${uName(o.ref) ? ' ✓ (' + esc(uName(o.ref).name || '') + ')' : ' ⚠️ ನೋಂದಾಯಿತರಲ್ಲ'} −₹${o.refOff}`, o.creditUsed && `ಬಹುಮಾನ ಬಳಕೆ −₹${o.creditUsed}`].filter(Boolean).join(' · ')}</small>` : ''}</div>
       <div class="acts"><button class="btn sm pri" type="button" data-ok="${esc(o.id)}">✓ ಸಕ್ರಿಯಗೊಳಿಸಿ</button><button class="btn sm" type="button" data-no="${esc(o.id)}">✗ ತಿರಸ್ಕರಿಸಿ</button></div></div>`;
   }).join('') || emptyBox('ಬಾಕಿ ಆರ್ಡರ್ ಇಲ್ಲ');
   $('adOrders').querySelectorAll('[data-ok]').forEach(b => b.onclick = () => busy(b, async () => {
     const o = ADM.orders.find(x => x.id === b.dataset.ok), exp = yearEnd();
     await ACC.grant(o.uid, o.items, exp);
     await ACC.setOrder(o.id, { status: 'done', doneAt: new Date().toISOString(), exp });
+    const buyer = ADM.users.find(x => x.id === o.uid), refU = o.ref && ADM.users.find(x => x.id === o.ref && x.id !== o.uid);
+    if (o.creditUsed && buyer) { buyer.credit = Math.max(0, (+buyer.credit || 0) - o.creditUsed); await ACC.setUser(buyer.id, { credit: buyer.credit }); }
+    if (refU && SET.refReward > 0) { refU.credit = (+refU.credit || 0) + SET.refReward; await ACC.setUser(refU.id, { credit: refU.credit }); toast(`${refU.id} ಅವರಿಗೆ ₹${SET.refReward} ಬಹುಮಾನ ಸೇರಿಸಲಾಗಿದೆ.`); }
     o.status = 'done'; o.doneAt = new Date().toISOString();
     const u = ADM.users.find(x => x.id === o.uid); if (u) { u.packs = { ...(u.packs || {}), ...Object.fromEntries(o.items.map(k => [k, exp])) }; }
     adminRender();
@@ -2538,9 +2683,32 @@ function adminRender() {
     await ACC.setOrder(o.id, { status: 'rejected', doneAt: new Date().toISOString() }); o.status = 'rejected'; adminRender();
   }));
   $('adDone').innerHTML = `<thead><tr><th>ದಿನಾಂಕ</th><th>ಶಾಲೆ</th><th>ಮೊಬೈಲ್</th><th>ದಾಖಲೆಗಳು</th><th>ಮೊತ್ತ</th></tr></thead><tbody>` +
-    (done.slice(0, 30).map(o => `<tr><td>${dmy(o.doneAt || o.at)}</td><td>${esc(uName(o.uid)?.name || o.school)}</td><td>${esc(o.uid)}</td><td class="small">${o.items.map(k => esc(packLabel(k, true))).join('<br>')}</td><td>₹${o.total}</td></tr>`).join('') || `<tr><td colspan="5">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ಮಾರಾಟ ಆಗಿಲ್ಲ')}</td></tr>`) + '</tbody>';
+    (done.slice(0, 30).map(o => `<tr><td>${dmy(o.doneAt || o.at)}</td><td>${esc(uName(o.uid)?.name || o.school)}</td><td>${esc(o.uid)}</td><td class="small">${o.items.map(k => esc(packLabel(k, true))).join('<br>') || 'ನೇರ ಪಾವತಿ'}${o.manual ? ' <span class="pill">ನೇರ</span>' : ''}</td><td>₹${o.total}</td></tr>`).join('') || `<tr><td colspan="5">${emptyBox('ಇನ್ನೂ ಯಾವುದೇ ಮಾರಾಟ ಆಗಿಲ್ಲ')}</td></tr>`) + '</tbody>';
   adminUsers();
   adminSettings();
+  adminLeads();
+  adminExtra();
+}
+function adminLeads() {
+  const buyers = new Set(ADM.orders.filter(o => o.status !== 'rejected').map(o => o.uid)), t = today();
+  const leads = ADM.users.filter(u => !buyers.has(u.id) && !Object.values(u.packs || {}).some(e => String(e) >= t))
+    .sort((a, b) => String(b.created).localeCompare(String(a.created)));
+  $('adLeadN').textContent = leads.length;
+  const site = location.origin + location.pathname;
+  const msg = u => `ನಮಸ್ಕಾರ ${u.teacher || ''} ಅವರೇ, ಬೋಧನಾ ಮಿತ್ರದಲ್ಲಿ ನೋಂದಣಿ ಮಾಡಿದ್ದಕ್ಕೆ ಧನ್ಯವಾದಗಳು 🙏\n\nದಾಖಲೆ ಪಡೆಯುವ ವಿಧಾನ:\n1️⃣ ${site} ತೆರೆದು login ಆಗಿ\n2️⃣ ಎಡಭಾಗದ ಪಾಠಯೋಜನೆ / PPT / ನೋಟ್ಸ್ ನಲ್ಲಿ ತರಗತಿ, ವಿಷಯ ಆರಿಸಿ\n3️⃣ "ಮಾದರಿ ನೋಡಿ" ಒತ್ತಿ ನೋಡಿ, ಇಷ್ಟವಾದರೆ ಬೆಲೆಯ ಡಬ್ಬಿ ಒತ್ತಿ ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಿ\n4️⃣ ಕೆಳಗೆ "ಹಣ ಪಾವತಿಸಿ" → PhonePe / GPay ನಿಂದ ${CONFIG.payPhone || CONFIG.upi} ಗೆ ಕಳುಹಿಸಿ → "ಆರ್ಡರ್ ಕಳುಹಿಸಿ"\n\nಸಮಸ್ಯೆ ಇದ್ದರೆ ಇದೇ ಸಂಖ್ಯೆಗೆ ಸಂದೇಶ ಕಳುಹಿಸಿ. ಧನ್ಯವಾದಗಳು.`;
+  $('adLeads').innerHTML = `<thead><tr><th>ನೋಂದಣಿ</th><th>ಶಿಕ್ಷಕರು</th><th>ಶಾಲೆ</th><th>ಮೊಬೈಲ್</th><th></th></tr></thead><tbody>` +
+    (leads.map(u => `<tr><td>${dmy(u.created)}</td><td>${esc(u.teacher || '')}</td><td>${esc(u.name || '')}</td><td>${esc(u.id)}</td><td style="text-align:right"><a class="btn sm pri" target="_blank" rel="noopener" href="https://wa.me/91${esc(u.id)}?text=${encodeURIComponent(msg(u))}">WhatsApp</a></td></tr>`).join('') || `<tr><td colspan="5">${emptyBox('ಎಲ್ಲರೂ ಖರೀದಿಸಿದ್ದಾರೆ 🎉')}</td></tr>`) + '</tbody>';
+}
+async function adminExtra() {
+  try {
+    const rq = (await ACC.requests()).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+    $('adReq').innerHTML = rq.map(r => `<div class="unit"><span class="no">?</span><div><b>${esc(r.text)}</b><small>${esc(r.teacher || '')} · ${esc(r.school || '')} · ${esc(r.uid)} · ${dmy(r.at)} · ${esc(MEDIA[r.medium] || '')}</small></div>
+      <div class="acts"><button class="btn sm" type="button" data-rq="${esc(r.id)}">✓ ಆಯಿತು</button></div></div>`).join('') || emptyBox('ಇನ್ನೂ ಯಾವುದೇ ಬೇಡಿಕೆ ಇಲ್ಲ');
+    $('adReq').querySelectorAll('[data-rq]').forEach(b => b.onclick = () => busy(b, async () => { await ACC.delRequest(b.dataset.rq); b.closest('.unit').remove(); }));
+  } catch (e) { $('adReq').innerHTML = emptyBox('ಓದಲು ಆಗಲಿಲ್ಲ', 'Firestore Rules ಹೊಸದನ್ನು Publish ಮಾಡಿ.'); }
+  const c = await ACC.counts(), top = Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 15);
+  $('adTop').innerHTML = `<thead><tr><th>ದಾಖಲೆ</th><th>ಎಷ್ಟು ಸಲ</th></tr></thead><tbody>` +
+    (top.map(([n, k]) => { const p = parseName(n); return `<tr><td class="small">${esc(p && p.type !== 'bad' ? describe(p) : n)}${p?.med && p.med !== 'kn' ? ' · ' + esc(MEDIA[p.med]) : ''}</td><td><b>${k}</b></td></tr>`; }).join('') || `<tr><td colspan="2">${emptyBox('ಇನ್ನೂ ಲೆಕ್ಕ ಇಲ್ಲ')}</td></tr>`) + '</tbody>';
 }
 function adminSettings() {
   const P = CONFIG.prices, L = { lp: 'ಪಾಠಯೋಜನೆ', ppt: 'PPT', nt: 'ನೋಟ್ಸ್', aj: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', doc: 'ಇತರೆ ದಾಖಲೆ', sub: 'ವಿಷಯ ಪ್ಯಾಕ್', cls: 'ತರಗತಿ ಪ್ಯಾಕ್', sch: 'ಶಾಲಾ ಪ್ಯಾಕ್' };
@@ -2561,9 +2729,24 @@ function adminSettings() {
     $('ndCode').value = $('ndName').value = $('ndPrice').value = ''; draw();
     toast('ಸೇರಿಸಲಾಗಿದೆ. ಕೊನೆಗೆ ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.');
   };
+  $('stNotice').value = SET.notice || '';
+  $('stRefPct').value = SET.refPct; $('stRefRew').value = SET.refReward;
+  const cps = JSON.parse(JSON.stringify(SET.coupons || {}));
+  const drawC = () => {
+    $('stCoupons').innerHTML = `<thead><tr><th>ಕೋಡ್</th><th>ಕಡಿತ</th><th>ಕೊನೆಯ ದಿನ</th><th></th></tr></thead><tbody>` +
+      (Object.entries(cps).filter(([, c]) => !c.off).map(([k, c]) => `<tr><td><code>${esc(k)}</code></td><td>${c.pct}%</td><td>${c.until ? dmy(c.until) + (String(c.until) < today() ? ' <span class="pill off">ಮುಗಿದಿದೆ</span>' : '') : 'ಮಿತಿ ಇಲ್ಲ'}</td><td style="text-align:right"><button class="x" type="button" data-cx="${esc(k)}">✕</button></td></tr>`).join('') || '<tr><td colspan="4" class="muted small">ಯಾವುದೇ ಕೂಪನ್ ಇಲ್ಲ</td></tr>') + '</tbody>';
+    $('stCoupons').querySelectorAll('[data-cx]').forEach(b => b.onclick = () => { cps[b.dataset.cx] = { ...cps[b.dataset.cx], off: true }; drawC(); });
+  };
+  $('ncAdd').onclick = () => {
+    const k = $('ncCode').value.trim().toUpperCase().replace(/\s+/g, ''), pct = +$('ncPct').value;
+    if (!/^[A-Z0-9]{3,20}$/.test(k)) return toast('ಕೋಡ್: ಇಂಗ್ಲಿಷ್ ಅಕ್ಷರ / ಅಂಕೆ ಮಾತ್ರ, 3–20.', true);
+    if (!(pct > 0 && pct <= 90)) return toast('ಕಡಿತ 1–90% ಒಳಗೆ.', true);
+    cps[k] = { pct, until: $('ncUntil').value || '' }; $('ncCode').value = ''; drawC(); toast('ಸೇರಿಸಲಾಗಿದೆ. ಮೇಲಿನ "ಉಳಿಸಿ" ಒತ್ತಿ.');
+  };
+  drawC();
   $('stSave').onclick = () => busy($('stSave'), async () => {
     const prices = {}; $('stPrices').querySelectorAll('[data-p]').forEach(i => { prices[i.dataset.p] = +i.value || 0; });
-    await ACC.saveSettings({ prices, docs: list, at: new Date().toISOString() });
+    await ACC.saveSettings({ prices, docs: list, notice: $('stNotice').value.trim(), coupons: cps, refPct: +$('stRefPct').value || 0, refReward: +$('stRefRew').value || 0, at: new Date().toISOString() });
     ADM.docs = Object.fromEntries(Object.entries(list).filter(([, d]) => !d.removed));
     makerReady = false; adminSettings(); toast('ದರಪಟ್ಟಿ ಉಳಿಸಲಾಗಿದೆ.');
   });
@@ -2611,11 +2794,21 @@ function adminUser(id) {
   $('upExp').value = yearEnd();
   const vis = () => { const t = $('upType').value; $('upClsW').hidden = t === 'sch'; $('upSubjW').hidden = !['lp', 'ppt', 'nt', 'sub'].includes(t); $('upDocW').hidden = t !== 'doc'; };
   $('upType').onchange = vis; vis();
+  const record = async (items, amt) => {      // ನೇರ ಪಾವತಿ: ಆದಾಯದ ಲೆಕ್ಕಕ್ಕೆ ಸೇರಿಸುವುದು
+    const o = { uid: u.id, items, total: amt, status: 'done', manual: true, at: new Date().toISOString(), doneAt: new Date().toISOString(), school: u.name || '', teacher: u.teacher || '' };
+    o.id = await ACC.adminOrder(o); ADM.orders.push(o);
+  };
+  $('upMoney').onclick = () => busy($('upMoney'), async () => {
+    const amt = +$('upAmt').value || 0; if (amt <= 0) return toast('ಪಡೆದ ಹಣ ₹ ಬರೆಯಿರಿ.', true);
+    await record([], amt); $('upAmt').value = 0; adminRender(); toast(`₹${amt} ಆದಾಯಕ್ಕೆ ಸೇರಿಸಲಾಗಿದೆ.`);
+  });
   $('upAdd').onclick = () => busy($('upAdd'), async () => {
     const t = $('upType').value, m = $('upMed').value, c = $('upCls').value;
     const k = t === 'sch' ? `sch:${m}` : t === 'cls' ? `cls:${m}:${c}` : t === 'aj' ? `aj:${m}:${c}` : t === 'doc' ? `doc:${m}:${c}:${$('upDoc').value}` : `${t}:${m}:${c}:${$('upSubj').value}`;
     const exp = $('upExp').value || yearEnd();
-    await ACC.grant(u.id, [k], exp); u.packs = { ...(u.packs || {}), [k]: exp }; draw(); adminUsers(); toast('ಸೇರಿಸಲಾಗಿದೆ: ' + packLabel(k, true));
+    await ACC.grant(u.id, [k], exp); u.packs = { ...(u.packs || {}), [k]: exp };
+    const amt = +$('upAmt').value || 0; if (amt > 0) { await record([k], amt); $('upAmt').value = 0; }
+    draw(); adminRender(); toast('ಸೇರಿಸಲಾಗಿದೆ: ' + packLabel(k, true) + (amt > 0 ? ` · ₹${amt} ಆದಾಯಕ್ಕೆ` : ''));
   });
   draw();
   $('ud').showModal();
@@ -2623,12 +2816,24 @@ function adminUser(id) {
 $('udClose').onclick = () => $('ud').close();
 $('cartClose').onclick = () => $('cart').close();
 $('cartBtn').onclick = () => CART.open();
+$('cartBarGo').onclick = () => CART.open();
 
 /* ---------- ಆರಂಭ ---------- */
 let FULL = null;
+/* "ಹೊಸದು": ಈ ಸಾಧನದಲ್ಲಿ ಮೊದಲ ಬಾರಿ ಕಂಡ ದಿನದಿಂದ 15 ದಿನ */
+let SEEN = {};
+function markSeen(files) {
+  const old = store.get('bm_seen', null), first = !old, t = today();
+  SEEN = old || {};
+  for (const f of files) if (!SEEN[f.name]) SEEN[f.name] = first ? '2000-01-01' : t;
+  store.set('bm_seen', SEEN);
+}
+const isNew = name => { const d = SEEN[name]; if (!d || d === '2000-01-01') return false; return (Date.now() - new Date(d)) / 864e5 <= 15; };
+const subNew = s => [...Object.values(s.lp).flatMap(o => Object.values(o)), ...['ppt', 'nt'].flatMap(t => Object.values(s[t]).flat().flatMap(it => Object.values(it.files).map(f => f.name)))].some(n => isNew(typeof n === 'string' ? n : n?.name));
 async function loadDB(force) {
   try {
     const files = await listRepo(force), m = medium();
+    markSeen(files.filter(f => f.type !== 'dir'));
     FULL = buildDB(files);
     DB = buildDB(files.filter(f => f.type === 'dir' || medOf(f.name) === m));
     DB.bad = []; DB.dirs = [];
