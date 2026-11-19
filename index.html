@@ -244,6 +244,22 @@ input[type=password],input[type=date]{background:var(--bg);border:1px solid var(
 .ttcls button{min-width:30px;padding:3px 7px;border-radius:6px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:12.5px}
 .ttcls button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .ttsum{display:grid;gap:8px}.ttsum>div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ttts{display:grid;gap:14px;padding:0 20px 6px}
+.ttt{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--panel)}
+.ttth{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.ttth .ttname{flex:1 1 180px;font-weight:700;font-size:15px}
+.ttth label{display:flex;gap:6px;align-items:center;font-size:13px;white-space:nowrap}
+.btn.del{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 45%,transparent)}
+.btn.del.sure{background:var(--danger);color:#fff}
+.ttw{width:100%;margin:4px 0 8px}table.list.ttw{min-width:0}.ttw td{padding:5px 4px;vertical-align:middle}.ttw td:first-child{width:64px;white-space:nowrap}.ttw input{padding:6px 8px}
+.ttt{min-width:0}
+@media (max-width:560px){.ttt{padding:10px}.ttw td:first-child{width:auto}.ttw .u{display:none}.ttw input[type=number]{width:50px!important}.ttw input[data-f=subject]{width:120px!important;min-width:0!important}.ttts{padding:0 12px 6px}}
+.ttadd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;background:var(--bg);border-radius:10px;padding:10px}
+.ttadd .lbl{font-size:12.5px;color:var(--muted);font-weight:600}
+.ttadd select,.ttadd input{max-width:190px}
+.tthelp{margin-top:10px;font-size:13.5px}.tthelp summary{cursor:pointer;font-weight:600;color:var(--accent)}
+.tthelp ol{margin:8px 0 0;padding-left:20px;line-height:1.7}
+.ttcs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px dashed var(--line)}
 p.bad{color:var(--danger);margin:6px 0 0}
 .ttg{border-collapse:collapse;width:100%;min-width:640px}
 .ttg th,.ttg td{border:1px solid var(--line);padding:6px;text-align:center;font-size:12.5px;vertical-align:middle}
@@ -470,21 +486,25 @@ textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;pad
       <section id="v-tt" class="view" hidden>
         <div class="card pad"><div class="sec-h"><h2>ವೇಳಾಪಟ್ಟಿ ತಯಾರಕ <span class="pill">ಉಚಿತ</span></h2>
           <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" type="button" id="ttExport">ಉಳಿಕೆ ಫೈಲ್ download</button><label class="btn sm" style="cursor:pointer">ಉಳಿಕೆ ಫೈಲ್ ತೆರೆಯಿರಿ<input type="file" id="ttImport" accept=".json,application/json" hidden></label><button class="btn sm" type="button" id="ttReset">ಹೊಸದಾಗಿ ಆರಂಭಿಸಿ</button></span></div>
-          <p class="small muted" style="margin:6px 0 0">1) ಸಮಯ → 2) ತರಗತಿ ಮತ್ತು ಶಿಕ್ಷಕರು → 3) ವಿಷಯ ಹಂಚಿಕೆ → 4) "ವೇಳಾಪಟ್ಟಿ ತಯಾರಿಸಿ". ಒಬ್ಬ ಶಿಕ್ಷಕರಿಗೆ ಒಂದೇ ಸಮಯದಲ್ಲಿ ಎರಡು ತರಗತಿ ಬರದಂತೆ ತಾನಾಗಿಯೇ ಹಂಚುತ್ತದೆ. ನೀವು ಮಾಡಿದ್ದು ತಾನಾಗಿಯೇ ಉಳಿಯುತ್ತದೆ.</p></div>
+          <p class="small muted" style="margin:6px 0 0">1) ಸಮಯ → 2) ತರಗತಿಗಳು → 3) ಶಿಕ್ಷಕರು ಮತ್ತು ಅವರು ಕಲಿಸುವ ವಿಷಯ → 4) "ವೇಳಾಪಟ್ಟಿ ತಯಾರಿಸಿ". ಒಬ್ಬ ಶಿಕ್ಷಕರಿಗೆ ಒಂದೇ ಸಮಯದಲ್ಲಿ ಎರಡು ತರಗತಿ ಬರದಂತೆ ತಾನಾಗಿಯೇ ಹಂಚುತ್ತದೆ. ನೀವು ಮಾಡಿದ್ದು ತಾನಾಗಿಯೇ ಉಳಿಯುತ್ತದೆ.</p></div>
         <div class="grid2">
           <div class="card pad"><h3 class="h3">1. ಸೋಮವಾರ – ಶುಕ್ರವಾರ ಸಮಯ</h3><div id="ttWeek"></div></div>
           <div class="card pad"><h3 class="h3">ಶನಿವಾರ ಸಮಯ (ಬೆಳಿಗ್ಗೆ)</h3><div id="ttSat"></div></div>
         </div>
-        <div class="grid2">
-          <div class="card pad"><h3 class="h3">2. ತರಗತಿಗಳು</h3><div class="chips" id="ttClasses"></div>
-            <span class="row2" style="margin-top:10px"><input type="text" id="ttNewC" placeholder="ಉದಾ: 1, 2, 3, 4, 5 ಅಥವಾ 6A, 6B"><button class="btn sm pri" type="button" id="ttAddC">ಸೇರಿಸಿ</button></span></div>
-          <div class="card pad"><h3 class="h3">ಶಿಕ್ಷಕರು</h3><div class="chips" id="ttTeachers"></div>
-            <span class="row2" style="margin-top:10px"><input type="text" id="ttNewT" placeholder="ಉದಾ: ಶ್ರೀ ರಮೇಶ, ಶ್ರೀಮತಿ ಸುಮಾ"><button class="btn sm pri" type="button" id="ttAddT">ಸೇರಿಸಿ</button></span></div>
-        </div>
+        <div class="card pad"><h3 class="h3">2. ಶಾಲೆಯ ತರಗತಿಗಳು</h3><div class="chips" id="ttClasses"></div>
+          <span class="row2" style="margin-top:10px"><input type="text" id="ttNewC" placeholder="ಉದಾ: 1, 2, 3, 4, 5, 6, 7, 8"><button class="btn sm pri" type="button" id="ttAddC">ಸೇರಿಸಿ</button></span></div>
         <div class="card">
-          <div class="pad sec-h"><h2>3. ವಿಷಯ ಹಂಚಿಕೆ</h2><span style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select id="ttFilter"></select><button class="btn sm" type="button" id="ttSuggest">ಸಲಹೆಯ ವಿಷಯಗಳು</button><button class="btn sm" type="button" id="ttAddL">+ ವಿಷಯ</button></span></div>
-          <p class="small muted" style="margin:0;padding:0 20px 10px"><b>ಬಹುವರ್ಗ / ಜೊತೆ ತರಗತಿ:</b> ಒಬ್ಬ ಶಿಕ್ಷಕರು 1 ಮತ್ತು 2ನೇ ತರಗತಿಗೆ ಕನ್ನಡ ಒಟ್ಟಿಗೆ ಕಲಿಸಿದರೆ, 1ನೇ ತರಗತಿಯ ಕನ್ನಡ ಸಾಲಿನಲ್ಲಿ "2" ಅನ್ನೂ ಒತ್ತಿ (ಹಸಿರು), 2ನೇ ತರಗತಿಯ ಕನ್ನಡ ಸಾಲನ್ನು ✕ ಮಾಡಿ.</p>
-          <div class="tw"><table class="list" id="ttLoad"></table></div>
+          <div class="pad sec-h"><h2>3. ಶಿಕ್ಷಕರು ಮತ್ತು ಅವರು ಕಲಿಸುವುದು</h2></div>
+          <div class="pad" style="padding-top:0">
+            <span class="row2"><input type="text" id="ttNewT" placeholder="ಶಿಕ್ಷಕರ ಹೆಸರು, ಉದಾ: ಶ್ರೀ ರಮೇಶ"><button class="btn sm pri" type="button" id="ttAddT">+ ಶಿಕ್ಷಕರನ್ನು ಸೇರಿಸಿ</button></span>
+            <details class="tthelp"><summary>ಹೇಗೆ ತುಂಬುವುದು? (ಉದಾಹರಣೆಗಳು)</summary><ol>
+              <li><b>ನಲಿಕಲಿ (1–3) ಒಬ್ಬರೇ ಶಿಕ್ಷಕರು:</b> ಅವರ ಹೆಸರಿನ ಕೆಳಗೆ ತರಗತಿ 1, 2, 3 ಒತ್ತಿ → ವಿಷಯ "★ ಎಲ್ಲಾ ವಿಷಯಗಳು" → "ಒಟ್ಟಿಗೆ (ಬಹುವರ್ಗ)" → ಸೇರಿಸಿ.</li>
+              <li><b>4–5 ಒಬ್ಬರೇ ಶಿಕ್ಷಕರು:</b> 4, 5 ಒತ್ತಿ → "★ ಎಲ್ಲಾ ವಿಷಯಗಳು" → "ಒಟ್ಟಿಗೆ" → ಸೇರಿಸಿ. ಬೇರೆ ಬೇರೆ ಶಿಕ್ಷಕರಿದ್ದರೆ ಪ್ರತಿಯೊಬ್ಬರಿಗೆ ಅವರ ತರಗತಿ ಮಾತ್ರ.</li>
+              <li><b>6–8 ವಿಷಯ ಶಿಕ್ಷಕರು:</b> 6, 7, 8 ಒತ್ತಿ → ವಿಷಯ "ಗಣಿತ" → "ಪ್ರತಿ ತರಗತಿಗೆ ಬೇರೆ" → ಸೇರಿಸಿ. ಎರಡನೇ ವಿಷಯ ಇದ್ದರೆ ಮತ್ತೆ ಅದೇ ರೀತಿ ಸೇರಿಸಿ.</li>
+              <li><b>ವರ್ಗ ಶಿಕ್ಷಕರು:</b> ಹೆಸರಿನ ಪಕ್ಕ "ವರ್ಗ ಶಿಕ್ಷಕರು" ಆರಿಸಿದರೆ ಪ್ರತಿದಿನ ಆ ತರಗತಿಯ ಮೊದಲ ಅವಧಿ ಅವರದೇ ಆಗುತ್ತದೆ.</li>
+              <li>ಹೆಸರು ತಪ್ಪಾಗಿದ್ದರೆ ಹೆಸರಿನ ಮೇಲೆಯೇ ತಿದ್ದಿ. ಬೇಡವಾದರೆ "🗑 ತೆಗೆಯಿರಿ" ಒತ್ತಿ.</li></ol></details>
+          </div>
+          <div class="ttts" id="ttTeachers"></div>
           <div class="pad" id="ttSum"></div>
           <div class="pad" style="padding-top:0"><button class="btn pri" type="button" id="ttGo">4. ವೇಳಾಪಟ್ಟಿ ತಯಾರಿಸಿ</button></div>
         </div>
@@ -1197,7 +1217,7 @@ const PM = (() => {
     const tAt = (t, d, p) => { for (const c of T.classes) { const it = item(T.grid?.[c]?.[d]?.[p]); if (it && it.teacher === t) return it; } return null; };
     const week = (title, fn, extra) => {
       f.text(title, { size: 14, weight: 700, color: GREEN, gap: 2 });
-      if (extra) f.text(extra, { size: 9.5, color: '#444', gap: 4 });
+      if (extra) f.text(extra, { size: 10.5, weight: 700, color: '#222', gap: 4 });
       f.text(en ? 'Monday – Friday' : 'ಸೋಮವಾರ – ಶುಕ್ರವಾರ', { size: 10, weight: 700, gap: 2 });
       f.table(fr(T.week), head(en ? 'Day' : 'ದಿನ', T.week), [0, 1, 2, 3, 4].map(d => row(days[d], T.week, p => fn(d, p))), { fs: 8.5, firstBold: true });
       f.text(days[5], { size: 10, weight: 700, gap: 2 });
@@ -1208,18 +1228,19 @@ const PM = (() => {
     const next = () => { if (!first) f.newPage(); first = false; };
     if (mode === 'cls') for (const c of T.classes) {
       next();
+      const ctn = ttClassTeacher(c);
       week(`${en ? 'Class ' + c : c + 'ನೇ ತರಗತಿ'} · ${en ? 'Timetable' : 'ವೇಳಾಪಟ್ಟಿ'} ${school.year || ''}`, (d, p) => {
         const it = item(T.grid?.[c]?.[d]?.[p]); if (!it) return EMPTY;
         return [{ t: it.subject, b: true }, { t: short(it.teacher) + (it.classes.length > 1 ? ` (${it.classes.join('+')})` : '') }];
-      });
+      }, ctn ? `${en ? 'Class Teacher' : 'ವರ್ಗ ಶಿಕ್ಷಕರು'}: ${ctn}` : '');
     }
     if (mode === 'tch') for (const t of T.teachers) {
-      const n = T.load.filter(x => x.teacher === t).reduce((a, x) => a + (+x.n || 0), 0);
+      const n = T.load.filter(x => x.teacher === t).reduce((a, x) => a + (+x.n || 0), 0), cto = T.classes.filter(c => ttClassTeacher(c) === t);
       next();
       week(`${t} · ${en ? 'Timetable' : 'ವೇಳಾಪಟ್ಟಿ'} ${school.year || ''}`, (d, p) => {
         const it = tAt(t, d, p); if (!it) return EMPTY;
         return [{ t: it.classes.join('+') + (en ? '' : 'ನೇ'), b: true }, { t: it.subject }];
-      }, en ? `${n} periods per week` : `ವಾರಕ್ಕೆ ${n} ಅವಧಿ`);
+      }, (en ? `${n} periods per week` : `ವಾರಕ್ಕೆ ${n} ಅವಧಿ`) + (cto.length ? (en ? ` · Class Teacher: Class ${cto.join(', ')}` : ` · ${cto.join(', ')}ನೇ ತರಗತಿಯ ವರ್ಗ ಶಿಕ್ಷಕರು`) : ''));
     }
     if (mode === 'all') for (let d = 0; d < 6; d++) {
       const slots = d < 5 ? T.week : T.sat;
@@ -3063,10 +3084,10 @@ function ttDefault() {
       { t: 'p', f: '14:40', to: '15:20' }, { t: 'b', l: 'ಕಿರು ವಿರಾಮ', f: '15:20', to: '15:30' }, { t: 'p', f: '15:30', to: '16:10' }],
     sat: [{ t: 'b', l: 'ಪ್ರಾರ್ಥನೆ', f: '08:00', to: '08:15' }, { t: 'p', f: '08:15', to: '08:55' }, { t: 'p', f: '08:55', to: '09:35' }, { t: 'b', l: 'ಕಿರು ವಿರಾಮ', f: '09:35', to: '09:45' },
       { t: 'p', f: '09:45', to: '10:25' }, { t: 'p', f: '10:25', to: '11:05' }, { t: 'p', f: '11:05', to: '11:45' }],
-    classes: [], teachers: [], load: [], grid: null, at: ''
+    classes: [], teachers: [], load: [], ct: {}, grid: null, at: ''
   };
 }
-let TT = null, ttFilter = '', ttView = { mode: 'cls', key: '' }, ttPick = null, ttSaveT = 0;
+let TT = null, ttView = { mode: 'cls', key: '' }, ttPick = null, ttSaveT = 0;
 function ttLoad() {
   if (TT) return TT;
   let x = null;
@@ -3091,15 +3112,30 @@ function ttGenerate() {
   const items = TT.load.filter(x => x.n > 0 && x.classes.length && x.subject);
   const days = 6, P = [0, 1, 2, 3, 4, 5].map(ttPer);
   const tLoad = {}; items.forEach(x => { if (x.teacher) tLoad[x.teacher] = (tLoad[x.teacher] || 0) + x.n; });
+  const ctAll = TT.classes.filter(c => TT.ct?.[c] && TT.teachers.includes(TT.ct[c])).map(c => [c, TT.ct[c]]);
   let best = null; const t0 = Date.now();
   for (let att = 0; att < 400 && Date.now() - t0 < 2500; att++) {
-    const grid = {}, tOcc = {}, cnt = {};
+    const grid = {}, tOcc = {}, cnt = {}, used = {};
     TT.classes.forEach(c => { grid[c] = P.map(n => Array(n).fill(null)); });
+    items.forEach(it => { cnt[it.id] = Array(days).fill(0); used[it.id] = 0; });
+    const put = (it, d, p) => { it.classes.forEach(c => { grid[c][d][p] = it.id; }); if (it.teacher) tOcc[it.teacher + '|' + d + '|' + p] = 1; cnt[it.id][d]++; used[it.id]++; };
+    let miss = 0, ctMiss = 0, pen = 0; const missList = [];
+    /* ವರ್ಗ ಶಿಕ್ಷಕರು: ಪ್ರತಿದಿನ ಮೊದಲ ಅವಧಿ ಅವರದೇ */
+    const ctList = att ? ctAll.slice().sort(() => Math.random() - .5) : ctAll;
+    for (const [c, t] of ctList) for (let d = 0; d < days; d++) {
+      if (!P[d] || grid[c][d][0]) continue;
+      if (tOcc[t + '|' + d + '|0']) { ctMiss++; continue; }
+      let pick = null, ps = 1e9;
+      for (const it of items) {
+        if (it.teacher !== t || !it.classes.includes(c) || used[it.id] >= it.n || it.classes.some(cc => !grid[cc] || grid[cc][d][0])) continue;
+        const sc = cnt[it.id][d] * 50 + (TT_CORE.test(it.subject) ? 0 : 6) - (it.n - used[it.id]) + Math.random() * 6;
+        if (sc < ps) { ps = sc; pick = it; }
+      }
+      if (pick) put(pick, d, 0); else ctMiss++;
+    }
     const order = items.slice().sort((a, b) => ((tLoad[b.teacher] || 0) + b.classes.length * 6 + b.n) - ((tLoad[a.teacher] || 0) + a.classes.length * 6 + a.n) + (Math.random() - .5) * (att ? 8 : 0));
-    let miss = 0, pen = 0;
     for (const it of order) {
-      cnt[it.id] = Array(days).fill(0);
-      for (let k = 0; k < it.n; k++) {
+      for (let k = used[it.id]; k < it.n; k++) {
         let pick = null, ps = 1e9;
         for (let d = 0; d < days; d++) for (let p = 0; p < P[d]; p++) {
           if (it.classes.some(c => !grid[c] || grid[c][d][p])) continue;
@@ -3110,19 +3146,43 @@ function ttGenerate() {
           if (d === 5 && TT_LIGHT.test(it.subject)) sc -= 2;
           /* ಒಂದೇ ವಿಷಯ ಸತತ ಎರಡು ಅವಧಿ ಬೇಡ */
           if (it.classes.some(c => (p > 0 && grid[c][d][p - 1] === it.id) || (p + 1 < P[d] && grid[c][d][p + 1] === it.id))) sc += 15;
+          /* ವರ್ಗ ಶಿಕ್ಷಕರ ತರಗತಿಯ ಮೊದಲ ಅವಧಿ ಅವರಿಗಾಗಿ ಬಿಡಿ */
+          if (p === 0 && it.classes.some(c => TT.ct?.[c] && TT.ct[c] !== it.teacher)) sc += 60;
           if (sc < ps) { ps = sc; pick = [d, p]; }
         }
-        if (!pick) { miss++; continue; }
-        const [d, p] = pick; pen += ps;
-        it.classes.forEach(c => { grid[c][d][p] = it.id; });
-        if (it.teacher) tOcc[it.teacher + '|' + d + '|' + p] = 1;
-        cnt[it.id][d]++;
+        if (!pick) { miss++; missList.push(it); continue; }
+        pen += ps; put(it, pick[0], pick[1]);
       }
     }
-    if (!best || miss < best.miss || (miss === best.miss && pen < best.pen)) best = { grid, miss, pen };
-    if (best.miss === 0 && att > 25) break;
+    /* ದುರಸ್ತಿ: ಇಡಲಾಗದ ಅವಧಿಗಾಗಿ ಅಡ್ಡ ಬರುವ ಒಂದು ಅವಧಿಯನ್ನು ಬೇರೆಡೆ ಸರಿಸಿ ಜಾಗ ಮಾಡಿ */
+    if (missList.length) {
+      const byId = {}; items.forEach(x => { byId[x.id] = x; });
+      const occ = (t, d, p) => t && tOcc[t + '|' + d + '|' + p];
+      const free = (cls, d, p) => cls.every(c => grid[c] && !grid[c][d][p]);
+      const locked = (j, p) => p === 0 && j.classes.some(c => TT.ct?.[c] === j.teacher);
+      const move = (j, d, p, d2, p2) => { j.classes.forEach(c => { grid[c][d][p] = null; grid[c][d2][p2] = j.id; }); if (j.teacher) { delete tOcc[j.teacher + '|' + d + '|' + p]; tOcc[j.teacher + '|' + d2 + '|' + p2] = 1; } cnt[j.id][d]--; cnt[j.id][d2]++; };
+      const relocate = (j, d, p) => { for (let d2 = 0; d2 < days; d2++) for (let p2 = 0; p2 < P[d2]; p2++) if ((d2 !== d || p2 !== p) && free(j.classes, d2, p2) && !occ(j.teacher, d2, p2)) { move(j, d, p, d2, p2); return true; } return false; };
+      for (const it of missList) {
+        let done = false;
+        for (let d = 0; d < days && !done; d++) for (let p = 0; p < P[d] && !done; p++) {
+          const cFree = free(it.classes, d, p), tBusy = occ(it.teacher, d, p);
+          if (cFree && tBusy) {
+            const j = items.find(x => x.teacher === it.teacher && x.classes.some(c => grid[c][d][p] === x.id));
+            if (j && !locked(j, p) && relocate(j, d, p)) { put(it, d, p); done = true; }
+          } else if (!cFree && !tBusy) {
+            const ids = [...new Set(it.classes.map(c => grid[c][d][p]).filter(Boolean))];
+            const k = ids.length === 1 && byId[ids[0]];
+            if (k && !locked(k, p) && relocate(k, d, p) && free(it.classes, d, p)) { put(it, d, p); done = true; }
+          }
+        }
+        if (done) miss--;
+      }
+    }
+    const better = !best || miss < best.miss || (miss === best.miss && (ctMiss < best.ctMiss || (ctMiss === best.ctMiss && pen < best.pen)));
+    if (better) best = { grid, miss, ctMiss, pen };
+    if (best.miss === 0 && best.ctMiss === 0 && att > 25) break;
   }
-  TT.grid = best ? best.grid : null; TT.miss = best ? best.miss : 0;
+  TT.grid = best ? best.grid : null; TT.miss = best ? best.miss : 0; TT.ctMiss = best ? best.ctMiss : 0;
   return best;
 }
 const ttItem = id => TT.load.find(x => x.id === id);
@@ -3163,32 +3223,65 @@ function ttTimeRows(key) {
     <button class="x" type="button" data-del="${key}:${i}" aria-label="ತೆಗೆಯಿರಿ">✕</button></div>`).join('') +
     `<div style="display:flex;gap:8px;margin-top:8px"><button class="btn sm" type="button" data-add="${key}:p">+ ಅವಧಿ</button><button class="btn sm" type="button" data-add="${key}:b">+ ವಿರಾಮ</button></div>`;
 }
+const ttSubjects = () => { const L = TT_SUGGEST[['en', 'bi'].includes(medium()) ? 'en' : 'kn']; return [...new Set([...L.low, ...L.mid, ...L.hps, ...L.hs].map(x => x[0]))]; };
+const ttSet = c => { const n = parseInt(c, 10), L = TT_SUGGEST[['en', 'bi'].includes(medium()) ? 'en' : 'kn']; return L[!(n > 0) ? 'hps' : n <= 3 ? 'low' : n <= 5 ? 'mid' : n <= 8 ? 'hps' : 'hs']; };
+const ttLoadOf = t => TT.load.filter(x => x.teacher === t).reduce((a, x) => a + (+x.n || 0), 0);
+/* ತರಗತಿಯ ವರ್ಗ ಶಿಕ್ಷಕರು: ಆರಿಸಿದವರು, ಇಲ್ಲವಾದರೆ ಪ್ರತಿದಿನ ಮೊದಲ ಅವಧಿ ತೆಗೆದುಕೊಳ್ಳುವವರು */
+function ttClassTeacher(c) {
+  if (TT.ct?.[c] && TT.teachers.includes(TT.ct[c])) return TT.ct[c];
+  if (!TT.grid?.[c]) return '';
+  const ts = [0, 1, 2, 3, 4, 5].filter(d => ttPer(d)).map(d => ttItem(TT.grid[c][d][0])?.teacher || '');
+  return ts.length && ts[0] && ts.every(t => t === ts[0]) ? ts[0] : '';
+}
+function ttTeacherCard(t, i, S) {
+  const mine = TT.load.filter(x => x.teacher === t), n = ttLoadOf(t);
+  const myCls = TT.classes.filter(c => mine.some(x => x.classes.includes(c)));
+  const ctc = TT.classes.find(c => TT.ct?.[c] === t) || '';
+  const subs = ttSubjects();
+  const rows = mine.map(x => `<tr><td><b>${esc(x.classes.join('+'))}ನೇ</b>${x.classes.length > 1 ? '<br><small class="muted">ಒಟ್ಟಿಗೆ</small>' : ''}</td>
+    <td><input type="text" data-l="${x.id}" data-f="subject" value="${esc(x.subject)}" style="width:100%;min-width:72px;max-width:220px" aria-label="ವಿಷಯ"></td>
+    <td style="white-space:nowrap"><input type="number" min="0" max="40" data-l="${x.id}" data-f="n" value="${x.n}" style="width:58px" aria-label="ವಾರಕ್ಕೆ ಅವಧಿ"> <small class="muted u">ಅವಧಿ</small></td>
+    <td style="text-align:right"><button class="x" type="button" data-rml="${x.id}" aria-label="ಈ ವಿಷಯ ತೆಗೆಯಿರಿ" title="ಈ ವಿಷಯ ತೆಗೆಯಿರಿ">✕</button></td></tr>`).join('');
+  return `<div class="ttt" data-ti="${i}">
+    <div class="ttth"><input type="text" class="ttname" data-tn="${i}" value="${esc(t)}" aria-label="ಶಿಕ್ಷಕರ ಹೆಸರು">
+      <span class="pill ${n > S ? 'bad' : ''}">ವಾರಕ್ಕೆ ${n} / ${S} ಅವಧಿ</span>
+      <label>ವರ್ಗ ಶಿಕ್ಷಕರು: <select data-ct="${i}"><option value="">— ಇಲ್ಲ —</option>${myCls.map(c => `<option value="${esc(c)}"${c === ctc ? ' selected' : ''}>${esc(c)}ನೇ ತರಗತಿ</option>`).join('')}</select></label>
+      <button class="btn sm del" type="button" data-rmt="${i}">🗑 ತೆಗೆಯಿರಿ</button></div>
+    ${rows ? `<div class="tw"><table class="list ttw"><tbody>${rows}</tbody></table></div>` : '<p class="small muted" style="margin:0 0 8px">ಇನ್ನೂ ಯಾವ ವಿಷಯವೂ ಇಲ್ಲ. ಕೆಳಗೆ ತರಗತಿ ಮತ್ತು ವಿಷಯ ಆರಿಸಿ "ಸೇರಿಸಿ" ಒತ್ತಿ.</p>'}
+    <div class="ttadd"><span class="lbl">ತರಗತಿ:</span><div class="ttcls">${TT.classes.map(c => `<button type="button" data-ft="${i}" data-c="${esc(c)}">${esc(c)}</button>`).join('') || '<small class="muted">ಮೊದಲು ಮೇಲೆ ತರಗತಿ ಸೇರಿಸಿ</small>'}</div>
+      <span class="lbl">ವಿಷಯ:</span><select data-fs="${i}"><option value="__all">★ ಎಲ್ಲಾ ವಿಷಯಗಳು</option>${subs.map(x => `<option>${esc(x)}</option>`).join('')}<option value="__other">ಇತರೆ (ಬರೆಯಿರಿ)…</option></select>
+      <input type="text" data-fo="${i}" placeholder="ವಿಷಯದ ಹೆಸರು" hidden>
+      <select data-fm="${i}"><option value="sep">ಪ್ರತಿ ತರಗತಿಗೆ ಬೇರೆ</option><option value="tog">ಒಟ್ಟಿಗೆ (ಬಹುವರ್ಗ)</option></select>
+      <input type="number" min="1" max="40" data-fn="${i}" placeholder="ಅವಧಿ" style="width:78px" title="ವಾರಕ್ಕೆ ಅವಧಿ (ಖಾಲಿ ಬಿಟ್ಟರೆ ತಾನಾಗಿ)">
+      <button class="btn sm pri" type="button" data-fadd="${i}">ಸೇರಿಸಿ</button></div>
+  </div>`;
+}
 function ttRender() {
   ttLoad();
-  const days = ttDays();
+  if (!TT.ct) TT.ct = {};
+  /* ಅಳಿಸಿದ ಶಿಕ್ಷಕರು/ತರಗತಿಗಳ ವರ್ಗ ಶಿಕ್ಷಕ ಗುರುತು ತೆಗೆಯಿರಿ */
+  Object.keys(TT.ct).forEach(c => { const t = TT.ct[c]; if (!TT.classes.includes(c) || !TT.teachers.includes(t) || !TT.load.some(x => x.teacher === t && x.classes.includes(c))) delete TT.ct[c]; });
   $('ttWeek').innerHTML = ttTimeRows('week'); $('ttSat').innerHTML = ttTimeRows('sat');
-  $('ttClasses').innerHTML = TT.classes.map(c => `<span class="chipx">${esc(c)}<button type="button" data-rmc="${esc(c)}" aria-label="ತೆಗೆಯಿರಿ">✕</button></span>`).join('') || '<span class="muted small">ಇನ್ನೂ ತರಗತಿ ಸೇರಿಸಿಲ್ಲ</span>';
-  $('ttTeachers').innerHTML = TT.teachers.map(t => `<span class="chipx">${esc(t)}<button type="button" data-rmt="${esc(t)}" aria-label="ತೆಗೆಯಿರಿ">✕</button></span>`).join('') || '<span class="muted small">ಇನ್ನೂ ಶಿಕ್ಷಕರನ್ನು ಸೇರಿಸಿಲ್ಲ</span>';
-  fillSelect($('ttFilter'), [['', 'ಎಲ್ಲಾ ತರಗತಿ'], ...TT.classes.map(c => [c, c + 'ನೇ ತರಗತಿ'])], ttFilter);
-  /* ವಿಷಯ ಹಂಚಿಕೆ */
-  const rows = TT.load.filter(x => !ttFilter || x.classes.includes(ttFilter));
-  $('ttLoad').innerHTML = `<thead><tr><th>ತರಗತಿ (ಜೊತೆ ತರಗತಿ ಆರಿಸಿ)</th><th>ವಿಷಯ</th><th>ಶಿಕ್ಷಕರು</th><th>ವಾರಕ್ಕೆ ಅವಧಿ</th><th></th></tr></thead><tbody>` +
-    (rows.map(x => `<tr><td><div class="ttcls">${TT.classes.map(c => `<button type="button" class="${x.classes.includes(c) ? 'on' : ''}" data-tog="${x.id}:${esc(c)}">${esc(c)}</button>`).join('')}</div></td>
-      <td><input type="text" data-l="${x.id}" data-f="subject" value="${esc(x.subject)}" style="width:150px"></td>
-      <td><select data-l="${x.id}" data-f="teacher"><option value="">— ಆರಿಸಿ —</option>${TT.teachers.map(t => `<option${t === x.teacher ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></td>
-      <td><input type="number" min="0" max="20" data-l="${x.id}" data-f="n" value="${x.n}" style="width:70px"></td>
-      <td style="text-align:right"><button class="x" type="button" data-rml="${x.id}" aria-label="ತೆಗೆಯಿರಿ">✕</button></td></tr>`).join('')
-      || `<tr><td colspan="5">${emptyBox('ವಿಷಯಗಳನ್ನು ಸೇರಿಸಿ', 'ತರಗತಿ ಆರಿಸಿ "ಸಲಹೆಯ ವಿಷಯಗಳು" ಒತ್ತಿದರೆ ಸಾಮಾನ್ಯ ವಿಷಯಗಳು ಮತ್ತು ಅವಧಿಗಳು ತುಂಬುತ್ತವೆ.')}</td></tr>`) + '</tbody>';
-  /* ಸಾರಾಂಶ */
+  $('ttClasses').innerHTML = TT.classes.map(c => `<span class="chipx">${esc(c)}ನೇ<button type="button" data-rmc="${esc(c)}" aria-label="${esc(c)}ನೇ ತರಗತಿ ತೆಗೆಯಿರಿ" title="ತೆಗೆಯಿರಿ">✕</button></span>`).join('') || '<span class="muted small">ಇನ್ನೂ ತರಗತಿ ಸೇರಿಸಿಲ್ಲ</span>';
   const S = ttSlots();
-  const cl = TT.classes.map(c => [c, TT.load.filter(x => x.classes.includes(c)).reduce((a, x) => a + (+x.n || 0), 0)]);
-  const tl = TT.teachers.map(t => [t, TT.load.filter(x => x.teacher === t).reduce((a, x) => a + (+x.n || 0), 0)]);
-  const noT = TT.load.filter(x => !x.teacher && x.n > 0).length;
-  $('ttSum').innerHTML = `<div class="ttsum"><div><b>ತರಗತಿವಾರು ಅವಧಿಗಳು</b> <span class="small muted">(ವಾರಕ್ಕೆ ಒಟ್ಟು ${S} ಅವಧಿ)</span>${cl.map(([c, n]) => `<span class="pill ${n > S ? 'bad' : n < S ? 'warn' : ''}">${esc(c)}ನೇ: ${n}/${S}</span>`).join('') || ''}</div>
-    <div><b>ಶಿಕ್ಷಕರ ಕಾರ್ಯಭಾರ</b>${tl.map(([t, n]) => `<span class="pill ${n > S ? 'bad' : ''}">${esc(ttShort(t))}: ${n}</span>`).join('') || ''}</div></div>
-    ${cl.some(([, n]) => n > S) ? '<p class="bad small">⚠️ ಕೆಂಪು ತರಗತಿಗೆ ವಾರದ ಅವಧಿಗಳಿಗಿಂತ ಹೆಚ್ಚು ವಿಷಯ ಅವಧಿಗಳಿವೆ. ಕಡಿಮೆ ಮಾಡಿ.</p>' : ''}
-    ${cl.some(([, n]) => n < S) ? '<p class="small muted">ಹಳದಿ ತರಗತಿಗೆ ಕೆಲವು ಅವಧಿಗಳು ಖಾಲಿ ಉಳಿಯುತ್ತವೆ (ಸರಿ, ಬೇಕಿದ್ದರೆ ಅವಧಿ ಹೆಚ್ಚಿಸಿ).</p>' : ''}
-    ${noT ? `<p class="small" style="color:var(--amber)">${noT} ವಿಷಯಕ್ಕೆ ಶಿಕ್ಷಕರನ್ನು ಆರಿಸಿಲ್ಲ. ಆರಿಸಿದರೆ ಒಬ್ಬರಿಗೆ ಒಂದೇ ಸಮಯದಲ್ಲಿ ಎರಡು ತರಗತಿ ಬರದಂತೆ ನೋಡಿಕೊಳ್ಳುತ್ತದೆ.</p>` : ''}`;
+  const orphan = TT.load.filter(x => !x.teacher || !TT.teachers.includes(x.teacher));
+  $('ttTeachers').innerHTML = (TT.teachers.map((t, i) => ttTeacherCard(t, i, S)).join('') || `<p class="small muted" style="margin:0">ಇನ್ನೂ ಶಿಕ್ಷಕರನ್ನು ಸೇರಿಸಿಲ್ಲ. ಮೇಲೆ ಹೆಸರು ಬರೆದು "+ ಶಿಕ್ಷಕರನ್ನು ಸೇರಿಸಿ" ಒತ್ತಿ.</p>`) +
+    (orphan.length ? `<div class="ttt"><div class="ttth"><b>ಶಿಕ್ಷಕರನ್ನು ಆರಿಸದ ವಿಷಯಗಳು</b></div><div class="tw"><table class="list ttw"><tbody>${orphan.map(x => `<tr><td><b>${esc(x.subject || '—')}</b></td><td>${esc(x.classes.join('+'))}ನೇ · ${x.n} ಅವಧಿ</td>
+      <td><select data-l="${x.id}" data-f="teacher"><option value="">— ಶಿಕ್ಷಕರನ್ನು ಆರಿಸಿ —</option>${TT.teachers.map(t => `<option>${esc(t)}</option>`).join('')}</select></td>
+      <td style="text-align:right"><button class="x" type="button" data-rml="${x.id}" aria-label="ತೆಗೆಯಿರಿ">✕</button></td></tr>`).join('')}</tbody></table></div></div>` : '');
+  /* ತರಗತಿವಾರು ಸ್ಥಿತಿ */
+  const cl = TT.classes.map(c => {
+    const its = TT.load.filter(x => x.classes.includes(c)), n = its.reduce((a, x) => a + (+x.n || 0), 0);
+    const have = its.map(x => x.subject), miss = ttSet(c).map(x => x[0]).filter(x => !have.includes(x));
+    const ct = TT.ct[c];
+    return { c, n, html: `<div class="ttcs"><b style="min-width:44px">${esc(c)}ನೇ</b><span class="pill ${n > S ? 'bad' : n < S ? 'warn' : ''}">${n} / ${S}</span>
+      ${ct ? `<span class="small">ವರ್ಗ ಶಿಕ್ಷಕರು: <b>${esc(ttShort(ct))}</b></span>` : ''}
+      ${its.length ? (miss.length ? `<span class="small muted">· ಇನ್ನೂ ಸೇರಿಸದ ವಿಷಯ: ${esc(miss.join(', '))}</span>` : '') : '<span class="small muted">· ಇನ್ನೂ ಯಾರಿಗೂ ಈ ತರಗತಿ ಹಂಚಿಲ್ಲ</span>'}</div>` };
+  });
+  $('ttSum').innerHTML = TT.classes.length ? `<div><b>ತರಗತಿವಾರು ಸ್ಥಿತಿ</b> <span class="small muted">(ವಾರಕ್ಕೆ ಒಟ್ಟು ${S} ಅವಧಿ)</span></div>${cl.map(x => x.html).join('')}
+    ${cl.some(x => x.n > S) ? '<p class="bad small">⚠️ ಕೆಂಪು ತರಗತಿಗೆ ವಾರದ ಅವಧಿಗಳಿಗಿಂತ ಹೆಚ್ಚು ಅವಧಿಗಳಿವೆ. ಕಡಿಮೆ ಮಾಡಿ.</p>' : ''}
+    ${TT.teachers.some(t => ttLoadOf(t) > S) ? '<p class="bad small">⚠️ ಕೆಂಪು ಗುರುತಿನ ಶಿಕ್ಷಕರಿಗೆ ವಾರದ ಅವಧಿಗಳಿಗಿಂತ ಹೆಚ್ಚು ಕೆಲಸ ಇದೆ. ಕೆಲವು ವಿಷಯ ಬೇರೆಯವರಿಗೆ ಕೊಡಿ, ಅಥವಾ ಬಹುವರ್ಗವಾದರೆ "ಒಟ್ಟಿಗೆ" ಆರಿಸಿ.</p>' : ''}
+    ${cl.some(x => x.n && x.n < S) ? '<p class="small muted">ಹಳದಿ: ಕೆಲವು ಅವಧಿಗಳು ಖಾಲಿ ಉಳಿಯುತ್ತವೆ (ಸರಿ; ಬೇಕಿದ್ದರೆ ಅವಧಿ ಹೆಚ್ಚಿಸಿ).</p>' : ''}` : '';
   ttResult();
 }
 function ttResult() {
@@ -3212,7 +3305,10 @@ function ttResult() {
     return `<td class="ttc">${it ? `<b>${esc(it.classes.join('+'))}ನೇ</b><small>${esc(it.subject)}</small>` : '<span class="muted">—</span>'}</td>`;
   };
   const total = ttView.mode === 'tch' ? TT.load.filter(x => x.teacher === k).reduce((a, x) => a + (+x.n || 0), 0) : 0;
+  const ctn = ttView.mode === 'cls' ? ttClassTeacher(k) : '', ctOf = ttView.mode === 'tch' ? TT.classes.filter(c => ttClassTeacher(c) === k) : [];
   box.innerHTML = `${TT.miss ? `<div class="banner bad" style="margin-bottom:12px"><span>⚠️ ${TT.miss} ಅವಧಿಗಳನ್ನು ಇಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ (ಶಿಕ್ಷಕರ ಘರ್ಷಣೆ ಅಥವಾ ಅವಧಿ ಕಡಿಮೆ). ಕಾರ್ಯಭಾರ / ಜೊತೆ ತರಗತಿ ಬದಲಿಸಿ ಮತ್ತೆ ತಯಾರಿಸಿ.</span></div>` : ''}
+    ${TT.ctMiss ? `<div class="banner" style="margin-bottom:12px"><span>ℹ️ ${TT.ctMiss} ದಿನ ಮೊದಲ ಅವಧಿಯನ್ನು ವರ್ಗ ಶಿಕ್ಷಕರಿಗೆ ಕೊಡಲು ಆಗಲಿಲ್ಲ. ವರ್ಗ ಶಿಕ್ಷಕರಿಗೆ ಆ ತರಗತಿಯಲ್ಲಿ ವಾರಕ್ಕೆ ಕನಿಷ್ಠ 6 ಅವಧಿ ಇರಬೇಕು.</span></div>` : ''}
+    ${ctn ? `<p style="margin:0 0 6px"><b>ವರ್ಗ ಶಿಕ್ಷಕರು:</b> ${esc(ctn)}</p>` : ''}${ctOf.length ? `<p style="margin:0 0 6px"><b>ವರ್ಗ ಶಿಕ್ಷಕರು:</b> ${esc(ctOf.join(', '))}ನೇ ತರಗತಿ</p>` : ''}
     ${ttView.mode === 'cls' ? '<p class="small muted" style="margin:0 0 8px">ಬದಲಿಸಲು: ಒಂದು ಕೋಶ ಒತ್ತಿ, ನಂತರ ಇನ್ನೊಂದು ಕೋಶ ಒತ್ತಿ. ಎರಡೂ ಅದಲು ಬದಲಾಗುತ್ತವೆ (ಶಿಕ್ಷಕರ ಘರ್ಷಣೆ ಇದ್ದರೆ ತಡೆಯುತ್ತದೆ).</p>' : `<p class="small" style="margin:0 0 8px"><b>ವಾರಕ್ಕೆ ${total} ಅವಧಿ</b></p>`}
     <div class="tw"><table class="ttg"><thead><tr><th>ದಿನ</th>${Array.from({ length: maxP }, (_, p) => `<th>${p + 1}<small>${wp[p] ? esc(wp[p].f + '–' + wp[p].to) : ''}</small></th>`).join('')}</tr></thead>
     <tbody>${days.map((dn, d) => `<tr><th>${esc(dn)}</th>${Array.from({ length: maxP }, (_, p) => cellOf(d, p)).join('')}</tr>`).join('')}</tbody></table></div>`;
@@ -3230,9 +3326,28 @@ function ttBind() {
   if (page.dataset.bound) return; page.dataset.bound = '1';
   page.addEventListener('change', e => {
     const el = e.target;
+    if (el.dataset.tn !== undefined) {
+      const i = +el.dataset.tn, old = TT.teachers[i], v = el.value.trim();
+      if (!v) { el.value = old; return toast('ಹೆಸರು ಖಾಲಿ ಇರಬಾರದು.', true); }
+      if (v === old) return;
+      if (TT.teachers.includes(v)) { el.value = old; return toast('ಈ ಹೆಸರಿನ ಶಿಕ್ಷಕರು ಈಗಾಗಲೇ ಇದ್ದಾರೆ.', true); }
+      TT.teachers[i] = v; TT.load.forEach(x => { if (x.teacher === old) x.teacher = v; });
+      Object.keys(TT.ct).forEach(c => { if (TT.ct[c] === old) TT.ct[c] = v; });
+      ttSave(); ttRender(); toast('ಹೆಸರು ಬದಲಿಸಲಾಗಿದೆ.'); return;
+    }
+    if (el.dataset.ct !== undefined) {
+      const t = TT.teachers[+el.dataset.ct];
+      Object.keys(TT.ct).forEach(c => { if (TT.ct[c] === t) delete TT.ct[c]; });
+      const prev = el.value && TT.ct[el.value];
+      if (el.value) TT.ct[el.value] = t;
+      TT.grid = null; ttSave(); ttRender();
+      toast(!el.value ? 'ವರ್ಗ ಶಿಕ್ಷಕರ ಗುರುತು ತೆಗೆಯಲಾಗಿದೆ.' : prev && prev !== t ? `${el.value}ನೇ ತರಗತಿಯ ವರ್ಗ ಶಿಕ್ಷಕರು ಈಗ ${t} (${prev} ಬದಲು).` : `${t}: ${el.value}ನೇ ತರಗತಿಯ ವರ್ಗ ಶಿಕ್ಷಕರು. ಪ್ರತಿದಿನ ಮೊದಲ ಅವಧಿ ಅವರದು.`);
+      return;
+    }
+    if (el.dataset.fs !== undefined) { const o = el.parentNode.querySelector('[data-fo]'); o.hidden = el.value !== '__other'; if (!o.hidden) o.focus(); el.parentNode.querySelector('[data-fn]').hidden = el.value === '__all'; return; }
+    if (el.dataset.fm !== undefined) { el.dataset.touched = '1'; return; }
     if (el.dataset.k) { const s = TT[el.dataset.k][+el.dataset.i]; s[el.dataset.f] = el.value; if (el.dataset.f === 't' && el.value === 'b' && !s.l) s.l = 'ವಿರಾಮ'; TT.grid = null; ttSave(); ttRender(); }
     else if (el.dataset.l) { const x = ttItem(el.dataset.l); x[el.dataset.f] = el.dataset.f === 'n' ? Math.max(0, +el.value || 0) : el.value.trim(); TT.grid = null; ttSave(); ttRender(); }
-    else if (el.id === 'ttFilter') { ttFilter = el.value; ttRender(); }
     else if (el.id === 'ttWho') { ttView.key = el.value; ttPick = null; ttResult(); }
   });
   page.addEventListener('click', e => {
@@ -3241,7 +3356,43 @@ function ttBind() {
     if (d.del) { const [k, i] = d.del.split(':'); TT[k].splice(+i, 1); TT.grid = null; ttSave(); ttRender(); }
     else if (d.add) { const [k, t] = d.add.split(':'), last = TT[k][TT[k].length - 1]; TT[k].push({ t, l: t === 'b' ? 'ವಿರಾಮ' : '', f: last?.to || '10:00', to: last?.to || '10:40' }); TT.grid = null; ttSave(); ttRender(); }
     else if (d.rmc) { TT.classes = TT.classes.filter(c => c !== d.rmc); TT.load.forEach(x => { x.classes = x.classes.filter(c => c !== d.rmc); }); TT.load = TT.load.filter(x => x.classes.length); TT.grid = null; ttSave(); ttRender(); }
-    else if (d.rmt) { TT.teachers = TT.teachers.filter(t => t !== d.rmt); TT.load.forEach(x => { if (x.teacher === d.rmt) x.teacher = ''; }); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.rmt !== undefined) {
+      if (!b.classList.contains('sure')) { b.classList.add('sure'); b.textContent = 'ಖಚಿತವೇ? ಮತ್ತೆ ಒತ್ತಿ'; setTimeout(() => { if (b.isConnected) { b.classList.remove('sure'); b.textContent = '🗑 ತೆಗೆಯಿರಿ'; } }, 4000); return; }
+      const t = TT.teachers[+d.rmt], k = TT.load.filter(x => x.teacher === t).length;
+      TT.teachers.splice(+d.rmt, 1); TT.load = TT.load.filter(x => x.teacher !== t);
+      TT.grid = null; ttSave(); ttRender(); toast(`${t} ಅವರನ್ನು${k ? ` (${k} ವಿಷಯಗಳ ಸಹಿತ)` : ''} ತೆಗೆಯಲಾಗಿದೆ.`);
+    }
+    else if (d.ft !== undefined) {
+      b.classList.toggle('on');
+      const box = b.closest('.ttadd'), m = box.querySelector('[data-fm]');
+      if (!m.dataset.touched) { const sel = [...box.querySelectorAll('[data-ft].on')].map(x => parseInt(x.dataset.c, 10)); m.value = sel.length > 1 && sel.every(n => n > 0 && n <= 5) ? 'tog' : 'sep'; }
+    }
+    else if (d.fadd !== undefined) {
+      const t = TT.teachers[+d.fadd], box = b.closest('.ttadd');
+      const cls = [...box.querySelectorAll('[data-ft].on')].map(x => x.dataset.c);
+      if (!cls.length) return toast('ಮೊದಲು ತರಗತಿಯನ್ನು ಒತ್ತಿ ಆರಿಸಿ (ಹಸಿರು ಆಗುತ್ತದೆ).', true);
+      let sv = box.querySelector('[data-fs]').value;
+      if (sv === '__other') { sv = box.querySelector('[data-fo]').value.trim(); if (!sv) return toast('ವಿಷಯದ ಹೆಸರು ಬರೆಯಿರಿ.', true); }
+      const mode = box.querySelector('[data-fm]').value, nIn = Math.max(0, parseInt(box.querySelector('[data-fn]').value, 10) || 0);
+      const groups = mode === 'tog' ? [cls] : cls.map(c => [c]);
+      let added = 0; const skip = [];
+      for (const g of groups) {
+        const set = ttSet(g[0]);
+        const list = sv === '__all' ? set : [[sv, nIn || (set.find(x => x[0] === sv) || [0, 4])[1]]];
+        for (const [sub, k] of list) {
+          const ex = TT.load.find(x => x.subject === sub && x.classes.some(c => g.includes(c)));
+          if (ex) {
+            if ((!ex.teacher || !TT.teachers.includes(ex.teacher)) && ex.classes.join() === g.join()) { ex.teacher = t; added++; }
+            else skip.push(`${ex.classes.join('+')}ನೇ ${sub}${ex.teacher && ex.teacher !== t ? ' (' + ttShort(ex.teacher) + ')' : ''}`);
+            continue;
+          }
+          TT.load.push({ id: ttUid(), classes: g.slice(), subject: sub, teacher: t, n: k }); added++;
+        }
+      }
+      TT.grid = null; ttSave(); ttRender();
+      const sk = skip.length ? `ಈಗಾಗಲೇ ಇರುವುದರಿಂದ ಬಿಟ್ಟದ್ದು: ${skip.slice(0, 4).join(', ')}${skip.length > 4 ? '…' : ''}` : '';
+      toast(added ? `${ttShort(t)} ಅವರಿಗೆ ${added} ವಿಷಯ ಸೇರಿಸಲಾಗಿದೆ. ${sk}` : sk, !added);
+    }
     else if (d.tog) { const [id, c] = d.tog.split(':'), x = ttItem(id); x.classes = x.classes.includes(c) ? x.classes.filter(y => y !== c) : [...x.classes, c].sort((p, q) => String(p).localeCompare(String(q), undefined, { numeric: true })); if (!x.classes.length) TT.load = TT.load.filter(y => y.id !== id); TT.grid = null; ttSave(); ttRender(); }
     else if (d.rml) { TT.load = TT.load.filter(x => x.id !== d.rml); TT.grid = null; ttSave(); ttRender(); }
     else if (d.m) { ttView.mode = d.m; ttPick = null; ttResult(); }
@@ -3261,19 +3412,8 @@ function ttBind() {
   };
   $('ttNewC').onkeydown = e => { if (e.key === 'Enter') $('ttAddC').click(); };
   $('ttNewT').onkeydown = e => { if (e.key === 'Enter') $('ttAddT').click(); };
-  $('ttSuggest').onclick = () => {
-    const c = ttFilter; if (!c) return toast('ಮೊದಲು ಮೇಲಿನ ಪಟ್ಟಿಯಿಂದ ಒಂದು ತರಗತಿ ಆರಿಸಿ.', true);
-    const n = parseInt(c, 10), set = TT_SUGGEST[['en', 'bi'].includes(medium()) ? 'en' : 'kn'][n <= 3 ? 'low' : n <= 5 ? 'mid' : n <= 7 ? 'hps' : 'hs'];
-    let added = 0;
-    set.forEach(([s, k]) => { if (!TT.load.some(x => x.classes.includes(c) && x.subject === s)) { TT.load.push({ id: ttUid(), classes: [c], subject: s, teacher: '', n: k }); added++; } });
-    TT.grid = null; ttSave(); ttRender(); toast(added ? `${c}ನೇ ತರಗತಿಗೆ ${added} ವಿಷಯ ಸೇರಿಸಲಾಗಿದೆ. ಶಿಕ್ಷಕರನ್ನು ಆರಿಸಿ, ಅವಧಿ ಬೇಕಾದಂತೆ ಬದಲಿಸಿ.` : 'ಈ ವಿಷಯಗಳು ಈಗಾಗಲೇ ಇವೆ.');
-  };
-  $('ttAddL').onclick = () => {
-    const c = ttFilter || TT.classes[0]; if (!c) return toast('ಮೊದಲು ತರಗತಿ ಸೇರಿಸಿ.', true);
-    TT.load.push({ id: ttUid(), classes: [c], subject: '', teacher: '', n: 1 }); ttSave(); ttRender();
-  };
   $('ttGo').onclick = () => busy($('ttGo'), async () => {
-    if (!TT.classes.length || !TT.load.length) return toast('ತರಗತಿ ಮತ್ತು ವಿಷಯಗಳನ್ನು ಮೊದಲು ಸೇರಿಸಿ.', true);
+    if (!TT.classes.length || !TT.load.length) return toast('ತರಗತಿ ಸೇರಿಸಿ, ನಂತರ ಶಿಕ್ಷಕರಿಗೆ ವಿಷಯಗಳನ್ನು ಸೇರಿಸಿ.', true);
     if (TT.load.some(x => !x.subject)) return toast('ಕೆಲವು ಸಾಲುಗಳಲ್ಲಿ ವಿಷಯದ ಹೆಸರು ಖಾಲಿ ಇದೆ.', true);
     const S = ttSlots(), over = TT.classes.find(c => TT.load.filter(x => x.classes.includes(c)).reduce((a, x) => a + x.n, 0) > S);
     if (over) return toast(`${over}ನೇ ತರಗತಿಗೆ ವಾರದ ${S} ಅವಧಿಗಿಂತ ಹೆಚ್ಚು ವಿಷಯ ಅವಧಿಗಳಿವೆ.`, true);
@@ -3283,7 +3423,7 @@ function ttBind() {
     await new Promise(r => setTimeout(r, 30));
     const r = ttGenerate(); ttPick = null; ttView.mode = 'cls'; ttSave(); ttRender();
     $('ttOutCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    toast(r && !r.miss ? 'ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ ✓' : `ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ, ಆದರೆ ${r.miss} ಅವಧಿ ಇಡಲು ಆಗಲಿಲ್ಲ.`, !!(r && r.miss));
+    toast(r && r.miss ? `ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ, ಆದರೆ ${r.miss} ಅವಧಿ ಇಡಲು ಆಗಲಿಲ್ಲ.` : r && r.ctMiss ? `ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ. ${r.ctMiss} ದಿನ ಮೊದಲ ಅವಧಿ ವರ್ಗ ಶಿಕ್ಷಕರಿಗೆ ಹೊಂದಲಿಲ್ಲ.` : 'ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ ✓', !!(r && r.miss));
   });
   const pdf = mode => busy($('ttPdf' + mode), async () => {
     const sc = requireSchool(); if (!sc || !TT.grid) return;
