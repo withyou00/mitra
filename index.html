@@ -234,6 +234,25 @@ input[type=password],input[type=date]{background:var(--bg);border:1px solid var(
 .opt[data-in] em{font-size:12.5px;color:var(--ok)}
 .renew{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;border-left:4px solid var(--danger);background:var(--danger-soft)}
 .nbadge{margin-left:auto;min-width:20px;height:20px;border-radius:999px;background:#d64545;color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;padding:0 6px}
+.tts{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
+.tts select{width:84px}.tts input[type=text]{width:110px}.tts input[type=time]{width:108px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.ttn{width:110px;text-align:center;color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chipx{display:inline-flex;align-items:center;gap:4px;padding:4px 6px 4px 12px;border-radius:999px;background:var(--accent-soft);font-weight:600;font-size:13.5px}
+.chipx button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:12px;padding:2px 6px;border-radius:50%}
+.ttcls{display:flex;flex-wrap:wrap;gap:4px}
+.ttcls button{min-width:30px;padding:3px 7px;border-radius:6px;border:1px solid var(--line);background:var(--panel);cursor:pointer;font-size:12.5px}
+.ttcls button.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.ttsum{display:grid;gap:8px}.ttsum>div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+p.bad{color:var(--danger);margin:6px 0 0}
+.ttg{border-collapse:collapse;width:100%;min-width:640px}
+.ttg th,.ttg td{border:1px solid var(--line);padding:6px;text-align:center;font-size:12.5px;vertical-align:middle}
+.ttg thead th{background:var(--accent-soft)}.ttg th small{display:block;font-weight:400;color:var(--muted);font-size:10.5px}
+.ttg tbody th{background:var(--bg);white-space:nowrap}
+.ttg td b{display:block;font-size:12.5px}.ttg td small{display:block;color:var(--muted);font-size:11px}
+.ttg td.ttc{cursor:pointer}.ttg td.ttc:hover{background:var(--accent-soft)}
+.ttg td.sel{outline:3px solid var(--amber);outline-offset:-3px;background:#fff6e0}
+.ttg td.multi{background:#eef6ff}.ttg td.na{background:repeating-linear-gradient(45deg,var(--bg),var(--bg) 4px,transparent 4px,transparent 8px)}
 .offer{padding:10px 14px;border-radius:10px;background:#fff1d6;color:#5a3500;font-size:13.5px;border:1px dashed #e0a43a}
 .offer code{background:#fff;padding:1px 6px;border-radius:5px;font-weight:700}
 .offer.big{font-size:15px;padding:14px 18px}
@@ -317,6 +336,7 @@ textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;pad
       <a href="#andaju" data-v="andaju"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 2v4M16 2v4M4 10h16M8 14l2 2 4-4"/></svg>ಅಂದಾಜು ಪತ್ರಿಕೆ</a>
       <a href="#docs" data-v="docs"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>ಇತರೆ ದಾಖಲೆಗಳು</a>
       <a href="#school" data-v="school"><svg viewBox="0 0 24 24"><path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/></svg><span id="navSchool">ಶಾಲೆಯ ವಿವರ</span></a>
+      <a href="#tt" data-v="tt"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 4v17M13 9v12"/></svg>ವೇಳಾಪಟ್ಟಿ <span class="pill" style="margin-left:auto;padding:1px 7px;font-size:10.5px">ಉಚಿತ</span></a>
       <span class="sep"></span>
       <a href="#admin" data-v="admin" id="navAdmin" hidden><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>Admin</a>
       <a href="#files" data-v="files" id="navFiles"><svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M12 11v5M9.5 13.5h5"/></svg>ಫೈಲ್ ನಿರ್ವಹಣೆ</a>
@@ -443,6 +463,37 @@ textarea{background:var(--bg);border:1px solid var(--line);border-radius:8px;pad
         <div class="card pad" id="acct" hidden>
           <div class="sec-h" style="margin-bottom:10px"><h2>ನನ್ನ ಖಾತೆ</h2><span style="display:flex;gap:8px"><button class="btn sm" type="button" id="acctReload">ಮತ್ತೆ ಪರಿಶೀಲಿಸಿ</button><button class="btn sm" type="button" id="acctLogout">Logout</button></span></div>
           <div id="acctBody"></div>
+        </div>
+      </section>
+
+      <!-- ===== ವೇಳಾಪಟ್ಟಿ ===== -->
+      <section id="v-tt" class="view" hidden>
+        <div class="card pad"><div class="sec-h"><h2>ವೇಳಾಪಟ್ಟಿ ತಯಾರಕ <span class="pill">ಉಚಿತ</span></h2>
+          <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" type="button" id="ttExport">ಉಳಿಕೆ ಫೈಲ್ download</button><label class="btn sm" style="cursor:pointer">ಉಳಿಕೆ ಫೈಲ್ ತೆರೆಯಿರಿ<input type="file" id="ttImport" accept=".json,application/json" hidden></label><button class="btn sm" type="button" id="ttReset">ಹೊಸದಾಗಿ ಆರಂಭಿಸಿ</button></span></div>
+          <p class="small muted" style="margin:6px 0 0">1) ಸಮಯ → 2) ತರಗತಿ ಮತ್ತು ಶಿಕ್ಷಕರು → 3) ವಿಷಯ ಹಂಚಿಕೆ → 4) "ವೇಳಾಪಟ್ಟಿ ತಯಾರಿಸಿ". ಒಬ್ಬ ಶಿಕ್ಷಕರಿಗೆ ಒಂದೇ ಸಮಯದಲ್ಲಿ ಎರಡು ತರಗತಿ ಬರದಂತೆ ತಾನಾಗಿಯೇ ಹಂಚುತ್ತದೆ. ನೀವು ಮಾಡಿದ್ದು ತಾನಾಗಿಯೇ ಉಳಿಯುತ್ತದೆ.</p></div>
+        <div class="grid2">
+          <div class="card pad"><h3 class="h3">1. ಸೋಮವಾರ – ಶುಕ್ರವಾರ ಸಮಯ</h3><div id="ttWeek"></div></div>
+          <div class="card pad"><h3 class="h3">ಶನಿವಾರ ಸಮಯ (ಬೆಳಿಗ್ಗೆ)</h3><div id="ttSat"></div></div>
+        </div>
+        <div class="grid2">
+          <div class="card pad"><h3 class="h3">2. ತರಗತಿಗಳು</h3><div class="chips" id="ttClasses"></div>
+            <span class="row2" style="margin-top:10px"><input type="text" id="ttNewC" placeholder="ಉದಾ: 1, 2, 3, 4, 5 ಅಥವಾ 6A, 6B"><button class="btn sm pri" type="button" id="ttAddC">ಸೇರಿಸಿ</button></span></div>
+          <div class="card pad"><h3 class="h3">ಶಿಕ್ಷಕರು</h3><div class="chips" id="ttTeachers"></div>
+            <span class="row2" style="margin-top:10px"><input type="text" id="ttNewT" placeholder="ಉದಾ: ಶ್ರೀ ರಮೇಶ, ಶ್ರೀಮತಿ ಸುಮಾ"><button class="btn sm pri" type="button" id="ttAddT">ಸೇರಿಸಿ</button></span></div>
+        </div>
+        <div class="card">
+          <div class="pad sec-h"><h2>3. ವಿಷಯ ಹಂಚಿಕೆ</h2><span style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select id="ttFilter"></select><button class="btn sm" type="button" id="ttSuggest">ಸಲಹೆಯ ವಿಷಯಗಳು</button><button class="btn sm" type="button" id="ttAddL">+ ವಿಷಯ</button></span></div>
+          <p class="small muted" style="margin:0;padding:0 20px 10px"><b>ಬಹುವರ್ಗ / ಜೊತೆ ತರಗತಿ:</b> ಒಬ್ಬ ಶಿಕ್ಷಕರು 1 ಮತ್ತು 2ನೇ ತರಗತಿಗೆ ಕನ್ನಡ ಒಟ್ಟಿಗೆ ಕಲಿಸಿದರೆ, 1ನೇ ತರಗತಿಯ ಕನ್ನಡ ಸಾಲಿನಲ್ಲಿ "2" ಅನ್ನೂ ಒತ್ತಿ (ಹಸಿರು), 2ನೇ ತರಗತಿಯ ಕನ್ನಡ ಸಾಲನ್ನು ✕ ಮಾಡಿ.</p>
+          <div class="tw"><table class="list" id="ttLoad"></table></div>
+          <div class="pad" id="ttSum"></div>
+          <div class="pad" style="padding-top:0"><button class="btn pri" type="button" id="ttGo">4. ವೇಳಾಪಟ್ಟಿ ತಯಾರಿಸಿ</button></div>
+        </div>
+        <div class="card" id="ttOutCard" hidden>
+          <div class="pad sec-h"><h2>ವೇಳಾಪಟ್ಟಿ</h2><span style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><span class="seg" id="ttMode"><button type="button" data-m="cls" class="on">ತರಗತಿವಾರು</button><button type="button" data-m="tch">ಶಿಕ್ಷಕವಾರು</button></span><select id="ttWho"></select></span></div>
+          <div class="pad" style="padding-top:0" id="ttOut"></div>
+          <div class="pad" style="padding-top:0;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn pri" type="button" id="ttPdfcls">PDF: ತರಗತಿವಾರು</button><button class="btn pri" type="button" id="ttPdftch">PDF: ಶಿಕ್ಷಕವಾರು</button><button class="btn" type="button" id="ttPdfall">PDF: ಸಮಗ್ರ (ದಿನವಾರು)</button>
+            <button class="btn" type="button" onclick="document.getElementById('ttGo').click()">ಮತ್ತೆ ತಯಾರಿಸಿ</button></div>
         </div>
       </section>
 
@@ -791,7 +842,7 @@ const PM = (() => {
       const measure = (cells, bold) => {
         const wr = cells.map((c, i) => cell(c).flatMap(part => {
           this.ctx.font = `${bold || part.b ? 700 : 400} ${fs}px ${F}`;
-          return wrap(this.ctx, part.t, cols[i] - pad * 2).map(l => ({ l, b: bold || part.b }));
+          return wrap(this.ctx, part.t, cols[i] - pad * 2).map(l => ({ l, b: bold || part.b, c: part.c }));
         }));
         return { wr, h: Math.max(...wr.map(l => l.length)) * lh + pad * 2 };
       };
@@ -801,7 +852,7 @@ const PM = (() => {
           if (fill) { ctx.fillStyle = fill; ctx.fillRect(x, this.y, cols[i], m.h); }
           ctx.strokeStyle = '#4a4a4a'; ctx.lineWidth = .6; ctx.strokeRect(x, this.y, cols[i], m.h);
           ls.forEach((o, j) => {
-            ctx.font = `${o.b || (boldFirstCol && i === 0) ? 700 : 400} ${fs}px ${F}`; ctx.fillStyle = '#111';
+            ctx.font = `${o.b || (boldFirstCol && i === 0) ? 700 : 400} ${fs}px ${F}`; ctx.fillStyle = o.c || '#111';
             ctx.fillText(o.l, x + pad, this.y + pad + fs + j * lh);
           });
           x += cols[i];
@@ -1132,7 +1183,58 @@ const PM = (() => {
     return f.toPdf();
   }
 
-  return { lessonUnit, lessonPeriod, andaju, excelDoc, stampPdf, stampUploaded, stampPptx, pdfToPptx, receipt };
+  /* ವೇಳಾಪಟ್ಟಿ: mode = cls (ತರಗತಿವಾರು) | tch (ಶಿಕ್ಷಕವಾರು) | all (ಸಮಗ್ರ, ದಿನವಾರು) */
+  async function timetable(T, school, mode, days) {
+    const en = days[0] === 'Monday', f = new Flow({ w: 842, h: 595, top: 72, bottom: 30, side: 24 });
+    const item = id => T.load.find(x => x.id === id), GRAY = '#8a8a8a';
+    const short = n => ttShort(n);
+    const head = (first, slots) => [first, ...slots.map((x, i) => x.t === 'p'
+      ? [{ t: String(slots.slice(0, i + 1).filter(y => y.t === 'p').length), b: true }, { t: `${x.f}–${x.to}` }]
+      : [{ t: x.l || (en ? 'Break' : 'ವಿರಾಮ'), b: true, c: GRAY }, { t: x.f, c: GRAY }, { t: '–' + x.to, c: GRAY }])];
+    const fr = slots => { const w = slots.map(x => x.t === 'p' ? 1 : .65), tot = w.reduce((a, b) => a + b, 0); return [.1, ...w.map(x => x / tot * .9)]; };
+    const row = (label, slots, fn) => { let p = -1; return [label, ...slots.map(x => { if (x.t === 'b') return ''; p++; return fn(p); })]; };
+    const EMPTY = [{ t: '—', c: GRAY }];
+    const tAt = (t, d, p) => { for (const c of T.classes) { const it = item(T.grid?.[c]?.[d]?.[p]); if (it && it.teacher === t) return it; } return null; };
+    const week = (title, fn, extra) => {
+      f.text(title, { size: 14, weight: 700, color: GREEN, gap: 2 });
+      if (extra) f.text(extra, { size: 9.5, color: '#444', gap: 4 });
+      f.text(en ? 'Monday – Friday' : 'ಸೋಮವಾರ – ಶುಕ್ರವಾರ', { size: 10, weight: 700, gap: 2 });
+      f.table(fr(T.week), head(en ? 'Day' : 'ದಿನ', T.week), [0, 1, 2, 3, 4].map(d => row(days[d], T.week, p => fn(d, p))), { fs: 8.5, firstBold: true });
+      f.text(days[5], { size: 10, weight: 700, gap: 2 });
+      f.table(fr(T.sat), head(en ? 'Day' : 'ದಿನ', T.sat), [row(days[5], T.sat, p => fn(5, p))], { fs: 8.5, firstBold: true });
+      f.signatures([school.teacher || '', school.hm || ''], true, en ? LANG.en : LANG.kn);
+    };
+    let first = true;
+    const next = () => { if (!first) f.newPage(); first = false; };
+    if (mode === 'cls') for (const c of T.classes) {
+      next();
+      week(`${en ? 'Class ' + c : c + 'ನೇ ತರಗತಿ'} · ${en ? 'Timetable' : 'ವೇಳಾಪಟ್ಟಿ'} ${school.year || ''}`, (d, p) => {
+        const it = item(T.grid?.[c]?.[d]?.[p]); if (!it) return EMPTY;
+        return [{ t: it.subject, b: true }, { t: short(it.teacher) + (it.classes.length > 1 ? ` (${it.classes.join('+')})` : '') }];
+      });
+    }
+    if (mode === 'tch') for (const t of T.teachers) {
+      const n = T.load.filter(x => x.teacher === t).reduce((a, x) => a + (+x.n || 0), 0);
+      next();
+      week(`${t} · ${en ? 'Timetable' : 'ವೇಳಾಪಟ್ಟಿ'} ${school.year || ''}`, (d, p) => {
+        const it = tAt(t, d, p); if (!it) return EMPTY;
+        return [{ t: it.classes.join('+') + (en ? '' : 'ನೇ'), b: true }, { t: it.subject }];
+      }, en ? `${n} periods per week` : `ವಾರಕ್ಕೆ ${n} ಅವಧಿ`);
+    }
+    if (mode === 'all') for (let d = 0; d < 6; d++) {
+      const slots = d < 5 ? T.week : T.sat;
+      next();
+      f.text(`${en ? 'Master Timetable' : 'ಸಮಗ್ರ ವೇಳಾಪಟ್ಟಿ'} · ${days[d]} ${school.year || ''}`, { size: 14, weight: 700, color: GREEN, gap: 6 });
+      f.table(fr(slots), head(en ? 'Class' : 'ತರಗತಿ', slots), T.classes.map(c => row(en ? c : c + 'ನೇ', slots, p => {
+        const it = item(T.grid?.[c]?.[d]?.[p]); if (!it) return EMPTY;
+        return [{ t: it.subject, b: true }, { t: short(it.teacher) }];
+      })), { fs: 8.5, firstBold: true });
+      f.signatures([school.teacher || '', school.hm || ''], true, en ? LANG.en : LANG.kn);
+    }
+    return f.toPdf();
+  }
+
+  return { lessonUnit, lessonPeriod, andaju, excelDoc, stampPdf, stampUploaded, stampPptx, pdfToPptx, receipt, timetable };
 })();
 
 /* ============================================================
@@ -1743,7 +1845,7 @@ function picker(pfx, filter, partsOf, onPick) {
 const cur = pfx => ({ sub: DB.subjects[$(pfx + 'Class').value + '|' + $(pfx + 'Subject').value], part: $(pfx + 'Part')?.value });
 
 /* ---------- ಪುಟಗಳು ---------- */
-const TITLES = { home: 'ಮುಖಪುಟ', lesson: 'ಪಾಠಯೋಜನೆ', ppt: 'ಪಾಠಗಳ PPT', notes: 'ಪಾಠಗಳ ನೋಟ್ಸ್', andaju: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', school: 'ಶಾಲೆಯ ವಿವರ', files: 'ಫೈಲ್ ನಿರ್ವಹಣೆ', docs: 'ಇತರೆ ದಾಖಲೆಗಳು', admin: 'Admin' };
+const TITLES = { home: 'ಮುಖಪುಟ', lesson: 'ಪಾಠಯೋಜನೆ', ppt: 'ಪಾಠಗಳ PPT', notes: 'ಪಾಠಗಳ ನೋಟ್ಸ್', tt: 'ವೇಳಾಪಟ್ಟಿ ತಯಾರಕ', andaju: 'ಅಂದಾಜು ಪತ್ರಿಕೆ', school: 'ಶಾಲೆಯ ವಿವರ', files: 'ಫೈಲ್ ನಿರ್ವಹಣೆ', docs: 'ಇತರೆ ದಾಖಲೆಗಳು', admin: 'Admin' };
 function route() {
   let v = (location.hash || '#home').slice(1);
   if (!TITLES[v]) v = 'home';
@@ -1752,7 +1854,7 @@ function route() {
   document.querySelectorAll('#nav a').forEach(a => a.classList.toggle('on', a.dataset.v === v));
   $('pageTitle').textContent = PAID && v === 'school' ? 'ನನ್ನ ಖಾತೆ' : TITLES[v];
   renderChip();
-  if (DB || v === 'school' || v === 'files' || v === 'admin') VIEWS[v]();
+  if (DB || v === 'school' || v === 'files' || v === 'admin' || v === 'tt') VIEWS[v]();
   window.scrollTo(0, 0);
 }
 
@@ -1985,6 +2087,8 @@ const VIEWS = {
   },
 
   files() { makerInit(); renderFiles(); },
+
+  tt() { ttBind(); ttRender(); },
 
   admin() {
     $('adSearch').oninput = () => { ADM.q = $('adSearch').value; adminUsers(); };
@@ -2514,6 +2618,7 @@ const ACC = (() => {
     async setUser(m, d) { await fb.updateDoc(uref(m), d); },
     async delUser(m) { await fb.deleteDoc(uref(m)); },
     async delOrder(id) { await fb.deleteDoc(fb.doc(fb.db, 'orders', id)); },
+    async saveTT(json) { await fb.updateDoc(uref(mob()), { tt: json }); if (prof) prof.tt = json; },
     async saveSettings(st) { await fb.setDoc(fb.doc(fb.db, 'settings', 'main'), st, { merge: true }); applySettings(st); },
     async adminOrder(o) { return (await fb.addDoc(fb.collection(fb.db, 'orders'), o)).id; },
     async request(text) { await fb.addDoc(fb.collection(fb.db, 'requests'), { uid: mob(), text, school: prof?.name || '', teacher: prof?.teacher || '', medium: medium(), at: new Date().toISOString() }); },
@@ -2929,6 +3034,276 @@ $('udClose').onclick = () => $('ud').close();
 $('cartClose').onclick = () => $('cart').close();
 $('cartBtn').onclick = () => CART.open();
 $('cartBarGo').onclick = () => CART.open();
+
+/* ============================================================
+   ವೇಳಾಪಟ್ಟಿ ತಯಾರಕ (ನೋಂದಾಯಿತರಿಗೆ ಉಚಿತ)
+   ============================================================ */
+const TT_DAYS = { kn: ['ಸೋಮವಾರ', 'ಮಂಗಳವಾರ', 'ಬುಧವಾರ', 'ಗುರುವಾರ', 'ಶುಕ್ರವಾರ', 'ಶನಿವಾರ'], en: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] };
+const ttDays = () => ['en', 'bi'].includes(medium()) ? TT_DAYS.en : TT_DAYS.kn;
+const TT_SUGGEST = {
+  kn: {
+    low: [['ಕನ್ನಡ', 9], ['ಇಂಗ್ಲೀಷ್', 6], ['ಗಣಿತ', 9], ['ಪರಿಸರ ಅಧ್ಯಯನ', 6], ['ದೈಹಿಕ ಶಿಕ್ಷಣ', 4], ['ಕಲೆ', 3], ['ಗ್ರಂಥಾಲಯ / ಕಥೆ', 3]],
+    mid: [['ಕನ್ನಡ', 8], ['ಇಂಗ್ಲೀಷ್', 6], ['ಗಣಿತ', 8], ['ಪರಿಸರ ಅಧ್ಯಯನ', 8], ['ದೈಹಿಕ ಶಿಕ್ಷಣ', 4], ['ಕಲೆ', 3], ['ಗ್ರಂಥಾಲಯ', 3]],
+    hps: [['ಕನ್ನಡ', 6], ['ಇಂಗ್ಲೀಷ್', 5], ['ಹಿಂದಿ', 4], ['ಗಣಿತ', 7], ['ವಿಜ್ಞಾನ', 6], ['ಸಮಾಜ ವಿಜ್ಞಾನ', 6], ['ದೈಹಿಕ ಶಿಕ್ಷಣ', 3], ['ಕಲೆ / ಕಾರ್ಯಾನುಭವ', 2], ['ಗ್ರಂಥಾಲಯ', 1]],
+    hs: [['ಕನ್ನಡ', 6], ['ಇಂಗ್ಲೀಷ್', 6], ['ಹಿಂದಿ', 4], ['ಗಣಿತ', 7], ['ವಿಜ್ಞಾನ', 7], ['ಸಮಾಜ ವಿಜ್ಞಾನ', 6], ['ದೈಹಿಕ ಶಿಕ್ಷಣ', 3], ['ಕಲೆ', 1]]
+  },
+  en: {
+    low: [['Kannada', 9], ['English', 6], ['Maths', 9], ['EVS', 6], ['Physical Education', 4], ['Art', 3], ['Library / Story', 3]],
+    mid: [['Kannada', 8], ['English', 8], ['Maths', 8], ['EVS', 6], ['Physical Education', 4], ['Art', 3], ['Library', 3]],
+    hps: [['English', 6], ['Kannada', 5], ['Hindi', 4], ['Maths', 7], ['Science', 6], ['Social Science', 6], ['Physical Education', 3], ['Art / Work Experience', 2], ['Library', 1]],
+    hs: [['English', 6], ['Kannada', 6], ['Hindi', 4], ['Maths', 7], ['Science', 7], ['Social Science', 6], ['Physical Education', 3], ['Art', 1]]
+  }
+};
+const TT_CORE = /ಕನ್ನಡ|ಇಂಗ್ಲೀಷ್|ಇಂಗ್ಲಿಷ್|ಗಣಿತ|ವಿಜ್ಞಾನ|ಹಿಂದಿ|kannada|english|math|science|hindi|marathi|urdu|मराठी|اردو/i;
+const TT_LIGHT = /ದೈಹಿಕ|ಕಲೆ|ಗ್ರಂಥಾಲಯ|ಕಥೆ|ಕಾರ್ಯಾನುಭವ|ಸಂಗೀತ|physical|art|library|story|music|work/i;
+function ttDefault() {
+  return {
+    week: [{ t: 'b', l: 'ಪ್ರಾರ್ಥನೆ', f: '10:00', to: '10:15' }, { t: 'p', f: '10:15', to: '11:00' }, { t: 'p', f: '11:00', to: '11:40' }, { t: 'b', l: 'ಕಿರು ವಿರಾಮ', f: '11:40', to: '11:50' },
+      { t: 'p', f: '11:50', to: '12:30' }, { t: 'p', f: '12:30', to: '13:10' }, { t: 'b', l: 'ಬಿಸಿಯೂಟ', f: '13:10', to: '14:00' }, { t: 'p', f: '14:00', to: '14:40' },
+      { t: 'p', f: '14:40', to: '15:20' }, { t: 'b', l: 'ಕಿರು ವಿರಾಮ', f: '15:20', to: '15:30' }, { t: 'p', f: '15:30', to: '16:10' }],
+    sat: [{ t: 'b', l: 'ಪ್ರಾರ್ಥನೆ', f: '08:00', to: '08:15' }, { t: 'p', f: '08:15', to: '08:55' }, { t: 'p', f: '08:55', to: '09:35' }, { t: 'b', l: 'ಕಿರು ವಿರಾಮ', f: '09:35', to: '09:45' },
+      { t: 'p', f: '09:45', to: '10:25' }, { t: 'p', f: '10:25', to: '11:05' }, { t: 'p', f: '11:05', to: '11:45' }],
+    classes: [], teachers: [], load: [], grid: null, at: ''
+  };
+}
+let TT = null, ttFilter = '', ttView = { mode: 'cls', key: '' }, ttPick = null, ttSaveT = 0;
+function ttLoad() {
+  if (TT) return TT;
+  let x = null;
+  try { const p = PAID && ACC.prof?.()?.tt; if (p) x = JSON.parse(p); } catch (e) {}
+  const loc = store.get('bm_tt', null);
+  if (loc && (!x || String(loc.at || '') > String(x.at || ''))) x = loc;
+  TT = Object.assign(ttDefault(), x || {});
+  return TT;
+}
+function ttSave() {
+  TT.at = new Date().toISOString(); store.set('bm_tt', TT);
+  clearTimeout(ttSaveT);
+  ttSaveT = setTimeout(() => { if (PAID && ACC.prof?.() && !ACC.isAdmin()) ACC.saveTT(JSON.stringify(TT)).catch(() => {}); }, 2500);
+}
+const ttPer = d => (d < 5 ? TT.week : TT.sat).filter(s => s.t === 'p').length;
+const ttSlots = () => TT.week.filter(s => s.t === 'p').length * 5 + TT.sat.filter(s => s.t === 'p').length;
+const ttUid = () => Math.random().toString(36).slice(2, 9);
+const ttShort = n => { const w = String(n || '').replace(/^(ಶ್ರೀ(ಮತಿ)?|ಕು\.?|Mr\.?|Mrs\.?|Ms\.?|Smt\.?|Sri\.?)\s*/i, '').trim(); return w.length > 14 ? w.split(/\s+/)[0] : w; };
+
+/* ---------- ತಾನಾಗಿಯೇ ವೇಳಾಪಟ್ಟಿ ತಯಾರಿಕೆ ---------- */
+function ttGenerate() {
+  const items = TT.load.filter(x => x.n > 0 && x.classes.length && x.subject);
+  const days = 6, P = [0, 1, 2, 3, 4, 5].map(ttPer);
+  const tLoad = {}; items.forEach(x => { if (x.teacher) tLoad[x.teacher] = (tLoad[x.teacher] || 0) + x.n; });
+  let best = null; const t0 = Date.now();
+  for (let att = 0; att < 400 && Date.now() - t0 < 2500; att++) {
+    const grid = {}, tOcc = {}, cnt = {};
+    TT.classes.forEach(c => { grid[c] = P.map(n => Array(n).fill(null)); });
+    const order = items.slice().sort((a, b) => ((tLoad[b.teacher] || 0) + b.classes.length * 6 + b.n) - ((tLoad[a.teacher] || 0) + a.classes.length * 6 + a.n) + (Math.random() - .5) * (att ? 8 : 0));
+    let miss = 0, pen = 0;
+    for (const it of order) {
+      cnt[it.id] = Array(days).fill(0);
+      for (let k = 0; k < it.n; k++) {
+        let pick = null, ps = 1e9;
+        for (let d = 0; d < days; d++) for (let p = 0; p < P[d]; p++) {
+          if (it.classes.some(c => !grid[c] || grid[c][d][p])) continue;
+          if (it.teacher && tOcc[it.teacher + '|' + d + '|' + p]) continue;
+          const cd = cnt[it.id][d];
+          let sc = cd * 30 + (cd >= 2 ? 400 : 0) + Math.random() * 4;
+          if (TT_CORE.test(it.subject)) sc += p * 1.2; else if (TT_LIGHT.test(it.subject)) sc -= p * 1.2;
+          if (d === 5 && TT_LIGHT.test(it.subject)) sc -= 2;
+          /* ಒಂದೇ ವಿಷಯ ಸತತ ಎರಡು ಅವಧಿ ಬೇಡ */
+          if (it.classes.some(c => (p > 0 && grid[c][d][p - 1] === it.id) || (p + 1 < P[d] && grid[c][d][p + 1] === it.id))) sc += 15;
+          if (sc < ps) { ps = sc; pick = [d, p]; }
+        }
+        if (!pick) { miss++; continue; }
+        const [d, p] = pick; pen += ps;
+        it.classes.forEach(c => { grid[c][d][p] = it.id; });
+        if (it.teacher) tOcc[it.teacher + '|' + d + '|' + p] = 1;
+        cnt[it.id][d]++;
+      }
+    }
+    if (!best || miss < best.miss || (miss === best.miss && pen < best.pen)) best = { grid, miss, pen };
+    if (best.miss === 0 && att > 25) break;
+  }
+  TT.grid = best ? best.grid : null; TT.miss = best ? best.miss : 0;
+  return best;
+}
+const ttItem = id => TT.load.find(x => x.id === id);
+function ttTeacherAt(t, d, p) {
+  for (const c of TT.classes) { const id = TT.grid?.[c]?.[d]?.[p]; const it = id && ttItem(id); if (it && it.teacher === t) return it; }
+  return null;
+}
+/* ಎರಡು ಕೋಶ ಅದಲು ಬದಲು (ಒಂದೇ ತರಗತಿ). ಜೊತೆ ತರಗತಿಗಳು ಮತ್ತು ಶಿಕ್ಷಕರ ಘರ್ಷಣೆ ಪರಿಶೀಲನೆ */
+function ttSwap(c, a, b) {
+  const g = TT.grid, A = g[c][a[0]][a[1]], B = g[c][b[0]][b[1]];
+  if (A === B) return 'ಎರಡೂ ಒಂದೇ ವಿಷಯ.';
+  if (b[1] >= ttPer(b[0]) || a[1] >= ttPer(a[0])) return 'ಆ ದಿನ ಆ ಅವಧಿ ಇಲ್ಲ.';
+  const ia = A && ttItem(A), ib = B && ttItem(B);
+  const ok = (it, from, to, other) => {
+    if (!it) return true;
+    for (const cc of it.classes) { const v = g[cc]?.[to[0]]?.[to[1]]; if (v && v !== other) return `${cc}ನೇ ತರಗತಿಯಲ್ಲಿ ಆ ಸಮಯ ಬೇರೆ ವಿಷಯ ಇದೆ (ಜೊತೆ ತರಗತಿ).`; }
+    if (it.teacher) { const o = ttTeacherAt(it.teacher, to[0], to[1]); if (o && o.id !== other && o.id !== it.id) return `${it.teacher} ಅವರಿಗೆ ಆ ಸಮಯ ಬೇರೆ ತರಗತಿ ಇದೆ.`; }
+    return true;
+  };
+  const ra = ok(ia, a, b, B), rb = ok(ib, b, a, A);
+  if (ra !== true) return ra; if (rb !== true) return rb;
+  if (ia && ib && ia.classes.join() !== ib.classes.join()) {
+    const extra = [...ia.classes, ...ib.classes].filter(cc => !(ia.classes.includes(cc) && ib.classes.includes(cc)));
+    if (extra.length) return 'ಜೊತೆ ತರಗತಿಯ ಅವಧಿಯನ್ನು ಬೇರೆ ವಿಷಯದೊಂದಿಗೆ ಬದಲಿಸಲು ಆಗದು. ಖಾಲಿ ಅವಧಿಗೆ ಸರಿಸಿ.';
+  }
+  (ia ? ia.classes : [c]).forEach(cc => { if (g[cc][a[0]][a[1]] === A) g[cc][a[0]][a[1]] = null; });
+  (ib ? ib.classes : [c]).forEach(cc => { if (g[cc][b[0]][b[1]] === B) g[cc][b[0]][b[1]] = null; });
+  if (ia) ia.classes.forEach(cc => { g[cc][b[0]][b[1]] = A; });
+  if (ib) ib.classes.forEach(cc => { g[cc][a[0]][a[1]] = B; });
+  return true;
+}
+
+/* ---------- ಪುಟ ---------- */
+function ttTimeRows(key) {
+  return TT[key].map((s, i) => `<div class="tts"><select data-k="${key}" data-i="${i}" data-f="t"><option value="p"${s.t === 'p' ? ' selected' : ''}>ಅವಧಿ</option><option value="b"${s.t === 'b' ? ' selected' : ''}>ವಿರಾಮ</option></select>
+    ${s.t === 'b' ? `<input type="text" data-k="${key}" data-i="${i}" data-f="l" value="${esc(s.l || '')}" placeholder="ಹೆಸರು">` : `<b class="ttn">${TT[key].slice(0, i + 1).filter(x => x.t === 'p').length}</b>`}
+    <input type="time" data-k="${key}" data-i="${i}" data-f="f" value="${esc(s.f)}"><span>–</span><input type="time" data-k="${key}" data-i="${i}" data-f="to" value="${esc(s.to)}">
+    <button class="x" type="button" data-del="${key}:${i}" aria-label="ತೆಗೆಯಿರಿ">✕</button></div>`).join('') +
+    `<div style="display:flex;gap:8px;margin-top:8px"><button class="btn sm" type="button" data-add="${key}:p">+ ಅವಧಿ</button><button class="btn sm" type="button" data-add="${key}:b">+ ವಿರಾಮ</button></div>`;
+}
+function ttRender() {
+  ttLoad();
+  const days = ttDays();
+  $('ttWeek').innerHTML = ttTimeRows('week'); $('ttSat').innerHTML = ttTimeRows('sat');
+  $('ttClasses').innerHTML = TT.classes.map(c => `<span class="chipx">${esc(c)}<button type="button" data-rmc="${esc(c)}" aria-label="ತೆಗೆಯಿರಿ">✕</button></span>`).join('') || '<span class="muted small">ಇನ್ನೂ ತರಗತಿ ಸೇರಿಸಿಲ್ಲ</span>';
+  $('ttTeachers').innerHTML = TT.teachers.map(t => `<span class="chipx">${esc(t)}<button type="button" data-rmt="${esc(t)}" aria-label="ತೆಗೆಯಿರಿ">✕</button></span>`).join('') || '<span class="muted small">ಇನ್ನೂ ಶಿಕ್ಷಕರನ್ನು ಸೇರಿಸಿಲ್ಲ</span>';
+  fillSelect($('ttFilter'), [['', 'ಎಲ್ಲಾ ತರಗತಿ'], ...TT.classes.map(c => [c, c + 'ನೇ ತರಗತಿ'])], ttFilter);
+  /* ವಿಷಯ ಹಂಚಿಕೆ */
+  const rows = TT.load.filter(x => !ttFilter || x.classes.includes(ttFilter));
+  $('ttLoad').innerHTML = `<thead><tr><th>ತರಗತಿ (ಜೊತೆ ತರಗತಿ ಆರಿಸಿ)</th><th>ವಿಷಯ</th><th>ಶಿಕ್ಷಕರು</th><th>ವಾರಕ್ಕೆ ಅವಧಿ</th><th></th></tr></thead><tbody>` +
+    (rows.map(x => `<tr><td><div class="ttcls">${TT.classes.map(c => `<button type="button" class="${x.classes.includes(c) ? 'on' : ''}" data-tog="${x.id}:${esc(c)}">${esc(c)}</button>`).join('')}</div></td>
+      <td><input type="text" data-l="${x.id}" data-f="subject" value="${esc(x.subject)}" style="width:150px"></td>
+      <td><select data-l="${x.id}" data-f="teacher"><option value="">— ಆರಿಸಿ —</option>${TT.teachers.map(t => `<option${t === x.teacher ? ' selected' : ''}>${esc(t)}</option>`).join('')}</select></td>
+      <td><input type="number" min="0" max="20" data-l="${x.id}" data-f="n" value="${x.n}" style="width:70px"></td>
+      <td style="text-align:right"><button class="x" type="button" data-rml="${x.id}" aria-label="ತೆಗೆಯಿರಿ">✕</button></td></tr>`).join('')
+      || `<tr><td colspan="5">${emptyBox('ವಿಷಯಗಳನ್ನು ಸೇರಿಸಿ', 'ತರಗತಿ ಆರಿಸಿ "ಸಲಹೆಯ ವಿಷಯಗಳು" ಒತ್ತಿದರೆ ಸಾಮಾನ್ಯ ವಿಷಯಗಳು ಮತ್ತು ಅವಧಿಗಳು ತುಂಬುತ್ತವೆ.')}</td></tr>`) + '</tbody>';
+  /* ಸಾರಾಂಶ */
+  const S = ttSlots();
+  const cl = TT.classes.map(c => [c, TT.load.filter(x => x.classes.includes(c)).reduce((a, x) => a + (+x.n || 0), 0)]);
+  const tl = TT.teachers.map(t => [t, TT.load.filter(x => x.teacher === t).reduce((a, x) => a + (+x.n || 0), 0)]);
+  const noT = TT.load.filter(x => !x.teacher && x.n > 0).length;
+  $('ttSum').innerHTML = `<div class="ttsum"><div><b>ತರಗತಿವಾರು ಅವಧಿಗಳು</b> <span class="small muted">(ವಾರಕ್ಕೆ ಒಟ್ಟು ${S} ಅವಧಿ)</span>${cl.map(([c, n]) => `<span class="pill ${n > S ? 'bad' : n < S ? 'warn' : ''}">${esc(c)}ನೇ: ${n}/${S}</span>`).join('') || ''}</div>
+    <div><b>ಶಿಕ್ಷಕರ ಕಾರ್ಯಭಾರ</b>${tl.map(([t, n]) => `<span class="pill ${n > S ? 'bad' : ''}">${esc(ttShort(t))}: ${n}</span>`).join('') || ''}</div></div>
+    ${cl.some(([, n]) => n > S) ? '<p class="bad small">⚠️ ಕೆಂಪು ತರಗತಿಗೆ ವಾರದ ಅವಧಿಗಳಿಗಿಂತ ಹೆಚ್ಚು ವಿಷಯ ಅವಧಿಗಳಿವೆ. ಕಡಿಮೆ ಮಾಡಿ.</p>' : ''}
+    ${cl.some(([, n]) => n < S) ? '<p class="small muted">ಹಳದಿ ತರಗತಿಗೆ ಕೆಲವು ಅವಧಿಗಳು ಖಾಲಿ ಉಳಿಯುತ್ತವೆ (ಸರಿ, ಬೇಕಿದ್ದರೆ ಅವಧಿ ಹೆಚ್ಚಿಸಿ).</p>' : ''}
+    ${noT ? `<p class="small" style="color:var(--amber)">${noT} ವಿಷಯಕ್ಕೆ ಶಿಕ್ಷಕರನ್ನು ಆರಿಸಿಲ್ಲ. ಆರಿಸಿದರೆ ಒಬ್ಬರಿಗೆ ಒಂದೇ ಸಮಯದಲ್ಲಿ ಎರಡು ತರಗತಿ ಬರದಂತೆ ನೋಡಿಕೊಳ್ಳುತ್ತದೆ.</p>` : ''}`;
+  ttResult();
+}
+function ttResult() {
+  const box = $('ttOut'), g = TT.grid;
+  $('ttOutCard').hidden = !g;
+  if (!g) return;
+  const days = ttDays(), maxP = Math.max(...[0, 1, 2, 3, 4, 5].map(ttPer));
+  const wp = TT.week.filter(s => s.t === 'p');
+  const keys = ttView.mode === 'cls' ? TT.classes : TT.teachers;
+  if (!keys.includes(ttView.key)) ttView.key = keys[0] || '';
+  fillSelect($('ttWho'), keys.map(k => [k, ttView.mode === 'cls' ? k + 'ನೇ ತರಗತಿ' : k]), ttView.key);
+  document.querySelectorAll('#ttMode button').forEach(b => b.classList.toggle('on', b.dataset.m === ttView.mode));
+  const k = ttView.key;
+  const cellOf = (d, p) => {
+    if (p >= ttPer(d)) return '<td class="na"></td>';
+    if (ttView.mode === 'cls') {
+      const it = ttItem(g[k]?.[d]?.[p]); const sel = ttPick && ttPick[0] === d && ttPick[1] === p;
+      return `<td class="ttc${sel ? ' sel' : ''}${it && it.classes.length > 1 ? ' multi' : ''}" data-cell="${d}:${p}">${it ? `<b>${esc(it.subject)}</b><small>${esc(ttShort(it.teacher))}${it.classes.length > 1 ? ' · ' + it.classes.join('+') : ''}</small>` : '<span class="muted">—</span>'}</td>`;
+    }
+    const it = ttTeacherAt(k, d, p);
+    return `<td class="ttc">${it ? `<b>${esc(it.classes.join('+'))}ನೇ</b><small>${esc(it.subject)}</small>` : '<span class="muted">—</span>'}</td>`;
+  };
+  const total = ttView.mode === 'tch' ? TT.load.filter(x => x.teacher === k).reduce((a, x) => a + (+x.n || 0), 0) : 0;
+  box.innerHTML = `${TT.miss ? `<div class="banner bad" style="margin-bottom:12px"><span>⚠️ ${TT.miss} ಅವಧಿಗಳನ್ನು ಇಡಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ (ಶಿಕ್ಷಕರ ಘರ್ಷಣೆ ಅಥವಾ ಅವಧಿ ಕಡಿಮೆ). ಕಾರ್ಯಭಾರ / ಜೊತೆ ತರಗತಿ ಬದಲಿಸಿ ಮತ್ತೆ ತಯಾರಿಸಿ.</span></div>` : ''}
+    ${ttView.mode === 'cls' ? '<p class="small muted" style="margin:0 0 8px">ಬದಲಿಸಲು: ಒಂದು ಕೋಶ ಒತ್ತಿ, ನಂತರ ಇನ್ನೊಂದು ಕೋಶ ಒತ್ತಿ. ಎರಡೂ ಅದಲು ಬದಲಾಗುತ್ತವೆ (ಶಿಕ್ಷಕರ ಘರ್ಷಣೆ ಇದ್ದರೆ ತಡೆಯುತ್ತದೆ).</p>' : `<p class="small" style="margin:0 0 8px"><b>ವಾರಕ್ಕೆ ${total} ಅವಧಿ</b></p>`}
+    <div class="tw"><table class="ttg"><thead><tr><th>ದಿನ</th>${Array.from({ length: maxP }, (_, p) => `<th>${p + 1}<small>${wp[p] ? esc(wp[p].f + '–' + wp[p].to) : ''}</small></th>`).join('')}</tr></thead>
+    <tbody>${days.map((dn, d) => `<tr><th>${esc(dn)}</th>${Array.from({ length: maxP }, (_, p) => cellOf(d, p)).join('')}</tr>`).join('')}</tbody></table></div>`;
+  box.querySelectorAll('[data-cell]').forEach(td => td.onclick = () => {
+    const [d, p] = td.dataset.cell.split(':').map(Number);
+    if (!ttPick) { ttPick = [d, p]; ttResult(); return; }
+    if (ttPick[0] === d && ttPick[1] === p) { ttPick = null; ttResult(); return; }
+    const r = ttSwap(k, ttPick, [d, p]); ttPick = null;
+    if (r !== true) toast(r, true); else { ttSave(); toast('ಬದಲಿಸಲಾಗಿದೆ.'); }
+    ttResult();
+  });
+}
+function ttBind() {
+  const page = $('v-tt');
+  if (page.dataset.bound) return; page.dataset.bound = '1';
+  page.addEventListener('change', e => {
+    const el = e.target;
+    if (el.dataset.k) { const s = TT[el.dataset.k][+el.dataset.i]; s[el.dataset.f] = el.value; if (el.dataset.f === 't' && el.value === 'b' && !s.l) s.l = 'ವಿರಾಮ'; TT.grid = null; ttSave(); ttRender(); }
+    else if (el.dataset.l) { const x = ttItem(el.dataset.l); x[el.dataset.f] = el.dataset.f === 'n' ? Math.max(0, +el.value || 0) : el.value.trim(); TT.grid = null; ttSave(); ttRender(); }
+    else if (el.id === 'ttFilter') { ttFilter = el.value; ttRender(); }
+    else if (el.id === 'ttWho') { ttView.key = el.value; ttPick = null; ttResult(); }
+  });
+  page.addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const d = b.dataset;
+    if (d.del) { const [k, i] = d.del.split(':'); TT[k].splice(+i, 1); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.add) { const [k, t] = d.add.split(':'), last = TT[k][TT[k].length - 1]; TT[k].push({ t, l: t === 'b' ? 'ವಿರಾಮ' : '', f: last?.to || '10:00', to: last?.to || '10:40' }); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.rmc) { TT.classes = TT.classes.filter(c => c !== d.rmc); TT.load.forEach(x => { x.classes = x.classes.filter(c => c !== d.rmc); }); TT.load = TT.load.filter(x => x.classes.length); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.rmt) { TT.teachers = TT.teachers.filter(t => t !== d.rmt); TT.load.forEach(x => { if (x.teacher === d.rmt) x.teacher = ''; }); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.tog) { const [id, c] = d.tog.split(':'), x = ttItem(id); x.classes = x.classes.includes(c) ? x.classes.filter(y => y !== c) : [...x.classes, c].sort((p, q) => String(p).localeCompare(String(q), undefined, { numeric: true })); if (!x.classes.length) TT.load = TT.load.filter(y => y.id !== id); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.rml) { TT.load = TT.load.filter(x => x.id !== d.rml); TT.grid = null; ttSave(); ttRender(); }
+    else if (d.m) { ttView.mode = d.m; ttPick = null; ttResult(); }
+  });
+  $('ttAddC').onclick = () => {
+    const v = $('ttNewC').value.split(/[,，]/).map(x => x.trim().replace(/ನೇ$/, '')).filter(Boolean);
+    if (!v.length) return toast('ತರಗತಿ ಬರೆಯಿರಿ, ಉದಾ: 1, 2, 3 ಅಥವಾ 6A', true);
+    v.forEach(c => { if (!TT.classes.includes(c)) TT.classes.push(c); });
+    TT.classes.sort((p, q) => String(p).localeCompare(String(q), undefined, { numeric: true }));
+    $('ttNewC').value = ''; TT.grid = null; ttSave(); ttRender();
+  };
+  $('ttAddT').onclick = () => {
+    const v = $('ttNewT').value.split(/[,，]/).map(x => x.trim()).filter(Boolean);
+    if (!v.length) return toast('ಶಿಕ್ಷಕರ ಹೆಸರು ಬರೆಯಿರಿ', true);
+    v.forEach(t => { if (!TT.teachers.includes(t)) TT.teachers.push(t); });
+    $('ttNewT').value = ''; ttSave(); ttRender();
+  };
+  $('ttNewC').onkeydown = e => { if (e.key === 'Enter') $('ttAddC').click(); };
+  $('ttNewT').onkeydown = e => { if (e.key === 'Enter') $('ttAddT').click(); };
+  $('ttSuggest').onclick = () => {
+    const c = ttFilter; if (!c) return toast('ಮೊದಲು ಮೇಲಿನ ಪಟ್ಟಿಯಿಂದ ಒಂದು ತರಗತಿ ಆರಿಸಿ.', true);
+    const n = parseInt(c, 10), set = TT_SUGGEST[['en', 'bi'].includes(medium()) ? 'en' : 'kn'][n <= 3 ? 'low' : n <= 5 ? 'mid' : n <= 7 ? 'hps' : 'hs'];
+    let added = 0;
+    set.forEach(([s, k]) => { if (!TT.load.some(x => x.classes.includes(c) && x.subject === s)) { TT.load.push({ id: ttUid(), classes: [c], subject: s, teacher: '', n: k }); added++; } });
+    TT.grid = null; ttSave(); ttRender(); toast(added ? `${c}ನೇ ತರಗತಿಗೆ ${added} ವಿಷಯ ಸೇರಿಸಲಾಗಿದೆ. ಶಿಕ್ಷಕರನ್ನು ಆರಿಸಿ, ಅವಧಿ ಬೇಕಾದಂತೆ ಬದಲಿಸಿ.` : 'ಈ ವಿಷಯಗಳು ಈಗಾಗಲೇ ಇವೆ.');
+  };
+  $('ttAddL').onclick = () => {
+    const c = ttFilter || TT.classes[0]; if (!c) return toast('ಮೊದಲು ತರಗತಿ ಸೇರಿಸಿ.', true);
+    TT.load.push({ id: ttUid(), classes: [c], subject: '', teacher: '', n: 1 }); ttSave(); ttRender();
+  };
+  $('ttGo').onclick = () => busy($('ttGo'), async () => {
+    if (!TT.classes.length || !TT.load.length) return toast('ತರಗತಿ ಮತ್ತು ವಿಷಯಗಳನ್ನು ಮೊದಲು ಸೇರಿಸಿ.', true);
+    if (TT.load.some(x => !x.subject)) return toast('ಕೆಲವು ಸಾಲುಗಳಲ್ಲಿ ವಿಷಯದ ಹೆಸರು ಖಾಲಿ ಇದೆ.', true);
+    const S = ttSlots(), over = TT.classes.find(c => TT.load.filter(x => x.classes.includes(c)).reduce((a, x) => a + x.n, 0) > S);
+    if (over) return toast(`${over}ನೇ ತರಗತಿಗೆ ವಾರದ ${S} ಅವಧಿಗಿಂತ ಹೆಚ್ಚು ವಿಷಯ ಅವಧಿಗಳಿವೆ.`, true);
+    const tl = {}; TT.load.forEach(x => { if (x.teacher) tl[x.teacher] = (tl[x.teacher] || 0) + (+x.n || 0); });
+    const tov = Object.keys(tl).find(t => tl[t] > S);
+    if (tov) return toast(`${tov} ಅವರಿಗೆ ವಾರಕ್ಕೆ ${tl[tov]} ಅವಧಿ ಹಂಚಲಾಗಿದೆ; ಗರಿಷ್ಠ ${S} ಮಾತ್ರ ಸಾಧ್ಯ. ಕೆಲವು ವಿಷಯಗಳನ್ನು ಬೇರೆ ಶಿಕ್ಷಕರಿಗೆ ನೀಡಿ.`, true);
+    await new Promise(r => setTimeout(r, 30));
+    const r = ttGenerate(); ttPick = null; ttView.mode = 'cls'; ttSave(); ttRender();
+    $('ttOutCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    toast(r && !r.miss ? 'ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ ✓' : `ವೇಳಾಪಟ್ಟಿ ಸಿದ್ಧ, ಆದರೆ ${r.miss} ಅವಧಿ ಇಡಲು ಆಗಲಿಲ್ಲ.`, !!(r && r.miss));
+  });
+  const pdf = mode => busy($('ttPdf' + mode), async () => {
+    const sc = requireSchool(); if (!sc || !TT.grid) return;
+    const raw = await PM.timetable(TT, sc, mode, ttDays());
+    const out = await PM.stampPdf(raw, sc);
+    await PV.open(out, { cls: 'ತರಗತಿವಾರು ವೇಳಾಪಟ್ಟಿ', tch: 'ಶಿಕ್ಷಕವಾರು ವೇಳಾಪಟ್ಟಿ', all: 'ಸಮಗ್ರ ವೇಳಾಪಟ್ಟಿ' }[mode], fname('ವೇಳಾಪಟ್ಟಿ', { cls: 'ತರಗತಿವಾರು', tch: 'ಶಿಕ್ಷಕವಾರು', all: 'ಸಮಗ್ರ' }[mode], sc.year) + '.pdf');
+  });
+  $('ttPdfcls').onclick = () => pdf('cls'); $('ttPdftch').onclick = () => pdf('tch'); $('ttPdfall').onclick = () => pdf('all');
+  $('ttExport').onclick = () => saveFile(new TextEncoder().encode(JSON.stringify(TT, null, 1)), 'ವೇಳಾಪಟ್ಟಿ-ಉಳಿಕೆ.json', 'application/json');
+  $('ttImport').onchange = async e => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const x = JSON.parse(await f.text()); if (!x.week || !x.load) throw 0; TT = Object.assign(ttDefault(), x); ttSave(); ttRender(); toast('ತೆರೆಯಲಾಗಿದೆ.'); }
+    catch (err) { toast('ಇದು ವೇಳಾಪಟ್ಟಿ ಉಳಿಕೆ ಫೈಲ್ ಅಲ್ಲ.', true); }
+    e.target.value = '';
+  };
+  $('ttReset').onclick = () => {
+    if (!$('ttReset').dataset.sure) { $('ttReset').dataset.sure = '1'; $('ttReset').textContent = 'ಖಚಿತವೇ? ಮತ್ತೆ ಒತ್ತಿ'; setTimeout(() => { delete $('ttReset').dataset.sure; $('ttReset').textContent = 'ಹೊಸದಾಗಿ ಆರಂಭಿಸಿ'; }, 4000); return; }
+    TT = ttDefault(); ttSave(); ttRender(); toast('ಹೊಸ ವೇಳಾಪಟ್ಟಿ ಆರಂಭ.');
+  };
+}
 
 /* ---------- ಆರಂಭ ---------- */
 let FULL = null;
